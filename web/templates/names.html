@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<!-- Color and sort according to type   -->
+
+<div class="container">
+  <h1>All the Names</h1>
+
+
+  <table id='data' class="table table-hover table-borderless table-sm">
+    <caption>Names, Gender and more</caption>
+    <thead class="thead-light">
+    <tr>
+      <th>Name</th> <th>Pron</th> <th>Freq</th> <th>F Ratio</th>
+    </tr>
+    </thead>
+    <tbody>
+      {%- for (name, hira, freq, fratio) in data %}
+      <tr class="{{status}}">
+	<td> <a href='{{url_for('namae', orth=name, pron=hira)}}'>{{name}}</a></td>
+	<td>{{hira}}</td>
+	<td>{{freq}}</td>
+	<td>{{fratio}}</td>
+      </tr>
+      {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+	$('#data').DataTable({"pageLength": 100,
+			      "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ]});
+    });
+  </script>
+{% endblock %}

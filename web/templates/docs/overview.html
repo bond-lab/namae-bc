@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Documentation</h1>
+
+  <h2>Morae</h2>
+
+  <p>If a character is a yo'on ("ゃ", "ゅ", "ょ", "ぁ", "ぃ", "ぇ", "ゎ") then attach to the previous character.
+    <ul>
+      <li>き + ゃ → きゃ
+	</ul>
+   
+
+
+  <p>Code is in <code>utils.py</code>
+  
+  <h2>Syllables</h2>
+
+  <ul>
+    <li> Any mora followed by "ん" or  "っ" joins to that.
+    <ul>
+      <li>こ + ん → こん
+      <li>き + っ → きっ
+    </ul>
+  <li> A mora ending in /a/ ('あ',  'か', 'が', 'きゃ', 'ぎゃ', ...)
+    followed by a mora "あ", "い", "う" or "ー"
+    <ul>
+      <li>か + い → かい
+      <li>あ + いん → あ + いん (ん joins first)
+    </ul>
+  <li> A mora ending in /i/ 
+    followed by a mora "い" or "ー"
+    <ul>
+      <li>き + い → きい
+    </ul>
+  <li> A mora ending in /u/
+    followed by a mora 'う'
+    <ul>
+      <li>く + う → くう
+    </ul>
+  <li> A mora ending in /e/ 
+    followed by a mora  "い", "え" or "ー"
+    <ul>
+      <li>て + い →てい
+      <li>て + え → てえ
+    </ul>
+  <li> A mora ending in /o/  followed by a mora "お", "う" or "ー"
+    <ul>
+      <li>と + う → とう
+      <li>お + お → おお
+    </ul>
+</ul>
+    
+<p>It is not possible to determine syllable boundaries just from a
+kana string.  We will always join when we can, starting from the
+front.  Something like "みい" could be "み" + "い" or "みい", we will always produce "みい". Something like "とおう" could be "と" + "おう" or "とお" + "う", will produce the latter.
+
+<p>Normally Japanese syllables only have two mora, but we have names like 'ろおい', which is probably intended to be pronounced like <i>Roy</i> which would be one syllable.  We currently treat this as two: 'ろお' + 'い'
+
+
+
+  <p>Code is in <code>utils.py</code>
+
+
+    <h2>Counting first and last features</h2>
+
+    <p>If we look for a feature in the first or last position, then we only do this if there are two or more.
+
+    <p>If the feature is the first two or last two, then we only do this if there are three or more.
+
+      
+   
+{% endblock %}

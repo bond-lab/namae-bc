@@ -1,0 +1,142 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<!-- Color and sort according to type   -->
+
+<div class="container">
+  <h1>{{title}}</h1>
+  <div>
+    <p>There are {{data|length}} different features with more than
+      {{threshold}} example(s).
+      This gives {{"{:,d}".format(summ['allm'])}} male names
+      and {{"{:,d}".format(summ['allf'])}}
+      female names ({{"{:,d}".format(summ['allt'])}} together).
+
+      <p>𝜒² = {{"{:.3f}".format( summ['chi2'])}}
+	with pvalue {{"{:.2e}".format(summ['pval'])}}.</p>
+      <p>𝜙 = {{"{:.3f}".format(summ['phi'])}}</p>
+
+      <p>Adjusted significance threshold 𝛼′ =
+      {{"{:.2e}".format(summ['lvl'])}} for individual significance
+      tests with Bonferonni’s correction.
+	  
+  </div>
+  
+  <div style="display: flex; align-items: center; gap: 1em;">
+    <div id="dt-filter-container"></div> <!-- Container for custom filters -->
+  </div>
+  <div>
+  <table id='data' class="table table-hover table-borderless w-auto">
+    <caption>Names, Gender and more</caption>
+    <thead class="thead-light">
+    <tr>
+      <th>Feature</th> <th>Male</th> <th>Female</th> <th>Total</th> <th>F Ratio</th>
+      <th>Odds ratio</th> <th>Pvalue</th> <th>Sig.</th> <th>Examples</th>
+    </tr>
+    </thead>
+    <tbody>
+      {%- for (feat, male, female, fratio, odds, pvalue, sig, exe) in tests %}
+  <tr style="background: linear-gradient(to right, lightblue, {{ (1-fratio)*100 }}%, pink);">
+    <td> {{ feat }} </td>
+    <!-- <tr class="{{status}}"> -->
+	<!-- <td style="background: linear-gradient(to right, lightblue {{ (1-fratio)*100 }}%, pink {{ fratio*100 }}%);"> -->
+	<!--   {{ feat }} -->
+	<!-- </td> -->
+
+	<td align='right'>{{male}}</td>
+	<td align='right'>{{female}}</td>
+	<td align='right'>{{female+male}}</td>
+	<td align='right'>{{"{:.4f}".format(fratio)}}</td>	
+	<td align='right'>{{"{:.4f}".format(odds)}}</td>
+	<td align='right'>{{"{:.2e}".format(pvalue)}}</td>
+	<td align='right'>{{sig}}</td>
+	<td>{%- for (o, p) in exe %}
+	  <a href='{{url_for('namae', orth=o, pron=p)}}'>{{o}}</a>{{", " if not loop.last else ""}}
+	{% endfor %} 
+	</td>
+      </tr>
+      {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+	$('#data').DataTable({"pageLength": 100,
+			      "lengthMenu": [ [25, 50, 100, -1],
+					      [25, 50, 100, "All"] ],
+          
+	initComplete: function () {
+            var api = this.api();
+
+               // Create a label for Filters
+                var filterLabel = $('<span><strong>Filters:</strong></span>');
+
+                // Create dropdowns for Min and Max F Ratio with values from 0 to 1.0 in steps of 0.1
+                var minDropdown = $('<select id="min-f-ratio"><option value="">Min</option></select>')
+                    .on('change', function () {
+                        table.draw();
+                    });
+                
+                var maxDropdown = $('<select id="max-f-ratio"><option value="">Max</option></select>')
+                    .on('change', function () {
+                        table.draw();
+                    });
+
+                // Populate dropdowns with values from 0 to 1.0 in steps of 0.1
+                for (var i = 0; i <= 1.0; i += 0.1) {
+                    var value = i.toFixed(1); // Convert to string with 1 decimal place
+                    minDropdown.append('<option value="' + value + '">' + value + '</option>');
+                    maxDropdown.append('<option value="' + value + '">' + value + '</option>');
+                }
+
+                // Create dropdown for Sig. filter with options for All, true, and false
+                var sigDropdown = $('<select id="sig-filter"><option value="">All</option><option value="true">True</option><option value="false">False</option></select>')
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        api.column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+
+                // Create a label for F-ratio and Significance
+                var fRatioLabel = $('<span>F-ratio</span>');
+                var sigLabel = $('<span>Significance</span>');
+
+                // Append everything in a descriptive format
+                $('#dt-filter-container').append(filterLabel, fRatioLabel, minDropdown, maxDropdown, sigLabel, sigDropdown);
+
+                // Custom filter function for Min and Max F Ratio
+                $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                    var min = parseFloat(minDropdown.val()) || -Infinity; // Default to -Infinity if not set
+                    var max = parseFloat(maxDropdown.val()) || Infinity;  // Default to Infinity if not set
+                    var fRatio = parseFloat(data[4]) || 0; // Column 4 holds the F Ratio value
+
+                    return (fRatio >= min && fRatio <= max);
+                });
+	}
+    });
+
+    });
+    </script>
+  <style>
+    /* CSS to align elements inline and provide spacing */
+    #dt-filter-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5em; /* Space between filter elements */
+    }
+
+    #dt-filter-container select {
+        width: auto; /* Adjust width for dropdowns to be compact */
+    } 
+</style>
+    
+</div>
+{% endblock %}

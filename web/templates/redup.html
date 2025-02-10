@@ -1,0 +1,150 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <h1>Reduplication in Names</h1>
+
+  <p>Some Japanese names show reduplication, where part of the name is
+    repeated exactly or with a slight change.  This only occurs with
+    the phonological form , unlike Chinese, where typically the
+    orthographic form would also be repeated.
+
+<table class="table table-md table-hover w-auto">
+  <thead>
+  <tr>
+    <th>Type</th>
+    <th>M</th>
+    <th>F</th>
+    <th>Total</th>
+  </tr>
+  <tr>
+    <td>Reduplicated</td>
+    <td align='right'>{{"{:,d}".format(stats['redup']['M'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['redup']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['redup']['T'])}}</td>
+  </tr>
+  <tr>
+    <td>Reduplicated + affix</td>
+    <td align='right'>{{"{:,d}".format(stats['redup+']['M'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['redup+']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['redup+']['T'])}}</td>
+</tr>
+  
+  </thead>
+  <caption>Distribution of reduplication in names</caption>
+  <tbody>
+
+    
+    
+  <h2>Reduplicated Names</h2>
+
+  <p>Here we check for all names whose pronunciation has an even
+  number of syllables, where the first half of the pronunciation is
+    the same as the second half.
+    
+  <p>We only find two syllable female names.
+
+  <table id='redup' class="table table-md table-hover w-auto fs-6">
+  <thead>
+    <tr>
+      <th>Pron</th>
+      <th>Gen.</th>
+      <th>Freq</th>
+      <th>Orth</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for (pron, gender) in data['redup'] %}
+    <tr>
+      <td>{{pron}}</td>
+      <td>{{gender}}</td>
+      <td align='right'>{{"{:,d}".format(data['redup'][(pron, gender)]['freq'])}}</td>
+      <td>
+	{% for orth, freq in data['redup'][(pron, gender)]['orths']%}
+	{{ orth }}<sub class="sfreq">{{ freq }}</sub>
+	{% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>We find reduplication by looking at whether the pronunciation has an even number of morae, and if so if the first half is the same as the second half.  
+
+  
+  <h2>Reduplicated Names with Suffix</h2>
+
+  <p>Here we check for all names whose pronunciation has the first and second character the same, and a length of greater than 2.
+
+  <p>Here we find predominantly female names, but some male names.
+
+  <p>These names include some Japanese words that just happen to have the same mora repeated: like 心  <i>kokoro</i> "heart", 桃 <i>momo</i> "peach",
+    大 <i>oo</i> "big" and 七 <i>nana</i> "seven". 
+
+
+  
+<table id ='redup2' class="table table-sm table-hover w-auto">
+  <thead>
+    <tr>
+      <th>Pronun.</th>
+      <th>Gen.</th>
+      <th>Freq</th>
+      <th>Orth</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for (pron, gender) in data['redup+'] %}
+    <tr>
+      <td>{{pron}}</td>
+      <td>{{gender}}</td>
+      <td align='right'>{{"{:,d}".format(data['redup+'][(pron, gender)]['freq'])}}</td>
+      <td class='smaller'>
+	{% for orth, freq in data['redup+'][(pron, gender)]['orths']%}
+        {{ orth }}<sub class="sfreq">{{ freq }}</sub>
+        {% endfor %} 
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<p>We find reduplication plus suffix by looking at whether the pronunciation has more than three mora, and the first mora the same as the second mora.
+
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  $(document).ready(function () {
+      $('#redup').DataTable({
+        responsive: true,   // Makes table responsive
+        ordering: true,     // Enables column sorting
+        paging: false,      // Disables pagination, showing all rows
+        columnDefs: [
+            { orderable: false, targets: 3 }  // Disables sorting on the fourth column (Orth)
+        ]
+    });
+      $('#redup2').DataTable({
+        responsive: true,   // Makes table responsive
+        ordering: true,     // Enables column sorting
+        paging: false,      // Disables pagination, showing all rows
+        columnDefs: [
+            { orderable: false, targets: 3 }  // Disables sorting on the fourth column (Orth)
+        ]
+    });
+
+  });
+</script>
+
+{% endblock %}

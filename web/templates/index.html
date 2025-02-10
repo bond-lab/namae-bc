@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Overview</h1>
+
+
+
+  
+  <p>㊔ Welcome to the Japanese Name Analyzer.
+
+  <p>Part of the <a href='https://japanesenames.upol.cz/research/'>Names and Gender
+
+The Growing Trend of Non-Gender-Specific Names in Contemporary Japan</a>.
+    
+
+  <p>Data is downloaded from the <a href='
+  https://baby-calendar.jp/'>Japanese Baby Calendar</a>, with some
+  clean up.  The baby calendar has much, much more information,
+  including pictures.  This is a small subset extracted for research
+  purposes.
+
+      <h3>References</h3>
+      <dl>Barešová, Ivona (2016)
+	<dt><a href='https://obd.upol.cz/id_publ/333155379'>Japanese Given Names: A Window Into Contemporary Japanese Society</a>
+      Palacký University, ISBN 978-80-244-4976-0
+	
+      </dl>
+
+      
+</div>
+{% endblock %}

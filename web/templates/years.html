@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <h1>Data by Year</h1>
+
+  <h2>Number of Names per Year</a>
+
+<table class="table table-md table-hover w-auto">
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>M Freq</th>
+      <th>Y Freq</th>
+      <th>Total</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for year in names %}
+    <tr>
+      <td>{{year}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['M']|length)}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['F']|length)}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['M']|length + names[year]['F']|length)}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  
+</table>
+
+   <h1>Number of Names per Year, Divided by Gender</h1>
+    <img src="{{ url_for('years_png') }}" alt="Names per Year">
+
+</div>
+
+
+
+{% endblock %}

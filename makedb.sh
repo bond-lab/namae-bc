@@ -19,5 +19,7 @@ python meta.py
 
 popd
 
+### need to make the jinmei graph
+
 
 echo "Still need to 'cp scripts/namae.db web/db/namae.db'" 

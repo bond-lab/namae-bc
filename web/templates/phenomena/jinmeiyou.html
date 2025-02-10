@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <h1>Allowable Kanji</h1>
+
+  <p>Japanese names can only be written with characters from either the 
+    <i>jōyō kanji</i> "commonly used characters" or  <i>jinmeiyō kanji</i>  "kanji for use in personal names". 
+
+    
+  <h1>How many Kanji are available for names</h1>
+    <img src="{{ url_for('static', filename='img/jinmei.svg') }}" class="img-fluid" alt="Kanji per Year">
+
+    <h3>References</h3>
+    <ul>
+      <li><a href='https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji'>Jōyō kanji  "regular-use kanji"</a> in Wikipedia 
+      <li><a href='https://en.wikipedia.org/wiki/Jinmeiy%C5%8D_kanji'>Jinmeiyō kanji  "kanji for use in personal names"</a> in Wikipedia 
+    </ul>
+    
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}

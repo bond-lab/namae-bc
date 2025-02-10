@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <h1>Statistics</h1>
+
+  <h2>Number of Names</a>
+
+<table class="table table-md table-hover w-auto">
+  <thead>
+  <tr>
+    <th>Gender</th>
+    <th>Freq</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>M</td>
+    <td align='right'>{{"{:,d}".format(stats['name']['M'])}}</td>
+  </tr> 
+  <tr>
+    <td>F</td>
+    <td align='right'>{{"{:,d}".format(stats['name']['F'])}}</td>
+  </tr> 
+  <tr>
+    <td>Total</td>
+    <td align='right'>{{"{:,d}".format(stats['name']['M'] + stats['name']['F'])}}</td>
+  </tr> 
+</tbody>
+  
+</table>
+
+<h2>Distinct Names</a>
+
+<table class="table table-md table-hover w-auto">
+  <thead>
+  <tr>
+    <th>Gender</th>
+    <th>Name</th>
+    <th>Orthography</th>
+    <th>Pronunciation</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>M</td>
+    <td align='right'>{{"{:,d}".format(stats['dname']['M'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['orth']['M'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['pron']['M'])}}</td>
+  </tr> 
+  <tr>
+    <td>F</td>
+    <td align='right'>{{"{:,d}".format(stats['dname']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['orth']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['pron']['F'])}}</td>
+  </tr> 
+  <tr>
+    <td>Total</td>
+    <td align='right'>{{"{:,d}".format(stats['dname']['M'] + stats['dname']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['orth']['M'] + stats['orth']['F'])}}</td>
+    <td align='right'>{{"{:,d}".format(stats['pron']['M'] + stats['pron']['F'])}}</td>
+  </tr> 
+</tbody>
+
+</table>
+
+
+<h2>Features Tested</h2>
+<table class="table table-md table-hover w-auto">
+  <thead>
+  <tr>
+    <th>Feature</th>
+    <th>Number</th>
+    <th>Male</th>
+    <th>Female</th>
+    <th>𝜒²</th>
+    <th>pvalue</th>
+    <th>𝜙</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for (name, num, summ) in fstats %}
+  <tr>
+    <td>{{name}}</td>
+    <td align='right'>{{"{:,d}".format(num)}}</td>
+    <td align='right'>{{"{:,d}".format(summ['allm'])}}</td>
+    <td align='right'>{{"{:,d}".format(summ['allf'])}}</td>
+    <td align='right'>{{"{:.3f}".format( summ['chi2'])}}</td>
+    <td align='right'>{{"{:.2e}".format(summ['pval'])}}</td>
+    <td align='right'>{{"{:.3f}".format(summ['phi'])}}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+
+</table>
+
+<p><b>Number</b> is the number of features, <b>Male</b> and<b>
+  Female</b> are the number of male and female names for which this
+  feature is relevant. <b>𝜒²</b>, <b>pvalue</b> and <b>𝜙</b> are the
+  results of a chi-squared contingency test.
+  
+
+
+</div>
+
+
+
+{% endblock %}
