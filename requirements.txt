@@ -1,0 +1,12 @@
+Flask
+Jinja2
+MarkupSafe
+toml
+regex
+pandas
+openpyxl
+scipy
+matplotlib
+numpy
+jamdict
+jamdict-data
