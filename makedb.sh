@@ -18,22 +18,23 @@ fi
 
 ### Run scripts
 
+
 pushd scripts
 
 mv --backup=numbered namae.db namae.db.bak
 
 echo "Making Tables and reading names"
 # make table copy from excel
-python munge.py
+python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
 # add a table of single characters
 echo "Adding Kanji"
-python munge-kanji.py
+python add-kanji.py
 
 # make the attribute table
 echo "Calculate attributes"
 
-python meta.py
+python calculate-features.py
 
 
 # make the graphs
