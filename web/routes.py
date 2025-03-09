@@ -1,5 +1,6 @@
 """Route declaration."""
 from flask import current_app as app
+from web.settings import DEFAULT_DB_OPTION
 from flask import render_template, request, session, make_response, redirect, url_for
 
 import toml
