@@ -42,7 +42,6 @@ for k in kanji:
             on.extend(r.value for r in group.readings if r.r_type == 'ja_on')
             kun.extend(r.value for r in group.readings if r.r_type == 'ja_kun')
             other.extend(r.value for r in group.readings if  r.r_type not in ('ja_kun', 'ja_on'))
-
         c.execute("""INSERT INTO kanji
 (kanji, grade, freq, imi,  kunyomi, onyomi, other, nanori, scount)
 VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
@@ -56,7 +55,11 @@ VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                    ' '.join(char.nanoris),
                    char.stroke_count))
         kid[k] = c.lastrowid
+    else:
+        print(f"Couldn't find {k} in Kanjidic")
 
+
+         
 ### Wierd Character!
 c.execute("""INSERT INTO kanji
 (kanji, grade, freq, imi,  kunyomi, onyomi, other, nanori, scount)
@@ -77,9 +80,11 @@ for o in nid:
         #print(k,o, sep='\t')
         if whichScript(k) == 'kanji':
             for n in nid[o]:
-                c.execute("""INSERT INTO ntok (nid, kid) 
-                VALUES (?, ?)""", (n, kid[k]))
-
+                if k in kid:
+                    c.execute("""INSERT INTO ntok (nid, kid) 
+                    VALUES (?, ?)""", (n, kid[k]))
+                else:
+                    print(f"Can't add kanji for {k}, not in kanji dictionary")
 # for k in  kfreq:
 #     print(f'\n--- {k} ---')
 #     pprint(kanji[k])
