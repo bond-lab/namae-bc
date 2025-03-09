@@ -77,24 +77,13 @@ def home():
     page='index'
 
     selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-    selected_db_display_name = db_options.get(selected_db_option, ('', 'Unknown'))[1]
 
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
-
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
-
-    return render_template(
-        "settings.html",
-        db_options=db_options,
-        male_color=session.get('male_color', 'orange'),
-        female_color=session.get('female_color', 'purple'),
-        selected_db_display_name=selected_db_display_name
-    )
 
     return render_template(
         "index.html",
+        db_src = selected_db_option,
+        db_table = db_options[selected_db_option][0],
+        db_name = db_options[selected_db_option][1],
         page=page,
         title='Namae',
         features=features,
@@ -134,6 +123,7 @@ def settings():
     return render_template(
         "settings.html",
         db_options=db_options,
+        selected_db_option = session.get('db_option', DEFAULT_DB_OPTION),
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple')
     )
@@ -294,12 +284,20 @@ def years():
     """
     
     conn = get_db(current_directory, "namae.db")
-    names = get_name_year(conn)
+
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+
+    db_name = db_options[selected_db_option][1]
+    
+    names = get_name_year(conn,
+                          table = db_options[selected_db_option][0],
+                          src = selected_db_option)
     
     return render_template(
         f"years.html",
         names=names,
-        title='Data per year',
+        title=f'Data per year ({db_name})',
+        db_name = db_name, 
         features=features,
         overall=overall,
         phenomena=phenomena
