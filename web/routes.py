@@ -76,8 +76,6 @@ def home():
     page='index'
 
     return render_template(
-        "settings.html",
-        db_options=db_options,
         f"index.html",
         page=page,
         title='Namae',
@@ -117,6 +115,7 @@ def settings():
 
     return render_template(
         "settings.html",
+        db_options=db_options,
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple')
     )
