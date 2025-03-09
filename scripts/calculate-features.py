@@ -24,8 +24,13 @@ def tagName (conn):
 
     ### add info
     for nid, orth, pron in c:
-        mora = mora_hiragana(pron)
-        syll = syllable_hiragana(mora)
+        if pron:
+            mora = mora_hiragana(pron)
+            syll = syllable_hiragana(mora)
+        else:
+            mora = ''
+            syll = ''
+        
         d.execute(""" INSERT INTO attr 
         (nid, olength, plength, mlength, slength,
         char1, char_1, char_2, 
@@ -44,10 +49,10 @@ def tagName (conn):
                    orth[0],
                    orth[-1] if len(orth) > 1 else None,
                    orth[-2] if len(orth) > 2 else None,
-                   mora[0],
+                   mora[0] if mora else None,
                    mora[-1] if len(mora) > 1 else None,
                    mora[-2] if len(mora) > 2 else None,
-                   syll[0],
+                   syll[0] if syll else None,
                    syll[-1] if len(syll) > 1 else None,
                    syll[-2] if len(syll) > 2 else None,
                    orth[0] if len(orth) == 1 else None, # uni_ch
