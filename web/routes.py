@@ -97,8 +97,13 @@ def settings():
     """Settings page to select color palette"""
 
     if request.method == "POST":
-        session['male_color'] = request.form.get('male_color', 'orange')
-        session['female_color'] = request.form.get('female_color', 'purple')
+        color_palette = request.form.get('color_palette', 'purple_orange')
+        if color_palette == 'red_blue':
+            session['male_color'] = 'blue'
+            session['female_color'] = 'red'
+        else:
+            session['male_color'] = 'orange'
+            session['female_color'] = 'purple'
         return redirect(url_for('home'))
 
     return render_template(
