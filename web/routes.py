@@ -120,6 +120,7 @@ def settings():
             session['female_color'] = 'purple'
         db_option = request.form.get('db_option', DEFAULT_DB_OPTION)
         session['db_option'] = db_option
+        session['db_option'] = db_option
         return redirect(url_for('home'))
 
     return render_template(
