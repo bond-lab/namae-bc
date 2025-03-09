@@ -27,6 +27,10 @@ echo "Making Tables and reading names"
 # make table copy from excel
 python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
+# add Heisei data
+echo "Adding Heisei data"
+python add-heisei.py "../data/heisei"
+
 # add a table of single characters
 echo "Adding Kanji"
 python add-kanji.py
