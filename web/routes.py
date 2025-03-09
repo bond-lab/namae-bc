@@ -61,20 +61,8 @@ phenomena = [
     ]
 
 
-@app.route("/settings", methods=["GET", "POST"])
-def settings():
-    """Settings page to select color palette"""
 
-    if request.method == "POST":
-        session['male_color'] = request.form.get('male_color', 'orange')
-        session['female_color'] = request.form.get('female_color', 'purple')
-        return redirect(url_for('home'))
-
-    return render_template(
-        "settings.html",
-        male_color=session.get('male_color', 'orange'),
-        female_color=session.get('female_color', 'purple')
-    )
+@app.route("/", methods=["GET", "POST"])
 def home():
     """show the home page"""
 
@@ -103,6 +91,22 @@ def docs():
         overall=overall,
         phenomena=phenomena
     )
+
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    """Settings page to select color palette"""
+
+    if request.method == "POST":
+        session['male_color'] = request.form.get('male_color', 'orange')
+        session['female_color'] = request.form.get('female_color', 'purple')
+        return redirect(url_for('home'))
+
+    return render_template(
+        "settings.html",
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
+    )
+
 
 @app.route("/namae")
 def namae():
