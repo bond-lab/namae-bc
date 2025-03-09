@@ -17,9 +17,9 @@ def load_heisei_data(data_dir, db_path):
                         if len(parts) == 3:
                             name, frequency = parts[1], int(parts[2])
                             if name != '※希望により削除':
-                            c.execute(""" 
-                            INSERT INTO namae (year, orth, pron, loc, gender, explanation, src)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)""", (year, name, '', '', gender, '', 'hc'))          
+                                c.execute(""" 
+                                INSERT INTO namae (year, orth, pron, loc, gender, explanation, src)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)""", (year, name, '', '', gender, '', 'hc'))          
     conn.commit()
     conn.close()
 
