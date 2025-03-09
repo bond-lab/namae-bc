@@ -1,3 +1,4 @@
+from flask import session
 import matplotlib.pyplot as plt
 import numpy as np
 import io
@@ -6,9 +7,13 @@ def create_gender_plot(years, male_counts, female_counts):
     # Create the figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
 
+    # Retrieve colors from session or use default values
+    female_color = session.get('female_color', 'purple')
+    male_color = session.get('male_color', 'orange')
+
     # Plot men and women counts
-    ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
-    ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
+    ax.bar(years, female_counts, color=female_color, label='Women', alpha=0.6)
+    ax.bar(years, [-x for x in male_counts], color=male_color, label='Men', alpha=0.6)
 
     # Add numbers on top of each bar for both men and women
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
