@@ -90,21 +90,10 @@ def home():
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple'),
         selected_db_display_name=selected_db_display_name
-        "docs/overview.html",
-        page=page,
-        title='Overview',
-        features=features,
-        overall=overall,
-        phenomena=phenomena,
-        selected_db_display_name=selected_db_display_name
+    )
+
+    return render_template(
         "index.html",
-        page=page,
-        title='Namae',
-        features=features,
-        overall=overall,
-        phenomena=phenomena,
-        selected_db_display_name=selected_db_display_name
-        f"index.html",
         page=page,
         title='Namae',
         features=features,
