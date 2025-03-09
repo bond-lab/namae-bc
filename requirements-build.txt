@@ -1,0 +1,10 @@
+pandas
+openpyxl
+scipy
+matplotlib
+numpy
+jamdict
+jamdict-data
+jaconv
+toml
+regex

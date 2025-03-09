@@ -1,4 +1,22 @@
+###
+###  Run the scripts to make the db and any graphs
+###
 
+### set up python
+
+# Check if build environment exists
+if [ -d ".venv-build" ]
+then
+    source ".venv-build"/bin/activate
+    uv pip install -r requirements-build.txt
+else
+    uv venv ".venv-build"
+    source ".venv-build"/bin/activate
+    uv pip install -r requirements-build.txt
+fi
+
+
+### Run scripts
 
 pushd scripts
 

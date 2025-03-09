@@ -1,6 +1,8 @@
 # emacs
 *~
 
+
+web/db/namae.db
 *.db
 *.db*
 
