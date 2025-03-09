@@ -75,7 +75,35 @@ def home():
 
     page='index'
 
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
+
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
+
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
+
     return render_template(
+        "settings.html",
+        db_options=db_options,
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple'),
+        selected_db_display_name=selected_db_display_name
+        "docs/overview.html",
+        page=page,
+        title='Overview',
+        features=features,
+        overall=overall,
+        phenomena=phenomena,
+        selected_db_display_name=selected_db_display_name
+        "index.html",
+        page=page,
+        title='Namae',
+        features=features,
+        overall=overall,
+        phenomena=phenomena,
+        selected_db_display_name=selected_db_display_name
         f"index.html",
         page=page,
         title='Namae',
