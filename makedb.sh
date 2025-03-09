@@ -17,6 +17,12 @@ echo "Calculate attributes"
 
 python meta.py
 
+
+# make the graphs
+echo "Making Graphs"
+
+
+
 popd
 
 ### need to make the jinmei graph

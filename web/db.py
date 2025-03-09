@@ -57,7 +57,7 @@ def get_name_year(conn):
 
 def get_stats(conn):
     """
-    return various staistics
+    return various statistics
     stats[name][gender] = X
     DISTINCT
     stats['dname'][gender] = X
