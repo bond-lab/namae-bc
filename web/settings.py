@@ -9,6 +9,9 @@ DEBUG = True
 # where this file resides
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Default database option
+DEFAULT_DB_OPTION = 'bc'
+
 def parent_dir(path):
     '''Return the parent of a directory.'''
     return os.path.abspath(os.path.join(path, os.pardir))

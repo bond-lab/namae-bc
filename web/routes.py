@@ -29,6 +29,13 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 
 threshold = 2
 
+# Database options
+db_options = [
+    {'display_name': 'Baby Calendar', 'table': 'namae', 'src': 'bc'},
+    {'display_name': 'Heisei', 'table': 'namae', 'src': 'hs'},
+    {'display_name': 'Combined', 'table': 'namae', 'src': 'hs+bc'}
+]
+
 ### [(feat1, feat2, name), ...
 features = [
     ('char1', '', '1st Char.'),
