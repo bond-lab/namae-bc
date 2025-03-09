@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Settings</h1>
+    <form method="post">
+        <div class="mb-3">
+            <label for="male_color" class="form-label">Select color for boys:</label>
+            <input type="color" id="male_color" name="male_color" value="{{ male_color }}" class="form-control form-control-color">
+        </div>
+        <div class="mb-3">
+            <label for="female_color" class="form-label">Select color for girls:</label>
+            <input type="color" id="female_color" name="female_color" value="{{ female_color }}" class="form-control form-control-color">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}
