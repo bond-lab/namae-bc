@@ -76,6 +76,8 @@ def home():
     page='index'
 
     return render_template(
+        "settings.html",
+        db_options=db_options,
         f"index.html",
         page=page,
         title='Namae',
