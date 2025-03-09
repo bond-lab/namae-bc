@@ -30,11 +30,11 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 threshold = 2
 
 # Database options
-db_options = [
-    {'display_name': 'Baby Calendar', 'table': 'namae', 'src': 'bc'},
-    {'display_name': 'Heisei', 'table': 'namae', 'src': 'hs'},
-    {'display_name': 'Combined', 'table': 'namae', 'src': 'hs+bc'}
-]
+db_options = {
+    'bc': ('namae', 'Baby Calendar'),
+    'hs': ('namae', 'Heisei'),
+    'hs+bc': ('namae', 'Combined')
+}
 
 ### [(feat1, feat2, name), ...
 features = [
@@ -76,7 +76,7 @@ def home():
     page='index'
 
     selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-    selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')
+    selected_db_display_name = db_options.get(selected_db_option, ('', 'Unknown'))[1]
 
     selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
     selected_db_display_name = next((option['display_name'] for option in db_options if option['src'] == selected_db_option), 'Unknown')

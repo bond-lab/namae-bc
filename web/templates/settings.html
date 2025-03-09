@@ -22,9 +22,9 @@
         <div class="mb-3">
             <label class="form-label">Select Database:</label>
             <select name="db_option" class="form-select">
-                {% for option in db_options %}
-                <option value="{{ option.src }}" {% if session.get('db_option', DEFAULT_DB_OPTION) == option.src %}selected{% endif %}>
-                    {{ option.display_name }}
+                {% for src, (table, display_name) in db_options.items() %}
+                <option value="{{ src }}" {% if session.get('db_option', DEFAULT_DB_OPTION) == src %}selected{% endif %}>
+                    {{ display_name }}
                 </option>
                 {% endfor %}
             </select>
