@@ -6,6 +6,7 @@ import sys, os
 db = "namae.db"
 
 scriptdir = os.path.dirname(sys.argv[0])
+excelfile = sys.argv[1]
 
 # make the database
 
@@ -20,8 +21,7 @@ conn.commit()
 
 for (sheet, gender) in [(0, 'M'), (1, 'F')]:
 
-    excel_data = pd.read_excel(os.path.join(scriptdir,
-                                            "../data/jmena 2008-2022.xlsx"),
+    excel_data = pd.read_excel(excelfile,
                                sheet_name=sheet,
                                dtype='str',
                                header=None)

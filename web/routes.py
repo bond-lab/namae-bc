@@ -1,6 +1,6 @@
 """Route declaration."""
 from flask import current_app as app
-from flask import render_template, request, session, make_response
+from flask import render_template, request, session, make_response, redirect, url_for
 
 import toml
 import pathlib
@@ -91,6 +91,27 @@ def docs():
         overall=overall,
         phenomena=phenomena
     )
+
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    """Settings page to select color palette"""
+
+    if request.method == "POST":
+        color_palette = request.form.get('color_palette', 'purple_orange')
+        if color_palette == 'red_blue':
+            session['male_color'] = 'blue'
+            session['female_color'] = 'red'
+        else:
+            session['male_color'] = 'orange'
+            session['female_color'] = 'purple'
+        return redirect(url_for('home'))
+
+    return render_template(
+        "settings.html",
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
+    )
+
 
 @app.route("/namae")
 def namae():
