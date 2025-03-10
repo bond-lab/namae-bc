@@ -44,3 +44,40 @@ CREATE TABLE kanji (kid  INTEGER primary key,
        other TEXT,
        nanori TEXT,
        scount INTEGER);
+
+
+
+-- Create a view that combines names from Heisei and Baby Calendar
+-- with Baby Calendar names aggregated to either 2012 or 2019
+CREATE VIEW combined_names AS
+
+-- Names from Heisei (hs) - include all as they are
+SELECT 
+    nid,
+    year,
+    orth,
+    pron,
+    gender,
+    'hs+bc' AS source
+FROM 
+    namae
+WHERE 
+    src = 'hs'
+
+UNION ALL
+
+-- Names from Baby Calendar (bc) - aggregate by year
+SELECT 
+    nid,
+    CASE 
+        WHEN year < 2015 THEN 2012
+        ELSE 2019
+    END AS year,
+    orth,
+    pron,
+    gender,
+    'hs+bc' AS source
+FROM 
+    namae
+WHERE 
+    src = 'bc';
