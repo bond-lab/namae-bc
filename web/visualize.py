@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 
-def create_gender_plot(years, male_counts, female_counts):
+def create_gender_plot(years, male_counts, female_counts, db_name):
     # Create the figure and axis
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
 
     # Retrieve colors from session or use default values
     female_color = session.get('female_color', 'purple')
@@ -18,7 +18,7 @@ def create_gender_plot(years, male_counts, female_counts):
     # Add numbers on top of each bar for both men and women
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
         ax.text(years[i], female - 72, str(female),
-                ha='center', va='bottom', fontsize=10, color='white')
+                ha='center', va='bottom', fontsize=10,color='white')
         ax.text(years[i], - male + 24, str(male),
                 ha='center', va='bottom', fontsize=10, color='white')
 
@@ -34,7 +34,8 @@ def create_gender_plot(years, male_counts, female_counts):
     # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
     ax.set_ylabel('Number of Names', fontsize=12)
-    ax.set_title('Number of Names per Year, Divided by Gender', fontsize=14, weight='bold')
+    ax.set_title(f'Number of Names per Year, Divided by Gender ({db_name})',
+                 fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling
     ax.legend(frameon=False)

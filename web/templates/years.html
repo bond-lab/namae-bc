@@ -11,7 +11,10 @@
 <div class="container">
   <h1>Data by Year</h1>
 
-  <h2>Number of Names per Year</a>
+
+   <img src="{{ url_for('years_png') }}" alt="Names per Year">
+
+   <h2>Table: Number of Names per Year ({{db_name}})</a>
 
 <table class="table table-md table-hover w-auto">
   <thead>
@@ -35,8 +38,6 @@
   
 </table>
 
-   <h1>Number of Names per Year, Divided by Gender</h1>
-    <img src="{{ url_for('years_png') }}" alt="Names per Year">
 
 </div>
 

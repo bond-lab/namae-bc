@@ -47,9 +47,12 @@ def get_name(conn):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
-def get_name_year(conn):
+def get_name_year(conn,
+                  table='namae', src='bc'):
     c = conn.cursor()
-    c.execute("""select orth, pron, gender, year from namae order by year""")
+    c.execute(f"""SELECT orth, pron, gender, year
+    FROM {table}
+    WHERE src = ? ORDER BY year""", (src,))
     byyear =  dd(lambda:  dd(list))
     for (orth, pron, gender, year) in c:
         byyear[year][gender].append((orth, pron))
@@ -207,7 +210,9 @@ def get_redup(conn):
     c.execute("""
     SELECT orth, pron, count(pron) as freq, gender 
 FROM namae 
-WHERE  (LENGTH(pron) % 2 = 0 
+WHERE src = 'bc'
+AND LENGTH(pron) > 1
+AND (LENGTH(pron) % 2 = 0 
 AND SUBSTR(pron, 1, LENGTH(pron) / 2) = SUBSTR(pron, LENGTH(pron) / 2 + 1)) 
 GROUP BY pron, orth, gender
 ORDER BY pron, freq DESC, orth""")

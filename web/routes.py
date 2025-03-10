@@ -261,7 +261,14 @@ def feature():
 @app.route('/years.png')
 def years_png():
     conn = get_db(current_directory, "namae.db")
-    names = get_name_year(conn)
+
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+
+    db_name = db_options[selected_db_option][1]
+  
+    names = get_name_year(conn,
+                          table = db_options[selected_db_option][0],
+                          src = selected_db_option)
     years = []
     male_counts = []
     female_counts = []
@@ -274,7 +281,7 @@ def years_png():
     print(male_counts)
         
     # Create the plot using the function
-    buf = create_gender_plot(years, male_counts, female_counts)
+    buf = create_gender_plot(years, male_counts, female_counts, db_name)
 
     return make_response(buf.getvalue(), 200, {'Content-Type': 'image/png'})
 
@@ -321,12 +328,16 @@ def redup():
         stats[t]['T'] = sum(data[t][x]['freq'] for x in data[t])
         stats[t]['M'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'M')
         stats[t]['F'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'F')
+
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    db_name = db_options[selected_db_option][1]
     
     
     return render_template(
         f"phenomena/redup.html",
         data=data,
         title='Reduplication in Names',
+        db_name = db_name,
         features=features,
         overall=overall,
         phenomena=phenomena,

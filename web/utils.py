@@ -116,7 +116,6 @@ _BOUIN = {"あ":_A_COLUMN,
 def whichScript (name):
     """
     is the entire name katakana
-
     >>> whichScript("カタ・カナー")
     'kata'
     >>> whichScript ("こんにちは")
