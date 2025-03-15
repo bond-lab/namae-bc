@@ -34,7 +34,7 @@ threshold = 2
 db_options = {
     'bc': ('namae', 'Baby Calendar'),
     'hs': ('namae', 'Heisei'),
-    'hs+bc': ('namae', 'Combined')
+    'hs+bc': ('combined', 'Combined')
 }
 
 ### [(feat1, feat2, name), ...
