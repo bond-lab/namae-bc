@@ -37,23 +37,23 @@ db_options = {
     'hs+bc': ('combined', 'Combined')
 }
 
-### [(feat1, feat2, name), ...
+### [(feat1, feat2, name, (possible combinations)), ...
 features = [
-    ('char1', '', '1st Char.'),
-    ('char_1', '', 'Last Char.'),
-    ('char_2', 'char_1', 'Last 2 Chars'),
-    ('mora1', '', '1st Mora'),
-    ('mora_1', '', 'Last Mora'),
-    ('mora_2', 'mora_1', 'Last 2. Moras'),
-    ('char_1', 'mora_1', 'Last Char. +  Mora'),
-    ('char1', 'mora1', 'First Char. +  Mora'),
-    ('syll1', '', '1st Syllable'),
-    ('syll_1', '', 'Last Syllable'),
-    ('syll_2', 'syll_1', 'Last 2. Syllables'),
-    ('char_1', 'syll_1', 'Last Char. +  Syllable'),
-    ('char1', 'syll1', 'First Char. +  Syllable'),
-    ('uni_ch', '', '1 Char. Name'),
-    ('kanji', '', 'Kanji'),
+    ('char1', '', '1st Char.', ('bc','hs' 'hs+bc')),
+    ('char_1', '', 'Last Char.', ('bc','hs' 'hs+bc')),
+    ('char_2', 'char_1', 'Last 2 Chars', ('bc','hs' 'hs+bc')),
+    ('mora1', '', '1st Mora', ('bc')),
+    ('mora_1', '', 'Last Mora', ('bc')),
+    ('mora_2', 'mora_1', 'Last 2. Moras', ('bc')),
+    ('char_1', 'mora_1', 'Last Char. +  Mora', ('bc')),
+    ('char1', 'mora1', 'First Char. +  Mora', ('bc')),
+    ('syll1', '', '1st Syllable', ('bc')),
+    ('syll_1', '', 'Last Syllable', ('bc')),
+    ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc')),
+    ('char_1', 'syll_1', 'Last Char. +  Syllable', ('bc')),
+    ('char1', 'syll1', 'First Char. +  Syllable', ('bc')),
+    ('uni_ch', '', '1 Char. Name', ('bc','hs' 'hs+bc')),
+    ('kanji', '', 'Kanji', ('bc','hs' 'hs+bc')),
 ]
 overall = [
     ('script', '', 'Script'),
@@ -213,7 +213,7 @@ def stats():
     stats = get_stats(conn)
                      
     feat_stats = list()
-    for (feat1, feat2, name) in features:
+    for (feat1, feat2, name, possible) in features:
          data, tests, summ = get_feature(conn, feat1, feat2, threshold,
                                          short=True) 
          feat_stats.append((name, len(data), summ))
@@ -242,8 +242,12 @@ def feature():
     name   = request.args.get('nm',type=str , default='')
     desc   = request.args.get('dc',type=str , default='')
 
+    selected_db = session.get('db_option', DEFAULT_DB_OPTION)
+    (table, selection) = db_options[selected_db]
+
     conn = get_db(current_directory, "namae.db")
-    data, tests, summ = get_feature(conn, feat1, feat2, threshold)
+    data, tests, summ = get_feature(conn, feat1, feat2, threshold,
+                                    table=table, src=selected_db)
     
     return render_template(
         f"feature.html",
@@ -252,6 +256,8 @@ def feature():
         summ=summ,
         threshold=threshold,
         title=name,
+        db_name=selection,
+        db_src = selected_db,
         features=features,
         overall=overall,
         phenomena=phenomena
@@ -262,13 +268,13 @@ def feature():
 def years_png():
     conn = get_db(current_directory, "namae.db")
 
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    selected_db = session.get('db_option', DEFAULT_DB_OPTION)
 
-    db_name = db_options[selected_db_option][1]
+    (table, selection) = db_options[selected_db]
   
     names = get_name_year(conn,
-                          table = db_options[selected_db_option][0],
-                          src = selected_db_option)
+                          table = table,
+                          src = selected_db)
     years = []
     male_counts = []
     female_counts = []
@@ -281,7 +287,7 @@ def years_png():
     print(male_counts)
         
     # Create the plot using the function
-    buf = create_gender_plot(years, male_counts, female_counts, db_name)
+    buf = create_gender_plot(years, male_counts, female_counts, selection)
 
     return make_response(buf.getvalue(), 200, {'Content-Type': 'image/png'})
 
