@@ -27,8 +27,13 @@
           </a>
 	  <ul class="dropdown-menu" aria-labelledby="navbarFeatures">
 	    {% for (feat1, feat2, name, possible) in features %}
-	    <li><a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}"
-		   class="dropdown-item">{{name}}</a></li>
+	    <li>
+	        {% if db_src in possible %}
+	        <a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}" class="dropdown-item">{{name}}</a>
+	        {% else %}
+	        <span class="dropdown-item text-muted">{{name}}</span>
+	        {% endif %}
+	    </li>
 	    {% endfor %}
 	     </ul></li>
 	      <!-- Overall -->
