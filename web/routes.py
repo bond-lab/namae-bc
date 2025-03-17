@@ -8,7 +8,6 @@ import pathlib
 import sqlite3, os
 from collections import defaultdict as dd
 
-
 from web.db import get_db, get_name, get_name_year, get_stats, get_feature, \
                 get_redup
 from web.visualize import create_gender_plot
@@ -21,12 +20,6 @@ def get_db_connection(root, db):
     return conn
 
 current_directory = os.path.abspath(os.path.dirname(__file__))
-
-
-
-#session['grm']=None
-#'db/ERG_(2020).db'
-#grm='db/Portuguese_(2022-08-10).db'
 
 threshold = 2
 
@@ -52,9 +45,10 @@ features = [
     ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc')),
     ('char_1', 'syll_1', 'Last Char. +  Syllable', ('bc')),
     ('char1', 'syll1', 'First Char. +  Syllable', ('bc')),
-    ('uni_ch', '', '1 Char. Name', ('bc','hs' 'hs+bc')),
-    ('kanji', '', 'Kanji', ('bc','hs' 'hs+bc')),
+    ('uni_ch', '', '1 Char. Name', ('bc', 'hs', 'hs+bc')),
+    ('kanji', '', 'Kanji', ('bc', 'hs', 'hs+bc')),
 ]
+
 overall = [
     ('script', '', 'Script'),
     ('olength', '', 'Length Char.'),
@@ -62,54 +56,50 @@ overall = [
     ('slength', '', 'Length Syllables'),
 ]
 
-
 phenomena = [
     ('redup', '', 'Reduplication'),
     ('jinmei', '', 'Kanji for names')
-    ]
+]
 
+def get_db_settings():
+    """Get database settings from session."""
+    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    return {
+        'db_src': selected_db_option,
+        'db_table': db_options[selected_db_option][0],
+        'db_name': db_options[selected_db_option][1],
+    }
 
+@app.context_processor
+def inject_common_variables():
+    """Inject common variables into all templates."""
+    return {
+        **get_db_settings(),
+        'features': features,
+        'overall': overall,
+        'phenomena': phenomena,
+        'page': request.endpoint
+    }
 
 @app.route("/", methods=["GET", "POST"])
 def home():
     """show the home page"""
-
-    page='index'
-
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-
-
     return render_template(
         "index.html",
-        db_src = selected_db_option,
-        db_table = db_options[selected_db_option][0],
-        db_name = db_options[selected_db_option][1],
-        page=page,
         title='Namae',
-        features=features,
-        overall=overall,
-        phenomena=phenomena
     )
 
 @app.route("/docs", methods=["GET", "POST"])
 def docs():
     """show documentation"""
-
-    page='overview'
-
     return render_template(
         f"docs/overview.html",
-        page=page,
         title='Overview',
-        features=features,
-        overall=overall,
-        phenomena=phenomena
     )
 
 @app.route("/settings", methods=["GET", "POST"])
 def settings():
     """Settings page to select color palette"""
-
     if request.method == "POST":
         color_palette = request.form.get('color_palette', 'purple_orange')
         if color_palette == 'red_blue':
@@ -119,7 +109,6 @@ def settings():
             session['male_color'] = 'orange'
             session['female_color'] = 'purple'
         db_option = request.form.get('db_option', DEFAULT_DB_OPTION)
-        session['db_option'] = db_option
         session['db_option'] = db_option
         return redirect(url_for('home'))
 
@@ -131,17 +120,16 @@ def settings():
         female_color=session.get('female_color', 'purple')
     )
 
-
 @app.route("/namae")
 def namae():
     """
     Show a name
     """
-    orth  = request.args.get('orth', type=str ,default='')
-    pron  = request.args.get('pron',type=str , default='')
+    orth = request.args.get('orth', type=str, default='')
+    pron = request.args.get('pron', type=str, default='')
     conn = get_db(current_directory, "namae.db")
     mfname, kindex, hindex = get_name(conn)
-    mora=mora_hiragana(pron)
+    mora = mora_hiragana(pron)
     
     if pron and orth:
         return render_template(
@@ -154,9 +142,6 @@ def namae():
             mfname=mfname,
             kindex=kindex,
             hindex=hindex,
-            features=features,
-            overall=overall,
-            phenomena=phenomena
         )
     elif pron:
         return render_template(
@@ -171,7 +156,7 @@ def namae():
     else:
         return render_template(
             f"namae-nasi.html",
-            )
+        )
     
 @app.route("/names.html")
 def names():
@@ -182,25 +167,20 @@ def names():
     freq
     mratio
     """
-    
     conn = get_db(current_directory, "namae.db")
     mfname, kindex, hindex = get_name(conn)
 
     data = list()
 
-    for k,h in mfname:
+    for k, h in mfname:
         data.append((k, h,
                      len(mfname[(k,h)]['M']) + len(mfname[(k,h)]['F']),
-                     len(mfname[(k,h)]['F'])/ \
+                     len(mfname[(k,h)]['F']) / 
                      (len(mfname[(k,h)]['M']) + len(mfname[(k,h)]['F']))))
                     
-        
     return render_template(
         f"names.html",
         data=data,
-        features=features,
-        overall=overall,
-        phenomena=phenomena
     )
 
 @app.route("/stats.html")
@@ -208,28 +188,19 @@ def stats():
     """
     show some statistics
     """
-    
     conn = get_db(current_directory, "namae.db")
-    stats = get_stats(conn)
+    stats_data = get_stats(conn)
                      
     feat_stats = list()
     for (feat1, feat2, name, possible) in features:
          data, tests, summ = get_feature(conn, feat1, feat2, threshold,
                                          short=True) 
          feat_stats.append((name, len(data), summ))
-                            # summ['allm'], summ['allf'],
-                            # summ['chi2'],
-                            # summ['pval'],
-                            # summ['phi'] ))
-                              
-    
+                            
     return render_template(
         f"stats.html",
-        stats=stats,
-        fstats = feat_stats,
-        features=features,
-        overall=overall,
-        phenomena=phenomena
+        stats=stats_data,
+        fstats=feat_stats,
     )
 
 @app.route("/features.html")
@@ -237,17 +208,17 @@ def feature():
     """
     show the distribution of the given feauture(s)
     """
-    feat1  = request.args.get('f1', type=str ,default='')
-    feat2  = request.args.get('f2',type=str , default='')
-    name   = request.args.get('nm',type=str , default='')
-    desc   = request.args.get('dc',type=str , default='')
+    feat1 = request.args.get('f1', type=str, default='')
+    feat2 = request.args.get('f2', type=str, default='')
+    name = request.args.get('nm', type=str, default='')
+    desc = request.args.get('dc', type=str, default='')
 
-    selected_db = session.get('db_option', DEFAULT_DB_OPTION)
-    (table, selection) = db_options[selected_db]
-
+    db_settings = get_db_settings()
+    
     conn = get_db(current_directory, "namae.db")
     data, tests, summ = get_feature(conn, feat1, feat2, threshold,
-                                    table=table, src=selected_db)
+                                    table=db_settings['db_table'], 
+                                    src=db_settings['db_src'])
     
     return render_template(
         f"feature.html",
@@ -256,25 +227,16 @@ def feature():
         summ=summ,
         threshold=threshold,
         title=name,
-        db_name=selection,
-        db_src = selected_db,
-        features=features,
-        overall=overall,
-        phenomena=phenomena
     )
-
 
 @app.route('/years.png')
 def years_png():
     conn = get_db(current_directory, "namae.db")
-
-    selected_db = session.get('db_option', DEFAULT_DB_OPTION)
-
-    (table, selection) = db_options[selected_db]
+    db_settings = get_db_settings()
   
     names = get_name_year(conn,
-                          table = table,
-                          src = selected_db)
+                          table=db_settings['db_table'],
+                          src=db_settings['db_src'])
     years = []
     male_counts = []
     female_counts = []
@@ -287,45 +249,33 @@ def years_png():
     print(male_counts)
         
     # Create the plot using the function
-    buf = create_gender_plot(years, male_counts, female_counts, selection)
+    buf = create_gender_plot(years, male_counts, female_counts, db_settings['db_name'])
 
     return make_response(buf.getvalue(), 200, {'Content-Type': 'image/png'})
-
-
 
 @app.route("/years.html")
 def years():
     """
     show the distribution of the given feature(s) per year
     """
-    
     conn = get_db(current_directory, "namae.db")
-
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-
-    db_name = db_options[selected_db_option][1]
+    db_settings = get_db_settings()
     
     names = get_name_year(conn,
-                          table = db_options[selected_db_option][0],
-                          src = selected_db_option)
+                          table=db_settings['db_table'],
+                          src=db_settings['db_src'])
     
     return render_template(
         f"years.html",
         names=names,
-        title=f'Data per year ({db_name})',
-        db_name = db_name, 
-        features=features,
-        overall=overall,
-        phenomena=phenomena
+        title=f'Data per year ({db_settings["db_name"]})',
     )
-
 
 @app.route("/phenomena/redup.html")
 def redup():
     """
     show examples of reduplication
     """
-    
     conn = get_db(current_directory, "namae.db")
     data = get_redup(conn)
 
@@ -334,34 +284,21 @@ def redup():
         stats[t]['T'] = sum(data[t][x]['freq'] for x in data[t])
         stats[t]['M'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'M')
         stats[t]['F'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'F')
-
-    selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
-    db_name = db_options[selected_db_option][1]
-    
     
     return render_template(
         f"phenomena/redup.html",
         data=data,
         title='Reduplication in Names',
-        db_name = db_name,
-        features=features,
-        overall=overall,
-        phenomena=phenomena,
         stats=stats
     )
+
 @app.route("/phenomena/jinmeiyou.html")
 def jinmei():
     """
     show change of jinmeiyou kanji
     """
-    
-   ### graph made by jinmei.py
-    
+    ### graph made by jinmei.py
     return render_template(
         f"phenomena/jinmeiyou.html",
         title='Kanji Allowed for Names',
-        features=features,
-        overall=overall,
-        phenomena=phenomena,
-
     )

@@ -11,9 +11,9 @@
 <div class="container">
   <h1>{{title}}</h1>
   <div>
-    <p>There are {{data|length}} different features with more than
-      {{threshold}} example(s).
-      This gives {{"{:,d}".format(summ['allm'])}} male names
+    <p>There are {{"{:,d}".format(data|length)}} different features with more than
+      {{threshold}} example(s) from the {{db_name}} database.
+      These come from {{"{:,d}".format(summ['allm'])}} male names
       and {{"{:,d}".format(summ['allf'])}}
       female names ({{"{:,d}".format(summ['allt'])}} together).
 

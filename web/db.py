@@ -97,7 +97,9 @@ def get_stats(conn):
 
     return stats
 
-def get_feature(conn, feat1, feat2, threshold, short=False):
+def get_feature(conn, feat1, feat2, threshold,
+                table='namae', src='bc',
+                short=False):
 
     c = conn.cursor()
 
@@ -110,8 +112,9 @@ def get_feature(conn, feat1, feat2, threshold, short=False):
     if feat1 == 'kanji':
        c.execute(f"""select kanji, gender, count(*) as cnt 
        from kanji left join ntok on kanji.kid = ntok.kid 
-       left join namae on ntok.nid = namae.nid 
-       group by kanji, gender""")
+       left join {table} on ntok.nid = {table}.nid
+       where src = ?
+       group by kanji, gender""", (src,))
 
        for ft, gender, count in c:
            ddata[ft][gender] =  int(count)
@@ -121,36 +124,40 @@ def get_feature(conn, feat1, feat2, threshold, short=False):
         #assert feat1 in ['char1'] 
         c.execute(f"""
         SELECT {feat1}, gender, count(*) as cnt 
-        FROM attr left join namae on attr.nid=namae.nid 
+        FROM attr left join {table} on attr.nid={table}.nid 
         WHERE {feat1} IS NOT NULL
-        GROUP BY {feat1}, gender""")
+        AND src = ?
+        GROUP BY {feat1}, gender""", (src,))
         
         for ft, gender, count in c:
             ddata[ft][gender] =  int(count)
             
         if not short:
             c.execute(f"""select {feat1}, orth, pron, count({feat1}) 
-            from namae left join attr on namae.nid = attr.nid 
+            from {table} left join attr on {table}.nid = attr.nid
+            WHERE src = ?
             group by {feat1}, orth, pron 
-            order by {feat1}, count ({feat1}) DESC""")
+            order by {feat1}, count ({feat1}) DESC""", (src,))
         for ft, orth, pron, freq in c:
             examples[ft].append((orth, pron))
 
     else:  # two features
         c.execute(f"""
         SELECT {feat1}, {feat2}, gender, count(*) as cnt 
-        FROM attr left join namae on attr.nid=namae.nid
+        FROM attr left join {table} on attr.nid={table}.nid
         WHERE {feat1} is not Null AND {feat2} is not Null
-        GROUP BY {feat1}, {feat2}, gender""")
+        AND src = ?
+        GROUP BY {feat1}, {feat2}, gender""", (src,))
         for ft1, ft2, gender, count in c:
             ddata[f"{ft1}, {ft2}"][gender] =  int(count)
             
         if not short:
             c.execute(f"""
 SELECT {feat1}, {feat2}, orth, pron, count({feat1}) 
-FROM namae left join attr on namae.nid = attr.nid 
+FROM {table} left join attr on {table}.nid = attr.nid
+WHERE src = ?
 GROUP BY {feat1}, {feat2}, orth, pron 
-ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""")
+ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""", (src,))
             for ft1, ft2, orth, pron, freq in c:
                 examples[f"{ft1}, {ft2}"].append((orth, pron))
 
