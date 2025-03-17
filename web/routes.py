@@ -39,9 +39,9 @@ db_options = {
 
 ### [(feat1, feat2, name, (possible combinations)), ...
 features = [
-    ('char1', '', '1st Char.', ('bc','hs' 'hs+bc')),
-    ('char_1', '', 'Last Char.', ('bc','hs' 'hs+bc')),
-    ('char_2', 'char_1', 'Last 2 Chars', ('bc','hs' 'hs+bc')),
+    ('char1', '', '1st Char.', ('bc', 'hs', 'hs+bc')),
+    ('char_1', '', 'Last Char.', ('bc', 'hs', 'hs+bc')),
+    ('char_2', 'char_1', 'Last 2 Chars', ('bc', 'hs', 'hs+bc')),
     ('mora1', '', '1st Mora', ('bc')),
     ('mora_1', '', 'Last Mora', ('bc')),
     ('mora_2', 'mora_1', 'Last 2. Moras', ('bc')),
