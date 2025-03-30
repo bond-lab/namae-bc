@@ -53,7 +53,7 @@
             Phenomena
           </a>
 	  <ul class="dropdown-menu" aria-labelledby="navbarPhenomena">
-	    {% for (feat1, feat2, name) in phenomena %}
+	    {% for (feat1, feat2, name) in phenomena + [('diversity', '', 'Diversity Measures')] %}
 	    <li><a href="{{ url_for(feat1) }}"
 		   class="dropdown-item">{{name}}</a></li>
 	    {% endfor %}
