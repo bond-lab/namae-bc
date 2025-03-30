@@ -24,12 +24,6 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 
 threshold = 2
 
-# Database options
-db_options = {
-    'bc': ('namae', 'Baby Calendar'),
-    'hs': ('namae', 'Heisei'),
-    'hs+bc': ('combined', 'Combined')
-}
 
 ### [(feat1, feat2, name, (possible combinations)), ...
 features = [
