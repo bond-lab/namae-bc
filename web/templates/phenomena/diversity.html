@@ -20,7 +20,7 @@
                 <thead>
                     <tr>
                         <th>Year</th>
-                        {% set first_year_key, first_year_data = data.metrics | first %}
+                        {% set first_year_key, first_year_data = data.metrics.items() | first %}
                         {% for metric in first_year_data.keys() %}
                             <th>{{ metric }}</th>
                         {% endfor %}
