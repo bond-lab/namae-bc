@@ -33,7 +33,7 @@
                         <tr>
                             <td>{{ year }}</td>
                             {% for metric in first_year_data.keys() %}
-                                <td>{{ year_data[metric]}}</td>
+                                <td>{{ year_data[metric] | round(precision) }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
