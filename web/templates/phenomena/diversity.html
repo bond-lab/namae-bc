@@ -16,6 +16,7 @@
         <h2 id="{{ key }}">{{ key.replace('_', ' ').title() }}</h2>
         <div>
             <h3>Yearly Metrics</h3>
+            {% set precision = 3 %}
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -31,7 +32,7 @@
                         <tr>
                             <td>{{ year }}</td>
                             {% for metric in first_year_data.keys() %}
-                                <td>{{ year_data[metric] }}</td>
+                                <td>{{ ('%.' ~ precision ~ 'f') | format(year_data[metric]) }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
