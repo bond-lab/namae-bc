@@ -8,7 +8,11 @@ import pandas as pd # for table
 
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
-from db import get_db, get_name_year
+from db import get_name_year
+
+def get_db_connection(db_path):
+    """Establish a direct connection to the SQLite database."""
+    return sqlite3.connect(db_path)
 
 # Define colors for flexibility
 BOYS_COLOR = "blue"
@@ -171,7 +175,7 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
-conn = get_db(current_directory, "namae.db")
+conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 names = get_name_year(conn)
 
 
