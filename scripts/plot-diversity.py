@@ -7,17 +7,10 @@ from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
 import pandas as pd # for table
 
-import argparse
 import json
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
 from db import get_name_year
-
-def parse_arguments():
-    parser = argparse.ArgumentParser(description="Calculate and plot diversity measures.")
-    parser.add_argument('--corpus', choices=['bc', 'hs', 'hs+bc'], required=True, help="Corpus to analyze")
-    parser.add_argument('--type', choices=['orth', 'pron', 'both'], default='both', help="Type of data to analyze (only applicable for 'bc')")
-    return parser.parse_args()
 
 def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
@@ -129,175 +122,74 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
-# Parse command-line arguments
-args = parse_arguments()
+# Connect to the database and fetch data
+current_directory = os.path.abspath(os.path.dirname(__file__))
+conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 
-# Specify the table and source for fetching data
-table = 'namae'
-src = args.corpus
+# Define the options for corpus and type
+db_options = ['bc', 'hs', 'hs+bc']
+types = ['orth', 'pron', 'both']
 
-# Adjust type for 'bc' corpus
-if src == 'bc' and args.type != 'both':
-    # Filter data based on type
-    # Implement filtering logic here if needed
-    pass
+for src in db_options:
+    for data_type in types:
+        if src in ['hs', 'hs+bc'] and data_type != 'orth':
+            print(f"Skipping invalid combination: {src} with {data_type}")
+            continue
 
-byyear = get_name_year(conn, table=table, src=src)
+        print(f"Processing {src} with {data_type}")
 
-# Transform the data structure to be by gender first
-names = {'M': dd(list), 'F': dd(list)}
-for year, genders in byyear.items():
-    for gender, name_list in genders.items():
-        names[gender][year] = name_list
+        byyear = get_name_year(conn, table='namae', src=src, data_type=data_type)
 
-# Debugging output to check the structure of names data
-print("Fetched names data structure:", names)
-if not names:
-    raise ValueError("No data fetched from the database. Please check the database connection and data.")
+        # Transform the data structure to be by gender first
+        names = {'M': dd(list), 'F': dd(list)}
+        for year, genders in byyear.items():
+            for gender, name_list in genders.items():
+                names[gender][year] = name_list
 
+        # Debugging output to check the structure of names data
+        print("Fetched names data structure:", names)
+        if not names:
+            raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
-all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
-min_size = min(all_counts)
-print(f'Smallest sample is: {min_size}')
-sample_size = int(0.9 * min_size)
-print(f'Using sample size: {sample_size}')
-all_metrics = {'M': {}, 'F': {}}
-confidence_intervals  = {'M': dd(lambda: dd(list)),
-                         'F': dd(lambda: dd(list))}
+        all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
+        min_size = min(all_counts)
+        print(f'Smallest sample is: {min_size}')
+        sample_size = int(0.9 * min_size)
+        print(f'Using sample size: {sample_size}')
+        all_metrics = {'M': {}, 'F': {}}
+        confidence_intervals  = {'M': dd(lambda: dd(list)),
+                                 'F': dd(lambda: dd(list))}
 
-def check_convergence(diversity_values, threshold=0.001):
-    """Check if the diversity estimate has converged based on relative change in std error."""
-    if len(diversity_values) < 50:
-        return False
-    
-    half_len = len(diversity_values) // 2
-    std_err_half = np.std(diversity_values[:half_len]) / np.sqrt(half_len)
-    std_err_all = np.std(diversity_values) / np.sqrt(len(diversity_values))
-    
-    if std_err_half == 0:
-        return True
-    rel_change = abs(std_err_all - std_err_half) / std_err_half
-    
-    return rel_change < threshold
+        for gender in ['M', 'F']:
+            print(f"Analyzing diversity for gender: {gender}")
+            print(f"Names data for {gender}: {names[gender]}")
+            results, ci_lower, ci_upper, run_counts = analyze_diversity_with_adaptive_sampling(names[gender], sample_size)
+            for year in results['Shannon'].keys():  # Using Shannon as reference since all metrics will have the same years
+                all_metrics[gender][year] = {
+                    "Shannon": results['Shannon'][year],
+                    "Evenness": results['Evenness'][year],
+                    "Gini-Simpson": results['Gini-Simpson'][year],
+                    "Runs": run_counts[year]
+                }
+                for i in bpn:
+                    all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
+                confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
-bpn = [1, 5, 10, 50, 100]
-
-
-def analyze_diversity_with_adaptive_sampling(data, sample_size, 
-                                             max_runs=maxrun, min_runs=minrun):
-    results  = dd(lambda: dd(float))
-    ci_lower = dd(lambda: dd(float))
-    ci_upper = dd(lambda: dd(float))
-    actual_runs = {}
-    
-    for year, names in sorted(data.items()):
-        year_metrics = {
-            'Shannon': [],
-            'Evenness': [],
-            'Gini-Simpson': [],
+        print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
+        if all_metrics['M']:
+            plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness", "Gini-Simpson", "Berger-Parker (1)"],
+                                    "Diversity Measures", confidence_intervals=confidence_intervals)
+            plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
+                                                  "Berger-Parker (50)", "Berger-Parker (100)"],
+                                    "Berger-Parker Index at Different N Values")
+        # Save diversity metrics and plot paths to JSON
+        diversity_data = {
+            "metrics": all_metrics,
+            "plots": []  # Add plot paths if needed
         }
-        for i in bpn:
-            year_metrics[f'Berger-Parker ({i})'] = []
-            
-        converged = False
-        run_count = 0
-        
-        while not converged and run_count < max_runs:
-            if len(names) > sample_size:
-                sample = random.sample(names, sample_size)
-            else:
-                sample = names.copy()
-            
-            # Calculate all metrics for this sample
-            shannon = calculate_shannon_diversity(sample)
-            evenness = calculate_evenness(shannon, len(set(sample)))
-            gini_simpson = calculate_gini_simpson(sample)
-            bp = dict()
-            for i in bpn:
-                bp[i] = 1 - calculate_berger_parker(sample,
-                                                    top_n=i)
-                year_metrics[f'Berger-Parker ({i})'].append(bp[i])
-                
-            # Store metrics for this run
-            year_metrics['Shannon'].append(shannon)
-            year_metrics['Evenness'].append(evenness)
-            year_metrics['Gini-Simpson'].append(gini_simpson)
-            
-            run_count += 1
-            
-            if run_count >= min_runs:
-                # Check convergence based on Shannon diversity
-                converged = check_convergence(year_metrics['Shannon'])
-        
-        # Calculate statistics for each metric
-        for metric in year_metrics:
-            mean_value = np.mean(year_metrics[metric])
-            std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
-            
-            results[metric][year] = mean_value
-            ci_lower[metric][year] = mean_value - 1.96 * std_error
-            ci_upper[metric][year] = mean_value + 1.96 * std_error
-        
-        actual_runs[year] = run_count
-    
-    return results, ci_lower, ci_upper, actual_runs
 
-def export_metrics_table(all_metrics, format='markdown'):
-    """Export the computed diversity metrics as a table in Markdown, TSV, or HTML format."""
-    df_rows = []
-    for gender in ['M', 'F']:
-        for year, metrics in all_metrics[gender].items():
-            row = {"Year": year, "Gender": gender}
-            row.update(metrics)
-            df_rows.append(row)
-    
-    df = pd.DataFrame(df_rows)
-    
-    if format == 'markdown':
-        print(df.to_markdown(index=False))
-    elif format == 'tsv':
-        df.to_csv('diversity_metrics.tsv', sep='\t', index=False)
-        print("Saved as 'diversity_metrics.tsv'")
-    elif format == 'html':
-        df.to_html('diversity_metrics.html', index=False)
-        print("Saved as 'diversity_metrics.html'")
-    else:
-        raise ValueError("Unsupported format. Choose from 'markdown', 'tsv', or 'html'.")
+        output_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{data_type}.json")
+        with open(output_path, 'w') as f:
+            json.dump(diversity_data, f)
 
-
-for gender in ['M', 'F']:
-    print(f"Analyzing diversity for gender: {gender}")
-    print(f"Names data for {gender}: {names[gender]}")
-    results, ci_lower, ci_upper, run_counts = analyze_diversity_with_adaptive_sampling(names[gender], sample_size)
-    for year in results['Shannon'].keys():  # Using Shannon as reference since all metrics will have the same years
-        all_metrics[gender][year] = {
-            "Shannon": results['Shannon'][year],
-            "Evenness": results['Evenness'][year],
-            "Gini-Simpson": results['Gini-Simpson'][year],
-            "Runs": run_counts[year]
-        }
-        for i in bpn:
-            all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
-        confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
-
-
-
-        
-print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
-if all_metrics['M']:
-    plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness", "Gini-Simpson", "Berger-Parker (1)"],
-                            "Diversity Measures", confidence_intervals=confidence_intervals)
-    plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
-                                          "Berger-Parker (50)", "Berger-Parker (100)"],
-                            "Berger-Parker Index at Different N Values")
-# Save diversity metrics and plot paths to JSON
-diversity_data = {
-    "metrics": all_metrics,
-    "plots": []  # Add plot paths if needed
-}
-
-output_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{args.type}.json")
-with open(output_path, 'w') as f:
-    json.dump(diversity_data, f)
-
-print(f"Diversity data saved to {output_path}")
+        print(f"Diversity data saved to {output_path}")
