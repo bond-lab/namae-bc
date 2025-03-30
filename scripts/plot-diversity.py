@@ -202,7 +202,7 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 
 # Define the options for corpus and type
-db_options = ['bc', 'hs', 'hs+bc']
+# Use db_options from web.db
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
