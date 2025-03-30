@@ -15,21 +15,26 @@
     <div>
         <h2 id="{{ key }}">{{ key.replace('_', ' ').title() }}</h2>
         <div>
-            <h3>Metrics</h3>
+            <h3>Yearly Metrics</h3>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Metric</th>
-                        <th>Value</th>
+                        <th>Year</th>
+                        {% set first_year_key, first_year_data = data.metrics | first %}
+                        {% for metric in first_year_data.keys() %}
+                            <th>{{ metric }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                {% for metric_key, metric_value in data.metrics.items() %}
-                    <tr>
-                        <td>{{ metric_key }}</td>
-                        <td>{{ metric_value }}</td>
-                    </tr>
-                {% endfor %}
+                    {% for year, year_data in data.metrics.items() %}
+                        <tr>
+                            <td>{{ year }}</td>
+                            {% for metric in first_year_data.keys() %}
+                                <td>{{ year_data[metric] }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
