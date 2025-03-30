@@ -89,6 +89,21 @@ def home():
         title='Namae',
     )
 
+@app.route("/phenomena/diversity.html")
+def diversity():
+    """
+    Show diversity measures
+    """
+    with open(os.path.join(current_directory, "static/data/diversity_data.json")) as f:
+        diversity_data = json.load(f)
+
+    return render_template(
+        "phenomena/diversity.html",
+        title='Diversity Measures',
+        metrics=diversity_data["metrics"],
+        plots=diversity_data["plots"]
+    )
+
 @app.route("/docs", methods=["GET", "POST"])
 def docs():
     """show documentation"""
