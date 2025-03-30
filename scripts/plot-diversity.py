@@ -220,8 +220,6 @@ for src in db_options:
             for gender, name_list in genders.items():
                 names[gender][year] = name_list
 
-        # Debugging output to check the structure of names data
-        print("Fetched names data structure:", names)
         if not names:
             raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
