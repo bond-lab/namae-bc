@@ -95,7 +95,7 @@ def get_db_connection(db_path):
 BOYS_COLOR = "blue"
 GIRLS_COLOR = "red"
 
-minrun, maxrun = 10,100
+minrun, maxrun = 1,10
 
 def calculate_shannon_diversity(names):
     """Calculate Shannon's diversity index for a given list of names."""
@@ -196,10 +196,7 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
-conn = get_db_connection(os.path.join(current_directory, "namae.db"))
-# Connect to the database and fetch data
-current_directory = os.path.abspath(os.path.dirname(__file__))
-conn = get_db_connection(os.path.join(current_directory, "namae.db"))
+conn = get_db_connection(os.path.join(current_directory, "../web/db/namae.db"))
 
 # Define the options for corpus and type
 # Use db_options from web.db
