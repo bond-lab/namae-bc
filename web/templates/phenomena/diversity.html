@@ -17,6 +17,7 @@
         <div>
             <h3>Yearly Metrics</h3>
             {% set precision = 3 %}
+            <p>Measures rounded to {{precision}} decimal places.</p>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -32,7 +33,7 @@
                         <tr>
                             <td>{{ year }}</td>
                             {% for metric in first_year_data.keys() %}
-                                <td>{{ ('%.' ~ precision ~ 'f') | format(year_data[metric]) }}</td>
+                                <td>{{ year_data[metric] | round(precision) }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
