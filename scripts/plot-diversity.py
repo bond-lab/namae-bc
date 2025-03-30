@@ -311,10 +311,13 @@ for gender in ['M', 'F']:
 
         
 print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
-plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness", "Gini-Simpson", "Berger-Parker (1)"],
-                        "Diversity Measures", confidence_intervals=confidence_intervals)
-plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
-                                      "Berger-Parker (50)", "Berger-Parker (100)"],
-                        "Berger-Parker Index at Different N Values")
+if all_metrics['M']:
+    plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness", "Gini-Simpson", "Berger-Parker (1)"],
+                            "Diversity Measures", confidence_intervals=confidence_intervals)
+    plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
+                                          "Berger-Parker (50)", "Berger-Parker (100)"],
+                            "Berger-Parker Index at Different N Values")
+else:
+    print("No data available for plotting.")
 
 export_metrics_table(all_metrics, format='markdown')
