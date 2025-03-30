@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div>
+    <h2>Metrics</h2>
+    <pre>{{ metrics | tojson(indent=2) }}</pre>
+</div>
+
+<div>
+    <h2>Plots</h2>
+    {% for plot in plots %}
+        <img src="{{ url_for('static', filename=plot) }}" alt="Diversity Plot">
+    {% endfor %}
+</div>
+
+{% endblock %}
