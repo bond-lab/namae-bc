@@ -295,6 +295,8 @@ def export_metrics_table(all_metrics, format='markdown'):
 
 
 for gender in ['M', 'F']:
+    print(f"Analyzing diversity for gender: {gender}")
+    print(f"Names data for {gender}: {names[gender]}")
     results, ci_lower, ci_upper, run_counts = analyze_diversity_with_adaptive_sampling(names[gender], sample_size)
     for year in results['Shannon'].keys():  # Using Shannon as reference since all metrics will have the same years
         all_metrics[gender][year] = {
