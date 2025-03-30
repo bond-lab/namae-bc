@@ -9,6 +9,80 @@ import pandas as pd # for table
 
 import json
 import sys
+
+bpn = [1, 5, 10, 50, 100]
+
+def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, min_runs=10):
+    results  = dd(lambda: dd(float))
+    ci_lower = dd(lambda: dd(float))
+    ci_upper = dd(lambda: dd(float))
+    actual_runs = {}
+    
+    for year, names in sorted(data.items()):
+        year_metrics = {
+            'Shannon': [],
+            'Evenness': [],
+            'Gini-Simpson': [],
+        }
+        for i in bpn:
+            year_metrics[f'Berger-Parker ({i})'] = []
+            
+        converged = False
+        run_count = 0
+        
+        while not converged and run_count < max_runs:
+            if len(names) > sample_size:
+                sample = random.sample(names, sample_size)
+            else:
+                sample = names.copy()
+            
+            # Calculate all metrics for this sample
+            shannon = calculate_shannon_diversity(sample)
+            evenness = calculate_evenness(shannon, len(set(sample)))
+            gini_simpson = calculate_gini_simpson(sample)
+            bp = dict()
+            for i in bpn:
+                bp[i] = 1 - calculate_berger_parker(sample, top_n=i)
+                year_metrics[f'Berger-Parker ({i})'].append(bp[i])
+                
+            # Store metrics for this run
+            year_metrics['Shannon'].append(shannon)
+            year_metrics['Evenness'].append(evenness)
+            year_metrics['Gini-Simpson'].append(gini_simpson)
+            
+            run_count += 1
+            
+            if run_count >= min_runs:
+                # Check convergence based on Shannon diversity
+                converged = check_convergence(year_metrics['Shannon'])
+        
+        # Calculate statistics for each metric
+        for metric in year_metrics:
+            mean_value = np.mean(year_metrics[metric])
+            std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
+            
+            results[metric][year] = mean_value
+            ci_lower[metric][year] = mean_value - 1.96 * std_error
+            ci_upper[metric][year] = mean_value + 1.96 * std_error
+        
+        actual_runs[year] = run_count
+    
+    return results, ci_lower, ci_upper, actual_runs
+
+def check_convergence(diversity_values, threshold=0.001):
+    """Check if the diversity estimate has converged based on relative change in std error."""
+    if len(diversity_values) < 50:
+        return False
+    
+    half_len = len(diversity_values) // 2
+    std_err_half = np.std(diversity_values[:half_len]) / np.sqrt(half_len)
+    std_err_all = np.std(diversity_values) / np.sqrt(len(diversity_values))
+    
+    if std_err_half == 0:
+        return True
+    rel_change = abs(std_err_all - std_err_half) / std_err_half
+    
+    return rel_change < threshold
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
 from db import get_name_year
 
