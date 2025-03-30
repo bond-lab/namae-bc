@@ -7,9 +7,17 @@ from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
 import pandas as pd # for table
 
+import argparse
+import json
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
 from db import get_name_year
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Calculate and plot diversity measures.")
+    parser.add_argument('--corpus', choices=['bc', 'hs', 'hs+bc'], required=True, help="Corpus to analyze")
+    parser.add_argument('--type', choices=['orth', 'pron', 'both'], default='both', help="Type of data to analyze (only applicable for 'bc')")
+    return parser.parse_args()
 
 def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
@@ -121,9 +129,18 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
+# Parse command-line arguments
+args = parse_arguments()
+
 # Specify the table and source for fetching data
-table = 'namae'  # Adjust this if your table name is different
-src = 'bc'  # Adjust this if your source is different
+table = 'namae'
+src = args.corpus
+
+# Adjust type for 'bc' corpus
+if src == 'bc' and args.type != 'both':
+    # Filter data based on type
+    # Implement filtering logic here if needed
+    pass
 
 byyear = get_name_year(conn, table=table, src=src)
 
@@ -273,6 +290,14 @@ if all_metrics['M']:
     plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
                                           "Berger-Parker (50)", "Berger-Parker (100)"],
                             "Berger-Parker Index at Different N Values")
-print("All metrics data:", all_metrics)
+# Save diversity metrics and plot paths to JSON
+diversity_data = {
+    "metrics": all_metrics,
+    "plots": []  # Add plot paths if needed
+}
 
-export_metrics_table(all_metrics, format='markdown')
+output_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{args.type}.json")
+with open(output_path, 'w') as f:
+    json.dump(diversity_data, f)
+
+print(f"Diversity data saved to {output_path}")
