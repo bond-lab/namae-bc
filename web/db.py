@@ -48,14 +48,31 @@ def get_name(conn):
     return mfname, kindex, hindex
 
 def get_name_year(conn,
-                  table='namae', src='bc'):
+                  table='namae', src='bc', data_type='both'):
     c = conn.cursor()
-    c.execute(f"""SELECT orth, pron, gender, year
+
+    # Determine the columns to select based on data_type
+    if data_type == 'orth':
+        select_columns = "orth, gender, year"
+    elif data_type == 'pron':
+        select_columns = "pron, gender, year"
+    else:
+        select_columns = "orth, pron, gender, year"
+
+    c.execute(f"""SELECT {select_columns}
     FROM {table}
     WHERE src = ? ORDER BY year""", (src,))
     byyear =  dd(lambda:  dd(list))
-    for (orth, pron, gender, year) in c:
-        byyear[year][gender].append((orth, pron))
+    for row in c:
+        if data_type == 'orth':
+            orth, gender, year = row
+            byyear[year][gender].append((orth,))
+        elif data_type == 'pron':
+            pron, gender, year = row
+            byyear[year][gender].append((pron,))
+        else:
+            orth, pron, gender, year = row
+            byyear[year][gender].append((orth, pron))
     return byyear
 
 def get_stats(conn):
