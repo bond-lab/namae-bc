@@ -139,65 +139,9 @@ def calculate_berger_parker(names, top_n=1):
     return top_counts / total
 
 
-def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_intervals=None):
-    """
-    Plot multi-panel visualization of selected diversity measures over time.
-    
-    Parameters:
-    -----------
-    all_metrics : dict
-        Dictionary containing metrics data for both genders
-    selected_metrics : list
-        List of metrics to plot
-    title : str
-        Title for the plot
-    confidence_intervals : dict, optional
-        Dictionary containing confidence intervals for metrics.
-        Structure: {
-            'M': {year: {metric: (lower_bound, upper_bound)}},
-            'F': {year: {metric: (lower_bound, upper_bound)}}
-        }
-    """
-    years = sorted(all_metrics['M'].keys())
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    for idx, metric in enumerate(selected_metrics):
-        ax = axes[idx // 2, idx % 2]
-        
-        # Plot main lines
-        boys_values = [all_metrics['M'][y][metric] for y in years]
-        girls_values = [all_metrics['F'][y][metric] for y in years]
-        
-        ax.plot(years, boys_values, marker='o', linestyle='-', color=BOYS_COLOR, label='Boys')
-        ax.plot(years, girls_values, marker='s', linestyle='-', color=GIRLS_COLOR, label='Girls')
-        
-        # Add confidence intervals as lines if provided
-        if confidence_intervals is not None:
-            if 'M' in confidence_intervals and metric in confidence_intervals['M'].get(years[0], {}):
-                boys_lower = [confidence_intervals['M'][y][metric][0] for y in years]
-                boys_upper = [confidence_intervals['M'][y][metric][1] for y in years]
-                ax.plot(years, boys_lower, linestyle='--', color=BOYS_COLOR, alpha=0.7, linewidth=1)
-                ax.plot(years, boys_upper, linestyle='--', color=BOYS_COLOR, alpha=0.7, linewidth=1)
-            
-            if 'F' in confidence_intervals and metric in confidence_intervals['F'].get(years[0], {}):
-                girls_lower = [confidence_intervals['F'][y][metric][0] for y in years]
-                girls_upper = [confidence_intervals['F'][y][metric][1] for y in years]
-                ax.plot(years, girls_lower, linestyle='--', color=GIRLS_COLOR, alpha=0.7, linewidth=1)
-                ax.plot(years, girls_upper, linestyle='--', color=GIRLS_COLOR, alpha=0.7, linewidth=1)
-        
-        ax.set_title(metric)
-        ax.legend(frameon=False)
-        ax.grid(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-    
-    plt.tight_layout()
-    plt.suptitle(title)
-    plt.savefig(f'name_diversity_{title.replace(" ", "_").lower()}.png', dpi=300)
-    plt.show()
-    print(f"\nA multi-panel visualization of {title} trends has been saved.")
+from web.visualize import plot_multi_panel_trends
+
+# Remove the original plot_multi_panel_trends function from this file
     
 
 # Connect to the database and fetch data
