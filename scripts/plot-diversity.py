@@ -6,7 +6,9 @@ from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
 import pandas as pd # for table
 
-from heisei import load_heisei
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
+from db import get_db, get_name_year
 
 # Define colors for flexibility
 BOYS_COLOR = "blue"
@@ -167,7 +169,10 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
     print(f"\nA multi-panel visualization of {title} trends has been saved.")
     
 
-names, _deleted = load_heisei(bc='/home/bond/git/namae-bc/web/db/namae.db', aggregate=True)
+# Connect to the database and fetch data
+current_directory = os.path.abspath(os.path.dirname(__file__))
+conn = get_db(current_directory, "namae.db")
+names = get_name_year(conn)
 
 
 all_counts = [len(names[g][y]) for g in 'MF' for y in names[g].keys()]
