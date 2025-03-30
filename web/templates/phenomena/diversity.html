@@ -4,15 +4,44 @@
 <h1>{{ title }}</h1>
 
 <div>
+    <h2>Select Corpus and Type</h2>
+    <form method="get" action="{{ url_for('diversity') }}">
+        <label for="corpus">Corpus:</label>
+        <select name="corpus" id="corpus">
+            <option value="bc">Baby Calendar</option>
+            <option value="hs">Heisei</option>
+            <option value="hs+bc">Combined</option>
+        </select>
+
+        <label for="type">Type:</label>
+        <select name="type" id="type">
+            <option value="orth">Orthography</option>
+            <option value="pron">Pronunciation</option>
+            <option value="both">Both</option>
+        </select>
+
+        <button type="submit">Load Data</button>
+    </form>
+</div>
+
+<div>
     <h2>Metrics</h2>
-    <pre>{{ metrics | tojson(indent=2) }}</pre>
+    {% if metrics %}
+        <pre>{{ metrics | tojson(indent=2) }}</pre>
+    {% else %}
+        <p>No data available for the selected options.</p>
+    {% endif %}
 </div>
 
 <div>
     <h2>Plots</h2>
-    {% for plot in plots %}
-        <img src="{{ url_for('static', filename=plot) }}" alt="Diversity Plot">
-    {% endfor %}
+    {% if plots %}
+        {% for plot in plots %}
+            <img src="{{ url_for('static', filename=plot) }}" alt="Diversity Plot">
+        {% endfor %}
+    {% else %}
+        <p>No plots available for the selected options.</p>
+    {% endif %}
 </div>
 
 {% endblock %}
