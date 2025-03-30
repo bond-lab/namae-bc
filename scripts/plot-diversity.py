@@ -12,6 +12,12 @@ import sys
 
 bpn = [1, 5, 10, 50, 100]
 
+# Define paths for database and output directories
+current_directory = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(current_directory, "../web/db/namae.db")
+output_dir = os.path.join(current_directory, "../web/static/data")
+os.makedirs(output_dir, exist_ok=True)
+
 def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, min_runs=10):
     results  = dd(lambda: dd(float))
     ci_lower = dd(lambda: dd(float))
@@ -196,7 +202,7 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
-conn = get_db_connection(os.path.join(current_directory, "../web/db/namae.db"))
+conn = get_db_connection(db_path)
 
 # Define the options for corpus and type
 # Use db_options from web.db
@@ -258,8 +264,6 @@ for src in db_options:
             "plots": []  # Add plot paths if needed
         }
 
-        output_dir = os.path.join(current_directory, "static/data")
-        os.makedirs(output_dir, exist_ok=True)
         output_path = os.path.join(output_dir, f"diversity_data_{src}_{data_type}.json")
         with open(output_path, 'w') as f:
             json.dump(diversity_data, f)
