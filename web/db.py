@@ -3,6 +3,13 @@ from flask import current_app, g
 from collections import defaultdict as dd
 import numpy as np
 import scipy
+
+# Database options
+db_options = {
+    'bc': ('namae', 'Baby Calendar'),
+    'hs': ('namae', 'Heisei'),
+    'hs+bc': ('combined', 'Combined')
+}
 from scipy.stats import chi2_contingency, fisher_exact
 
 ### limit for most queries

@@ -85,7 +85,7 @@ def check_convergence(diversity_values, threshold=0.001):
     return rel_change < threshold
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from db import get_name_year
-from web.routes import db_options
+from web.db import db_options
 
 def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""

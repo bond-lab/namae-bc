@@ -9,7 +9,7 @@ import sqlite3, os
 from collections import defaultdict as dd
 
 from web.db import get_db, get_name, get_name_year, get_stats, get_feature, \
-                get_redup
+                get_redup, db_options
 from web.visualize import create_gender_plot
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
