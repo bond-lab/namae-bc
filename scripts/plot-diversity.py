@@ -185,7 +185,7 @@ if not names:
     raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
 
-all_counts = [len(names[g][y]) for g in 'MF' for y in names[g].keys()]
+all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
 min_size = min(all_counts)
 print(f'Smallest sample is: {min_size}')
 sample_size = int(0.9 * min_size)
