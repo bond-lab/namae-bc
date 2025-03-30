@@ -85,6 +85,7 @@ def check_convergence(diversity_values, threshold=0.001):
     return rel_change < threshold
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
 from db import get_name_year
+from web.routes import db_options
 
 def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
@@ -212,7 +213,8 @@ for src in db_options:
 
         print(f"Processing {src} with {data_type}")
 
-        byyear = get_name_year(conn, table='namae', src=src, data_type=data_type)
+        table_name = db_options[src][0]
+        byyear = get_name_year(conn, table=table_name, src=src, data_type=data_type)
 
         # Transform the data structure to be by gender first
         names = {'M': dd(list), 'F': dd(list)}
