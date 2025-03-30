@@ -4,8 +4,49 @@ import numpy as np
 import io
 
 def create_gender_plot(years, male_counts, female_counts, db_name):
-    # ... [existing code remains the same] ...
+    # Create the figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
 
+    # Retrieve colors from session or use default values
+    female_color = session.get('female_color', 'purple')
+    male_color = session.get('male_color', 'orange')
+
+    # Plot men and women counts
+    ax.bar(years, female_counts, color=female_color, label='Women', alpha=0.6)
+    ax.bar(years, [-x for x in male_counts], color=male_color, label='Men', alpha=0.6)
+
+    # Add numbers on top of each bar for both men and women
+    for i, (female, male) in enumerate(zip(female_counts, male_counts)):
+        ax.text(years[i], female - 72, str(female),
+                ha='center', va='bottom', fontsize=10, color='white')
+        ax.text(years[i], - male + 24, str(male),
+                ha='center', va='bottom', fontsize=10, color='white')
+
+    # Remove all spines and ticks for a minimalist look
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+
+    ax.set_yticks([])  # Remove y-axis numbers
+    ax.tick_params(left=False, bottom=False)
+
+    # Add labels and title with subtle text styling
+    ax.set_xlabel('Year', fontsize=12)
+    ax.set_ylabel('Number of Names', fontsize=12)
+    ax.set_title('Number of Names per Year, Divided by Gender', fontsize=14, weight='bold')
+
+    # Add a legend with minimalist styling
+    ax.legend(frameon=False)
+
+    # Save the plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    
+    return buf
+
+    
 def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_intervals=None):
     """
     Plot multi-panel visualization of selected diversity measures over time.

@@ -10,26 +10,30 @@
     {% endfor %}
     </ul>
 </div>
+{% set precision = 3 %}
+<p>Measures rounded to {{precision}} decimal places.</p>
 
-{% for key, data in diversity_data.metrics.items() %}
+
+{% for key, data in diversity_data.items() %}
     <div>
         <h2 id="{{ key }}">{{ key.replace('_', ' ').title() }}</h2>
         <div>
-            <h3>Yearly Metrics</h3>
-            {% set precision = 3 %}
-            <p>Measures rounded to {{precision}} decimal places.</p>
-            <table class="table table-striped">
+          <h3>Yearly Metrics</h3>
+	   {% for gender, yearly in data.metrics.items() %}
+	  
+          <table class="table table-striped">
+	    <caption>{{gender}}</caption>
                 <thead>
                     <tr>
                         <th>Year</th>
-                        {% set first_year_key, first_year_data = data.items() | first %}
+                        {% set first_year_key, first_year_data = yearly.items() | first %}
                         {% for metric in first_year_data.keys() %}
                             <th>{{ metric }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for year, year_data in data.metrics.items() %}
+                    {% for year, year_data in yearly.items() %}
                         <tr>
                             <td>{{ year }}</td>
                             {% for metric in first_year_data.keys() %}
@@ -38,8 +42,11 @@
                         </tr>
                     {% endfor %}
                 </tbody>
-            </table>
+          </table>
+	     {% endfor %}
         </div>
+
+
         <div>
             <h3>Plots</h3>
             {% for plot in data.plots %}
