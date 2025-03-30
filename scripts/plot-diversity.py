@@ -262,7 +262,9 @@ for src in db_options:
             "plots": []  # Add plot paths if needed
         }
 
-        output_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{data_type}.json")
+        output_dir = os.path.join(current_directory, "static/data")
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, f"diversity_data_{src}_{data_type}.json")
         with open(output_path, 'w') as f:
             json.dump(diversity_data, f)
 
