@@ -125,7 +125,13 @@ conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 table = 'namae'  # Adjust this if your table name is different
 src = 'bc'  # Adjust this if your source is different
 
-names = get_name_year(conn, table=table, src=src)
+byyear = get_name_year(conn, table=table, src=src)
+
+# Transform the data structure to be by gender first
+names = {'M': dd(list), 'F': dd(list)}
+for year, genders in byyear.items():
+    for gender, name_list in genders.items():
+        names[gender][year] = name_list
 
 # Debugging output to check the structure of names data
 print("Fetched names data structure:", names)
