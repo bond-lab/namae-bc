@@ -8,3 +8,4 @@ jamdict-data
 jaconv
 toml
 regex
+tabulate

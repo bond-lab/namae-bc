@@ -3,6 +3,8 @@ from flask import current_app, g
 from collections import defaultdict as dd
 import numpy as np
 import scipy
+from scipy.stats import chi2_contingency, fisher_exact
+
 
 # Database options
 db_options = {
@@ -10,7 +12,6 @@ db_options = {
     'hs': ('namae', 'Heisei'),
     'hs+bc': ('combined', 'Combined')
 }
-from scipy.stats import chi2_contingency, fisher_exact
 
 ### limit for most queries
 ### not much point showing more examples than this
