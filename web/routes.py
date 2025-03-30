@@ -89,14 +89,20 @@ def diversity():
     """
     Show diversity measures
     """
-    with open(os.path.join(current_directory, "static/data/diversity_data.json")) as f:
-        diversity_data = json.load(f)
+    diversity_data = {}
+    for src in db_options:
+        for data_type in ['orth', 'pron', 'both']:
+            try:
+                file_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{data_type}.json")
+                with open(file_path) as f:
+                    diversity_data[f"{src}_{data_type}"] = json.load(f)
+            except FileNotFoundError:
+                continue
 
     return render_template(
         "phenomena/diversity.html",
         title='Diversity Measures',
-        metrics=diversity_data["metrics"],
-        plots=diversity_data["plots"]
+        diversity_data=diversity_data
     )
 
 @app.route("/docs", methods=["GET", "POST"])
