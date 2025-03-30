@@ -319,7 +319,4 @@ if all_metrics['M']:
                             "Berger-Parker Index at Different N Values")
 print("All metrics data:", all_metrics)
 
-else:
-    print("No data available for plotting.")
-
 export_metrics_table(all_metrics, format='markdown')
