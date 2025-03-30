@@ -177,7 +177,11 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
-names = get_name_year(conn)
+# Specify the table and source for fetching data
+table = 'namae'  # Adjust this if your table name is different
+src = 'bc'  # Adjust this if your source is different
+
+names = get_name_year(conn, table=table, src=src)
 
 # Debugging output to check the structure of names data
 print("Fetched names data structure:", names)
