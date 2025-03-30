@@ -11,7 +11,7 @@
     </ul>
 </div>
 
-{% for key, data in diversity_data.items() %}
+{% for key, data in diversity_data.metrics.items() %}
     <div>
         <h2 id="{{ key }}">{{ key.replace('_', ' ').title() }}</h2>
         <div>
@@ -22,7 +22,7 @@
                 <thead>
                     <tr>
                         <th>Year</th>
-                        {% set first_year_key, first_year_data = data.metrics.items() | first %}
+                        {% set first_year_key, first_year_data = data.items() | first %}
                         {% for metric in first_year_data.keys() %}
                             <th>{{ metric }}</th>
                         {% endfor %}
