@@ -179,6 +179,10 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 names = get_name_year(conn)
 
+# Check if names data is fetched correctly
+if not names:
+    raise ValueError("No data fetched from the database. Please check the database connection and data.")
+
 
 all_counts = [len(names[g][y]) for g in 'MF' for y in names[g].keys()]
 min_size = min(all_counts)
