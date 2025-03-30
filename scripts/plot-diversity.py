@@ -179,7 +179,8 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(os.path.join(current_directory, "namae.db"))
 names = get_name_year(conn)
 
-# Check if names data is fetched correctly
+# Debugging output to check the structure of names data
+print("Fetched names data structure:", names)
 if not names:
     raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
