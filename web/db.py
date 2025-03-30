@@ -47,8 +47,24 @@ def get_name(conn):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
-def get_name_year(conn,
-                  table='namae', src='bc', data_type='both'):
+def get_name_year(conn, table='namae', src='bc', data_type='both'):
+    """
+    Retrieve names data from the database, organized by year and gender.
+
+    Args:
+        conn: SQLite connection object.
+        table: Name of the table to query.
+        src: Source of the data ('bc', 'hs', 'hs+bc').
+        data_type: Type of data to retrieve ('orth', 'pron', 'both').
+
+    Returns:
+        A nested defaultdict organized by year and gender containing the names data.
+
+    Raises:
+        ValueError: If an invalid combination of src and data_type is provided.
+    """
+    if src in ['hs', 'hs+bc'] and data_type != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {data_type}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
     c = conn.cursor()
 
     # Determine the columns to select based on data_type
