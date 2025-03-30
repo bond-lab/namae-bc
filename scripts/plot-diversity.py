@@ -83,7 +83,7 @@ def check_convergence(diversity_values, threshold=0.001):
     rel_change = abs(std_err_all - std_err_half) / std_err_half
     
     return rel_change < threshold
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'web'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from db import get_name_year
 from web.routes import db_options
 
