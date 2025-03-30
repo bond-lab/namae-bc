@@ -317,6 +317,8 @@ if all_metrics['M']:
     plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
                                           "Berger-Parker (50)", "Berger-Parker (100)"],
                             "Berger-Parker Index at Different N Values")
+print("All metrics data:", all_metrics)
+
 else:
     print("No data available for plotting.")
 
