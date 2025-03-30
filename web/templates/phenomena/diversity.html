@@ -47,10 +47,14 @@
         </div>
 
 
-        <div>
-            <h3>Plots</h3>
+        <div class="mb-3">
+            <h3>Visualizations</h3>
             {% for plot in data.plots %}
-                <img src="{{ url_for('static', filename=plot) }}" alt="Diversity Plot">
+                <div class="plot-container">
+                    <img src="{{ url_for('static', filename=plot) }}" class="img-fluid" alt="{{ plot }}">
+                </div>
+            {% else %}
+                <p>No plots available for this dataset.</p>
             {% endfor %}
         </div>
     </div>

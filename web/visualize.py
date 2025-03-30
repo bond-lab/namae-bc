@@ -105,11 +105,11 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title, confidence_int
     plt.suptitle(title)
     
     # Save to BytesIO and return
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png', dpi=300)
-    buf.seek(0)
+    # Save plot to a file and return filename
+    plot_filename = f"name_diversity_{title.replace(' ', '_')}.png"
+    plt.savefig(os.path.join(output_dir, plot_filename), dpi=300)
     plt.close(fig)
-    return buf
+    return plot_filename
 
 
 # def create_gender_plot(years, male_counts, female_counts, db_name):
