@@ -67,9 +67,11 @@
 		 class="nav-item nav-link">Documentation</a></li>
 	  </ul>
 	  <form class="d-flex" role="search" action="{{ url_for('namae') }}" method="get">
-	      <input class="form-control me-2" type="search" name="orth" placeholder="Orth" aria-label="Orth">
-	      <input class="form-control me-2" type="search" name="pron" placeholder="Pron" aria-label="Pron">
-	      <button class="btn btn-outline-success" type="submit">Search</button>
+	      <input class="form-control me-2" type="search" name="orth" placeholder="書き方" aria-label="書き方" maxlength="5" style="width: 80px;">
+	      <input class="form-control me-2" type="search" name="pron" placeholder="読み方" aria-label="読み方" maxlength="5" style="width: 80px;">
+	      <button class="btn btn-outline-success" type="submit">
+	          <i class="fas fa-search"></i>
+	      </button>
 	  </form>
 	  <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 	    <!-- Settings -->
