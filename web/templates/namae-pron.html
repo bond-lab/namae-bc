@@ -9,9 +9,13 @@
 <!-- Color and sort according to type   -->
 
 <div class="container">
-  <h1>Pronunciation = ({{hira}})</h1>
-
-
-    
+  <h1>Pronunciation: {{hira}}</h1>
+  <p>Here are the details for the pronunciation "{{hira}}":</p>
+  <ul>
+    {% for orth, pron in hindex[hira] %}
+      <li>Orthography: {{orth}}, Pronunciation: {{pron}}</li>
+    {% endfor %}
+  </ul>
+  <p>Note: The list above shows all orthographic representations associated with the pronunciation "{{hira}}".</p>
 </div>
 {% endblock %}

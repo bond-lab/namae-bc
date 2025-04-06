@@ -9,9 +9,13 @@
 <!-- Color and sort according to type   -->
 
 <div class="container">
-  <h1>{{name}}</h1>
-
-
-    
+  <h1>Orthography: {{name}}</h1>
+  <p>Here are the details for the orthography "{{name}}":</p>
+  <ul>
+    {% for orth, pron in kindex[name] %}
+      <li>Orthography: {{orth}}, Pronunciation: {{pron}}</li>
+    {% endfor %}
+  </ul>
+  <p>Note: The list above shows all pronunciations associated with the orthography "{{name}}".</p>
 </div>
 {% endblock %}
