@@ -141,9 +141,7 @@ def get_stats(conn, table='namae', src='bc'):
 
     return stats
 
-def get_feature(conn, feat1, feat2, threshold,
-                table='namae', src='bc',
-                short=False):
+def get_feature(conn, feat1, feat2, threshold, table='namae', src='bc', short=False):
 
     c = conn.cursor()
 
@@ -156,8 +154,8 @@ def get_feature(conn, feat1, feat2, threshold,
     if feat1 == 'kanji':
        c.execute(f"""select kanji, gender, count(*) as cnt 
        from kanji left join ntok on kanji.kid = ntok.kid 
-       left join {table} on ntok.nid = {table}.nid
-       where src = ?
+       LEFT JOIN {table} ON ntok.nid = {table}.nid
+       WHERE src = ?
        group by kanji, gender""", (src,))
 
        for ft, gender, count in c:
@@ -168,7 +166,7 @@ def get_feature(conn, feat1, feat2, threshold,
         #assert feat1 in ['char1'] 
         c.execute(f"""
         SELECT {feat1}, gender, count(*) as cnt 
-        FROM attr left join {table} on attr.nid={table}.nid 
+        FROM attr LEFT JOIN {table} ON attr.nid={table}.nid 
         WHERE {feat1} IS NOT NULL
         AND src = ?
         GROUP BY {feat1}, gender""", (src,))
@@ -178,17 +176,17 @@ def get_feature(conn, feat1, feat2, threshold,
             
         if not short:
             c.execute(f"""select {feat1}, orth, pron, count({feat1}) 
-            from {table} left join attr on {table}.nid = attr.nid
+            FROM {table} LEFT JOIN attr ON {table}.nid = attr.nid
             WHERE src = ?
-            group by {feat1}, orth, pron 
-            order by {feat1}, count ({feat1}) DESC""", (src,))
+            GROUP BY {feat1}, orth, pron 
+            ORDER BY {feat1}, count ({feat1}) DESC""", (src,))
         for ft, orth, pron, freq in c:
             examples[ft].append((orth, pron))
 
     else:  # two features
         c.execute(f"""
         SELECT {feat1}, {feat2}, gender, count(*) as cnt 
-        FROM attr left join {table} on attr.nid={table}.nid
+        FROM attr LEFT JOIN {table} ON attr.nid={table}.nid
         WHERE {feat1} is not Null AND {feat2} is not Null
         AND src = ?
         GROUP BY {feat1}, {feat2}, gender""", (src,))
@@ -197,11 +195,11 @@ def get_feature(conn, feat1, feat2, threshold,
             
         if not short:
             c.execute(f"""
-SELECT {feat1}, {feat2}, orth, pron, count({feat1}) 
-FROM {table} left join attr on {table}.nid = attr.nid
-WHERE src = ?
-GROUP BY {feat1}, {feat2}, orth, pron 
-ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""", (src,))
+            SELECT {feat1}, {feat2}, orth, pron, count({feat1}) 
+            FROM {table} LEFT JOIN attr ON {table}.nid = attr.nid
+            WHERE src = ?
+            GROUP BY {feat1}, {feat2}, orth, pron 
+            ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""", (src,))
             for ft1, ft2, orth, pron, freq in c:
                 examples[f"{ft1}, {ft2}"].append((orth, pron))
 
