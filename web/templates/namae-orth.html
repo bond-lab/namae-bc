@@ -13,7 +13,7 @@
   <p>Other pronunciations:</p>
   <ul>
     {% for orth, pron in kindex[name] %}
-      <li>{{pron}}</li>
+      <li><a href="{{ url_for('namae', orth=name, pron=pron) }}">{{pron}}</a></li>
     {% endfor %}
   </ul>
 </div>

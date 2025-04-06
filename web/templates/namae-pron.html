@@ -13,7 +13,7 @@
   <p>Other names pronounced the same:</p>
   <ul>
     {% for orth, pron in hindex[hira] %}
-      <li>{{orth}}</li>
+      <li><a href="{{ url_for('namae', orth=orth, pron=hira) }}">{{orth}}</a></li>
     {% endfor %}
   </ul>
 </div>
