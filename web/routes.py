@@ -158,8 +158,7 @@ def namae():
             script=whichScript(orth),
             mfname=mfname,
             kindex=kindex,
-            hindex=hindex,
-            kindex=kindex
+            hindex=hindex
         )
     elif pron:
         return render_template(
