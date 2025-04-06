@@ -159,11 +159,13 @@ def namae():
             mfname=mfname,
             kindex=kindex,
             hindex=hindex,
+            kindex=kindex
         )
     elif pron:
         return render_template(
             f"namae-pron.html",
-            hira=pron
+            hira=pron,
+            hindex=hindex
         )
     elif orth:
         return render_template(
