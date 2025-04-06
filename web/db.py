@@ -99,7 +99,7 @@ def get_name_year(conn, table='namae', src='bc', data_type='both'):
             byyear[year][gender].append((orth, pron))
     return byyear
 
-def get_stats(conn):
+def get_stats(conn, table='namae', src='bc'):
     """
     return various statistics
     stats[name][gender] = X
@@ -113,26 +113,29 @@ def get_stats(conn):
     
     c = conn.cursor()
     c.execute("""SELECT gender, COUNT (gender) 
-    FROM (SELECT DISTINCT orth, pron, gender FROM namae) 
-    GROUP BY gender""")
+    FROM (SELECT DISTINCT orth, pron, gender FROM {table} WHERE src = ?) 
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['dname'][gender] = freq
 
     c.execute("""select gender, count(distinct orth) 
-    FROM namae
-    GROUP BY gender""")
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['orth'][gender] = freq
 
     c.execute("""select gender, count(distinct pron) 
-    FROM namae
-    GROUP BY gender""")
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['pron'][gender] = freq
 
     c.execute("""select gender, count(gender) 
-    FROM namae
-    GROUP BY gender""")
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['name'][gender] = freq
 
