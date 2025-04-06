@@ -112,27 +112,27 @@ def get_stats(conn, table='namae', src='bc'):
     stats = dd(lambda: dd(lambda: dd(int))) 
     
     c = conn.cursor()
-    c.execute("""SELECT gender, COUNT (gender) 
+    c.execute(f"""SELECT gender, COUNT (gender) 
     FROM (SELECT DISTINCT orth, pron, gender FROM {table} WHERE src = ?) 
     GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['dname'][gender] = freq
 
-    c.execute("""select gender, count(distinct orth) 
+    c.execute(f"""select gender, count(distinct orth) 
     FROM {table}
     WHERE src = ?
     GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['orth'][gender] = freq
 
-    c.execute("""select gender, count(distinct pron) 
+    c.execute(f"""select gender, count(distinct pron) 
     FROM {table}
     WHERE src = ?
     GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['pron'][gender] = freq
 
-    c.execute("""select gender, count(gender) 
+    c.execute(f"""select gender, count(gender) 
     FROM {table}
     WHERE src = ?
     GROUP BY gender""", (src,))
