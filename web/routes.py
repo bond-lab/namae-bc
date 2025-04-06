@@ -213,8 +213,8 @@ def stats():
     for (feat1, feat2, name, possible) in features:
          data, tests, summ = get_feature(conn, feat1, feat2, threshold,
                                          short=True,
-                                         table=db_table, 
-                                         src=db_src) 
+                                         table=db_settings['db_table'], 
+                                         src=db_settings['db_src']) 
          feat_stats.append((name, len(data), summ))
                             
     return render_template(
