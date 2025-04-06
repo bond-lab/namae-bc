@@ -6,17 +6,23 @@ import numpy as np
 from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
 import pandas as pd # for table
-
 import json
 import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from web.db import db_options, get_name_year
+from web.visualize import plot_multi_panel_trends
 
 bpn = [1, 5, 10, 50, 100]
 
 # Define paths for database and output directories
 current_directory = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(current_directory, "../web/db/namae.db")
-output_dir = os.path.join(current_directory, "../web/static/data")
-os.makedirs(output_dir, exist_ok=True)
+json_dir = os.path.join(current_directory, "../web/static/data")
+plot_dir = os.path.join(current_directory, "../web/static/plot")
+os.makedirs(json_dir, exist_ok=True)
+os.makedirs(plot_dir, exist_ok=True)
 
 def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, min_runs=10):
     results  = dd(lambda: dd(float))
@@ -89,9 +95,6 @@ def check_convergence(diversity_values, threshold=0.001):
     rel_change = abs(std_err_all - std_err_half) / std_err_half
     
     return rel_change < threshold
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from db import get_name_year
-from web.db import db_options
 
 def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
@@ -139,10 +142,8 @@ def calculate_berger_parker(names, top_n=1):
     return top_counts / total
 
 
-from web.visualize import plot_multi_panel_trends
 
-# Remove the original plot_multi_panel_trends function from this file
-    
+
 
 # Connect to the database and fetch data
 current_directory = os.path.abspath(os.path.dirname(__file__))
@@ -168,7 +169,9 @@ for src in db_options:
         for year, genders in byyear.items():
             for gender, name_list in genders.items():
                 names[gender][year] = name_list
-
+                print(gender, year)
+                print(name_list)
+                
         if not names:
             raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
@@ -197,18 +200,25 @@ for src in db_options:
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
         if all_metrics['M']:
-            plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness", "Gini-Simpson", "Berger-Parker (1)"],
-                                    "Diversity Measures", confidence_intervals=confidence_intervals)
-            plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)", "Berger-Parker (10)",
-                                                  "Berger-Parker (50)", "Berger-Parker (100)"],
-                                    "Berger-Parker Index at Different N Values")
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_Var.png") 
+            plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness",
+                                                  "Gini-Simpson", "Berger-Parker (1)"],
+                                    "Diversity Measures",
+                                    plot_path,
+                                    confidence_intervals=confidence_intervals)
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_BP.png") 
+            plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)",
+                                                  "Berger-Parker (10)",
+                                                  "Berger-Parker (50)",
+                                                  "Berger-Parker (100)"],
+                                    "Berger-Parker Index at Different N Values",
+                                   plot_path )
         # Save diversity metrics and plot paths to JSON
         diversity_data = {
-            "metrics": all_metrics,
-            "plots": []  # Add plot paths if needed
+            "metrics": all_metrics
         }
 
-        output_path = os.path.join(output_dir, f"diversity_data_{src}_{data_type}.json")
+        output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
         with open(output_path, 'w') as f:
             json.dump(diversity_data, f)
 

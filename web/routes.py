@@ -249,10 +249,15 @@ def feature():
 def years_png():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-  
+
+    if 'hs' in db_settings['db_src']:
+        data_type='orth'
+    else:
+        data_type='both'
     names = get_name_year(conn,
                           table=db_settings['db_table'],
-                          src=db_settings['db_src'])
+                          src=db_settings['db_src'],
+                          data_type=data_type)
     years = []
     male_counts = []
     female_counts = []
@@ -277,9 +282,14 @@ def years():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     
+    if 'hs' in db_settings['db_src']:
+        data_type='orth'
+    else:
+        data_type='both'
     names = get_name_year(conn,
                           table=db_settings['db_table'],
-                          src=db_settings['db_src'])
+                          src=db_settings['db_src'],
+                          data_type=data_type) 
     
     return render_template(
         f"years.html",

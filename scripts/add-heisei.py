@@ -34,9 +34,10 @@ def load_heisei_data(data_dir, db_path):
                             for (f, t) in mapping:
                                 name = name.replace(f, t)
                             if name != '※希望により削除':
-                                c.execute(""" 
-                                INSERT INTO namae (year, orth, pron, loc, gender, explanation, src)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)""", (year, name, '', '', gender, '', 'hs'))          
+                                data= [(year, name, '', '', gender, '', 'hs')] * frequency
+                                c.executemany(""" 
+ INSERT INTO namae (year, orth, pron, loc, gender, explanation, src)
+ VALUES (?, ?, ?, ?, ?, ?, ?)""", data)          
     conn.commit()
     conn.close()
 

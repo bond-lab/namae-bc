@@ -18,7 +18,25 @@
     <div>
         <h2 id="{{ key }}">{{ key.replace('_', ' ').title() }}</h2>
         <div>
+        <div class="mb-3">
+
+          <h3>Visualizations</h3>
+            <div class="plot-container">
+    
+                <img src="{{ url_for('static', filename='plot/diversity_' ~ key ~ '_Var.png') }}" class="img-fluid" alt="Diversity Measures">
+            </div>
+            <div class="plot-container">
+                <img src="{{ url_for('static', filename='plot/diversity_' ~ key ~ '_BP.png') }}" class="img-fluid" alt="Berger-Parker Index">
+            </div>
+        </div>
+
+
+	  
           <h3>Yearly Metrics</h3>
+	  <button class="btn btn-sm btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#tables-{{ key }}" aria-expanded="false" aria-controls="tables-{{ key }}">
+    Show/Hide Tables
+  </button>
+  <div class="collapse" id="tables-{{ key }}">
 	   {% for gender, yearly in data.metrics.items() %}
 	  
           <table class="table table-striped">
@@ -45,18 +63,8 @@
           </table>
 	     {% endfor %}
         </div>
+	</div>
 
-
-        <div class="mb-3">
-            <h3>Visualizations</h3>
-            {% for plot in data.plots %}
-                <div class="plot-container">
-                    <img src="{{ url_for('static', filename=plot) }}" class="img-fluid" alt="{{ plot }}">
-                </div>
-            {% else %}
-                <p>No plots available for this dataset.</p>
-            {% endfor %}
-        </div>
     </div>
 {% endfor %}
 
