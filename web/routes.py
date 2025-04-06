@@ -205,12 +205,15 @@ def stats():
     show some statistics
     """
     conn = get_db(current_directory, "namae.db")
-    stats_data = get_stats(conn)
+    stats_data = get_stats(conn, table=db_table, 
+                           src=db_src)
                      
     feat_stats = list()
     for (feat1, feat2, name, possible) in features:
          data, tests, summ = get_feature(conn, feat1, feat2, threshold,
-                                         short=True) 
+                                         short=True,
+                                         table=db_table, 
+                                         src=db_src) 
          feat_stats.append((name, len(data), summ))
                             
     return render_template(
