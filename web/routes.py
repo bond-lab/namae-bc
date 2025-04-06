@@ -144,7 +144,8 @@ def namae():
     orth = request.args.get('orth', type=str, default='')
     pron = request.args.get('pron', type=str, default='')
     conn = get_db(current_directory, "namae.db")
-    mfname, kindex, hindex = get_name(conn)
+    db_settings = get_db_settings()
+    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'], src=db_settings['db_src'])
     mora = mora_hiragana(pron)
     
     if pron and orth:
@@ -184,7 +185,8 @@ def names():
     mratio
     """
     conn = get_db(current_directory, "namae.db")
-    mfname, kindex, hindex = get_name(conn)
+    db_settings = get_db_settings()
+    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'], src=db_settings['db_src'])
 
     data = list()
 

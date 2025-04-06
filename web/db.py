@@ -43,9 +43,9 @@ def close_db(e=None):
 def params(lst):
     return ','.join(['?']*len(lst))
 
-def get_name(conn):
+def get_name(conn, table='namae', src='bc'):
     c = conn.cursor()
-    c.execute("""select orth, pron, gender, year from namae""")
+    c.execute(f"""SELECT orth, pron, gender, year FROM {table} WHERE src = ?""", (src,))
     mfname = dd(lambda: dd(list))
     kindex = dd(set)
     hindex = dd(set)
