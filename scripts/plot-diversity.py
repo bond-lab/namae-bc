@@ -229,6 +229,7 @@ for src in db_options:
                 all_metrics[gender][year]["Newness"] = results['Newness'][year]
                 all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
                 all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
+                for i in bpn:
                     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
