@@ -170,6 +170,7 @@ def namae():
         return render_template(
             f"namae-orth.html",
             name=orth,
+            kindex=kindex
         )
     else:
         return render_template(

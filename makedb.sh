@@ -40,6 +40,8 @@ echo "Calculate attributes"
 
 python calculate-features.py
 
+cp scripts/namae.db web/db/namae.db
+
 # index the tables
 
 sqlite3 web/db/namae.db < scripts/add_indexes.sql 
@@ -47,6 +49,7 @@ sqlite3 web/db/namae.db < scripts/add_indexes.sql
 # make the graphs
 echo "Making Graphs"
 
+plot-diversity.py
 
 
 popd

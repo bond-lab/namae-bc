@@ -17,7 +17,7 @@ $ source .venv/bin/activate
 $ python -m pip install --upgrade pip
 $ pip install -r requirements.txt
 
-sudo -R chown bond:www-data /var/www/namae/
+sudo  chown -R bond:www-data /var/www/namae/
 
 
 
