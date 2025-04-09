@@ -9,3 +9,4 @@ jaconv
 toml
 regex
 tabulate
+pyyaml

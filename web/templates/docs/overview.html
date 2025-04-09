@@ -75,6 +75,38 @@ front.  Something like "みい" could be "み" + "い" or "みい", we will alwa
     <p>If the feature is the last two, then we only do this if there are three or more.
  (char_2, mora_2, syll_2)
 
-      
-   
+      <h2>Data</h2>
+
+      <h3>Heisei Data</h3>
+
+    <p>When we load the data from the Heisei Namae Jiten, we clean it in three ways (see <code>add-heisei.py</code>)
+      <ul>
+	<li>Map some old characters to new characters e.g. '莱' to '萊'.
+	We only do these for 9 characters which appear in the data
+	  often, as well as variant lengtheners ('―' to 'ー')
+	<li>We only keep words that are composed entirely of Jinmeiyo
+	  Kanji, Joyo Kanji, the iterator ('々'), Katakana or Hiragana (only these are legal Japanese names).
+	  <br> So we reject names like: 人, 痲綾, 幸太Ｃ or チャン赫
+	<li>If a word consists only of kanji and the iterator, but is
+	longer than 5 characters we reject it as it is almost
+	certainly a surname+firstname entered incorrectly.
+	  <br> So we reject names like: 九郎右衛門, 阿社茉利奈, 玲奈加奈子
+      </ul>
+
+    <p>This is fewer than 1% of the types (0.34%) and much less than
+    that of the individual names (0.049%)
+    
+      <pre>
+## Statistics
+
+good	type	1512879
+good	token	14534080
+reject	type	4994
+reject	token	6936
+remap	type	121
+remap	token	154
+long	type	46
+long	token	46
+      </pre>
+	  
 {% endblock %}
