@@ -24,6 +24,15 @@ plot_dir = os.path.join(current_directory, "../web/static/plot")
 os.makedirs(json_dir, exist_ok=True)
 os.makedirs(plot_dir, exist_ok=True)
 
+def calculate_ttr(names):
+    """Calculate Type Token Ratio (TTR) for a given list of names."""
+    unique_names = set(names)
+    return len(unique_names) / len(names) if names else 0
+
+def calculate_newness(current_names, previous_names):
+    """Calculate newness: names seen this year that were not seen in the previous year."""
+    return len(set(current_names) - set(previous_names))
+
 def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, min_runs=10):
     results  = dd(lambda: dd(float))
     ci_lower = dd(lambda: dd(float))
@@ -35,7 +44,12 @@ def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, mi
             'Shannon': [],
             'Evenness': [],
             'Gini-Simpson': [],
+            'TTR': [],
+            'Newness': [],
+            'Char TTR': [],
+            'Char Newness': [],
         }
+        previous_names = set()
         for i in bpn:
             year_metrics[f'Berger-Parker ({i})'] = []
             
@@ -62,7 +76,21 @@ def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, mi
             year_metrics['Evenness'].append(evenness)
             year_metrics['Gini-Simpson'].append(gini_simpson)
             
-            run_count += 1
+            # Calculate TTR and newness for names
+            ttr = calculate_ttr(sample)
+            newness = calculate_newness(sample, previous_names)
+            previous_names = set(sample)
+
+            # Calculate TTR and newness for characters
+            all_chars = [char for name in sample for char in name]
+            char_ttr = calculate_ttr(all_chars)
+            char_newness = calculate_newness(all_chars, [char for name in previous_names for char in name])
+
+            # Store TTR and newness metrics
+            year_metrics['TTR'].append(ttr)
+            year_metrics['Newness'].append(newness)
+            year_metrics['Char TTR'].append(char_ttr)
+            year_metrics['Char Newness'].append(char_newness)
             
             if run_count >= min_runs:
                 # Check convergence based on Shannon diversity
@@ -70,13 +98,16 @@ def analyze_diversity_with_adaptive_sampling(data, sample_size, max_runs=100, mi
         
         # Calculate statistics for each metric
         for metric in year_metrics:
-            mean_value = np.mean(year_metrics[metric])
+            if year_metrics[metric]:  # Ensure there are values to calculate
+                mean_value = np.mean(year_metrics[metric])
             std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
             
             results[metric][year] = mean_value
             ci_lower[metric][year] = mean_value - 1.96 * std_error
             ci_upper[metric][year] = mean_value + 1.96 * std_error
         
+            run_count += 1
+
         actual_runs[year] = run_count
     
     return results, ci_lower, ci_upper, actual_runs
@@ -194,7 +225,10 @@ for src in db_options:
                     "Gini-Simpson": results['Gini-Simpson'][year],
                     "Runs": run_counts[year]
                 }
-                for i in bpn:
+                all_metrics[gender][year]["TTR"] = results['TTR'][year]
+                all_metrics[gender][year]["Newness"] = results['Newness'][year]
+                all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
+                all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
                     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
@@ -213,6 +247,20 @@ for src in db_options:
                                                   "Berger-Parker (100)"],
                                     "Berger-Parker Index at Different N Values",
                                    plot_path )
+        # Plot new diversity measures
+        if all_metrics['M']:
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_TTR_Newness.png")
+            plot_multi_panel_trends(all_metrics, ["TTR", "Newness", "Char TTR", "Char Newness"],
+                                    "TTR and Newness Measures",
+                                    plot_path)
+        diversity_data = {
+            "metrics": all_metrics
+        }
+
+        output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
+        with open(output_path, 'w') as f:
+            json.dump(diversity_data, f)
+
         # Save diversity metrics and plot paths to JSON
         diversity_data = {
             "metrics": all_metrics
