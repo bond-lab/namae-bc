@@ -33,7 +33,9 @@ def calculate_ttr(names):
 
 def calculate_newness(current_names, previous_names):
     """Calculate newness: names seen this year that were not seen in the previous year."""
-    return len(set(current_names) - set(previous_names))
+    new_items = set(current_names) - set(previous_names)
+    total_types = len(set(current_names))
+    return (len(new_items) / total_types) * 100 if total_types > 0 else 0
 
 def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
     results  = dd(lambda: dd(float))
