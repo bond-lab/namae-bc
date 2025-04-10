@@ -5,18 +5,22 @@ import sqlite3
 import numpy as np
 from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
-import pandas as pd # for table
+import pandas as pd  # For table generation
 import json
 import sys
 
+# Add the parent directory to the system path for module imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from web.db import db_options, get_name_year
 from web.visualize import plot_multi_panel_trends
 
-min_run, max_run = 1,3
+# Constants for sampling runs
+MIN_RUNS = 1
+MAX_RUNS = 3
 
-bpn = [1, 5, 10, 50, 100]
+# Berger-Parker index top N values
+BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]
 
 # Define paths for database and output directories
 current_directory = os.path.abspath(os.path.dirname(__file__))
@@ -28,16 +32,33 @@ os.makedirs(plot_dir, exist_ok=True)
 
 def calculate_ttr(names):
     """Calculate Type Token Ratio (TTR) for a given list of names."""
+    """Calculate Type Token Ratio (TTR) for a given list of names."""
     unique_names = set(names)
     return len(unique_names) / len(names) if names else 0
 
 def calculate_newness(current_names, previous_names):
+    """Calculate newness ratio: new names seen this year over total unique names."""
     """Calculate newness: names seen this year that were not seen in the previous year."""
     new_items = set(current_names) - set(previous_names)
     total_types = len(set(current_names))
     return (len(new_items) / total_types) if total_types > 0 else 0
 
-def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
+def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUNS):
+    """
+    Analyze diversity metrics with adaptive sampling.
+    
+    Parameters:
+    - data: Dictionary of names by year.
+    - sample_size: Number of samples to draw.
+    - min_runs: Minimum number of sampling runs.
+    - max_runs: Maximum number of sampling runs.
+    
+    Returns:
+    - results: Calculated metrics for each year.
+    - ci_lower: Lower confidence intervals for metrics.
+    - ci_upper: Upper confidence intervals for metrics.
+    - actual_runs: Number of runs performed for each year.
+    """
     results  = dd(lambda: dd(float))
     ci_lower = dd(lambda: dd(float))
     ci_upper = dd(lambda: dd(float))
@@ -54,7 +75,7 @@ def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
             'Char Newness': [],
         }
         previous_names = set()
-        for i in bpn:
+        for i in BERGER_PARKER_TOP_N:
             year_metrics[f'Berger-Parker ({i})'] = []
             
         converged = False
@@ -67,13 +88,10 @@ def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
                 sample = names.copy()
             
             # Calculate all metrics for this sample
-            print("Calcultating Shannon")
+            # Calculate diversity metrics for the sample
             shannon = calculate_shannon_diversity(sample)
-            print("Calcultating Evenness")
             evenness = calculate_evenness(shannon, len(set(sample)))
-            print("Calcultating Gini Simpson")
             gini_simpson = calculate_gini_simpson(sample)
-            print("Calcultating Berger-Parker")
             bp = dict()
             for i in bpn:
                 bp[i] = 1 - calculate_berger_parker(sample, top_n=i)
@@ -85,21 +103,13 @@ def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
             year_metrics['Gini-Simpson'].append(gini_simpson)
             
             # Calculate TTR and newness for names
-            print("Calcultating TTR")
             ttr = calculate_ttr(sample)
             newness = calculate_newness(sample, previous_names)
-            print("Calcultating Newness")
 
             # Calculate TTR and newness for characters
-            #print("SMP",  sample)
             all_chars = [char for name in sample for char in name[0]]
-            print("Calcultating TTR char")
             char_ttr = calculate_ttr(all_chars)
-            print("Calcultating Newness char")
             previous_chars = [char for name in previous_names for char in name[0]]
-            #print("ALL",  all_chars)
-            #print("PRV",  previous_chars)
-            #print("NEW",  set(all_chars) - set(previous_chars))
             char_newness = calculate_newness(all_chars, previous_chars)
 
             # Store TTR and newness metrics
@@ -113,14 +123,13 @@ def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
                 # Check convergence based on Shannon diversity
                 converged = check_convergence(year_metrics['Shannon'])
             run_count += 1
-            print(run_count)
             actual_runs[year] = run_count
 
         # Calculate statistics for each metric
         for metric in year_metrics:
             if year_metrics[metric]:  # Ensure there are values to calculate
                 mean_value = np.mean(year_metrics[metric])
-            std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
+                std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
             
             results[metric][year] = mean_value
             ci_lower[metric][year] = mean_value - 1.96 * std_error
@@ -132,7 +141,7 @@ def analyze_with_sampling(data, sample_size, min_runs=1, max_runs=2):
     return results, ci_lower, ci_upper, actual_runs
 
 def check_convergence(diversity_values, threshold=0.001):
-    """Check if the diversity estimate has converged based on relative change in std error."""
+    """Check if the diversity estimate has converged based on relative change in standard error."""
     if len(diversity_values) < 50:
         return False
     
@@ -150,13 +159,8 @@ def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
     return sqlite3.connect(db_path)
 
-# Define colors for flexibility
-BOYS_COLOR = "blue"
-GIRLS_COLOR = "red"
-
-
-
 def calculate_shannon_diversity(names):
+    """Calculate Shannon's diversity index for a given list of names."""
     """Calculate Shannon's diversity index for a given list of names."""
     name_counts = dd(int)
     for name in names:
@@ -171,11 +175,11 @@ def calculate_shannon_diversity(names):
 
 
 def calculate_evenness(H, S):
-    """Calculate Pielou's evenness index."""
+    """Calculate Pielou's evenness index based on Shannon's diversity and species count."""
     return H / math.log(S) if S > 1 else 0
 
 def calculate_gini_simpson(names):
-    """Calculate Gini-Simpson index."""
+    """Calculate Gini-Simpson index for a given list of names."""
     name_counts = dd(int)
     for name in names:
         name_counts[name] += 1
@@ -195,12 +199,8 @@ def calculate_berger_parker(names, top_n=1):
 
 
 
-# Connect to the database and fetch data
-current_directory = os.path.abspath(os.path.dirname(__file__))
 conn = get_db_connection(db_path)
 
-# Define the options for corpus and type
-# Use db_options from web.db
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
@@ -219,27 +219,27 @@ for src in db_options:
         for year, genders in byyear.items():
             for gender, name_list in genders.items():
                 names[gender][year] = name_list
-                #print(gender, year)
-                #print(name_list)
-                
         if not names:
             raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
+        # Determine the smallest sample size across all years and genders
         all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
         min_size = min(all_counts)
         print(f'Smallest sample is: {min_size}')
-        sample_size = int(0.9 * min_size)
+        sample_size = int(0.9 * min_size)  # Use 90% of the smallest sample size
         print(f'Using sample size: {sample_size}')
+        # Initialize structures to store metrics and confidence intervals
         all_metrics = {'M': {}, 'F': {}}
         confidence_intervals  = {'M': dd(lambda: dd(list)),
                                  'F': dd(lambda: dd(list))}
 
         for gender in ['M', 'F']:
             print(f"Analyzing diversity for gender: {gender}")
-            results, ci_lower, ci_upper, run_counts = \
-                analyze_with_sampling(names[gender], sample_size,
-                                      min_runs=min_run, max_runs=max_run)
-            for year in results['Shannon'].keys():  # Using Shannon as reference since all metrics will have the same years
+            results, ci_lower, ci_upper, run_counts = analyze_with_sampling(
+                names[gender], sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUNS
+            )
+            # Using Shannon as reference since all metrics will have the same years
+            for year in results['Shannon'].keys():
                 all_metrics[gender][year] = {
                     "Shannon": results['Shannon'][year],
                     "Evenness": results['Evenness'][year],
@@ -255,7 +255,8 @@ for src in db_options:
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
-        if all_metrics['M']:
+        # Plot diversity measures and save to JSON
+        if all_metrics['M']:  # Check if there are metrics to plot
             plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_Var.png") 
             plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness",
                                                   "Gini-Simpson", "Berger-Parker (1)"],
