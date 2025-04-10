@@ -93,7 +93,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             evenness = calculate_evenness(shannon, len(set(sample)))
             gini_simpson = calculate_gini_simpson(sample)
             bp = dict()
-            for i in bpn:
+            for i in BERGER_PARKER_TOP_N:
                 bp[i] = 1 - calculate_berger_parker(sample, top_n=i)
                 year_metrics[f'Berger-Parker ({i})'].append(bp[i])
                 
@@ -250,7 +250,7 @@ for src in db_options:
                 all_metrics[gender][year]["Newness"] = results['Newness'][year]
                 all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
                 all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
-                for i in bpn:
+                for i in BERGER_PARKER_TOP_N:
                     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
