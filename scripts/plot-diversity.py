@@ -17,7 +17,7 @@ from web.visualize import plot_multi_panel_trends
 
 # Constants for sampling runs
 MIN_RUNS = 1
-MAX_RUNS = 3
+MAX_RUNS = 2
 
 # Berger-Parker index top N values
 BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]
@@ -32,13 +32,11 @@ os.makedirs(plot_dir, exist_ok=True)
 
 def calculate_ttr(names):
     """Calculate Type Token Ratio (TTR) for a given list of names."""
-    """Calculate Type Token Ratio (TTR) for a given list of names."""
     unique_names = set(names)
     return len(unique_names) / len(names) if names else 0
 
 def calculate_newness(current_names, previous_names):
     """Calculate newness ratio: new names seen this year over total unique names."""
-    """Calculate newness: names seen this year that were not seen in the previous year."""
     new_items = set(current_names) - set(previous_names)
     total_types = len(set(current_names))
     return (len(new_items) / total_types) if total_types > 0 else 0
@@ -63,7 +61,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
     ci_lower = dd(lambda: dd(float))
     ci_upper = dd(lambda: dd(float))
     actual_runs = {}
-    
+    previous_names = set()
     for year, names in sorted(data.items()):
         year_metrics = {
             'Shannon': [],
@@ -74,7 +72,6 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             'Char TTR': [],
             'Char Newness': [],
         }
-        previous_names = set()
         for i in BERGER_PARKER_TOP_N:
             year_metrics[f'Berger-Parker ({i})'] = []
             
