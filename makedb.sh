@@ -40,16 +40,20 @@ echo "Calculate attributes"
 
 python calculate-features.py
 
-cp scripts/namae.db web/db/namae.db
+cp namae.db ../web/db/namae.db
 
 # index the tables
 
-sqlite3 web/db/namae.db < scripts/add_indexes.sql 
+sqlite3 ../web/db/namae.db < add_indexes.sql
+
+# Build name_year_cache
+echo "Building yearly name cache"
+python scripts/calculate-years.py
 
 # make the graphs
 echo "Making Graphs"
 
-plot-diversity.py
+python plot-diversity.py
 
 
 popd
@@ -57,4 +61,4 @@ popd
 ### need to make the jinmei graph
 
 
-echo "Still need to 'cp scripts/namae.db web/db/namae.db'" 
+echo "Still need to 'cp scripts/namae.db web/db/namae.db'"
