@@ -73,31 +73,47 @@ def get_name_year(conn, table='namae', src='bc', data_type='both'):
     """
     if src in ['hs', 'hs+bc'] and data_type != 'orth':
         raise ValueError(f"Invalid combination: {src} with {data_type}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
-    c = conn.cursor()
 
-    # Determine the columns to select based on data_type
-    if data_type == 'orth':
-        select_columns = "orth, gender, year"
-    elif data_type == 'pron':
-        select_columns = "pron, gender, year"
+    if src in ['hs', 'hs+bc']:
+        # Use the cache table for these sources
+        c = conn.cursor()
+        c.execute(f"""
+        SELECT year, gender, count
+        FROM name_year_cache
+        WHERE src = ?
+        ORDER BY year
+        """, (src,))
+        byyear = dd(lambda: dd(list))
+        for year, gender, cnt in c:
+            byyear[year][gender] = [None] * cnt  # Dummy list with correct count
+        return byyear
     else:
-        select_columns = "orth, pron, gender, year"
+        # Original implementation for other sources
+        c = conn.cursor()
 
-    c.execute(f"""SELECT {select_columns}
-    FROM {table}
-    WHERE src = ? ORDER BY year""", (src,))
-    byyear =  dd(lambda:  dd(list))
-    for row in c:
+        # Determine the columns to select based on data_type
         if data_type == 'orth':
-            orth, gender, year = row
-            byyear[year][gender].append((orth,))
+            select_columns = "orth, gender, year"
         elif data_type == 'pron':
-            pron, gender, year = row
-            byyear[year][gender].append((pron,))
+            select_columns = "pron, gender, year"
         else:
-            orth, pron, gender, year = row
-            byyear[year][gender].append((orth, pron))
-    return byyear
+            select_columns = "orth, pron, gender, year"
+
+        c.execute(f"""SELECT {select_columns}
+        FROM {table}
+        WHERE src = ? ORDER BY year""", (src,))
+        byyear = dd(lambda: dd(list))
+        for row in c:
+            if data_type == 'orth':
+                orth, gender, year = row
+                byyear[year][gender].append((orth,))
+            elif data_type == 'pron':
+                pron, gender, year = row
+                byyear[year][gender].append((pron,))
+            else:
+                orth, pron, gender, year = row
+                byyear[year][gender].append((orth, pron))
+        return byyear
 
 def get_stats(conn, table='namae', src='bc'):
     """
