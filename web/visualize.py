@@ -46,11 +46,11 @@ def create_gender_plot(years, male_counts, female_counts, db_name):
     
     return buf
 
-    
 def plot_multi_panel_trends(all_metrics, selected_metrics, title,
                             filename, confidence_intervals=None):
     """
     Plot multi-panel visualization of selected diversity measures over time.
+    Handles missing metrics for certain years (e.g., newness for first year).
     
     Parameters:
     -----------
@@ -60,6 +60,8 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
         List of metrics to plot
     title : str
         Title for the plot
+    filename : str
+        Path to save the plot
     confidence_intervals : dict, optional
         Dictionary containing confidence intervals for metrics.
         Structure: {
@@ -67,32 +69,53 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
             'F': {year: {metric: (lower_bound, upper_bound)}}
         }
     """
-    years = sorted(all_metrics['M'].keys())
+    # Get all years from both genders
+    all_years = sorted(set(list(all_metrics['M'].keys()) + list(all_metrics['F'].keys())))
+    
     fig, axes = plt.subplots(2, 2, figsize=(12, 10))
     
     for idx, metric in enumerate(selected_metrics):
         ax = axes[idx // 2, idx % 2]
         
-        # Plot main lines
-        boys_values = [all_metrics['M'][y][metric] for y in years]
-        girls_values = [all_metrics['F'][y][metric] for y in years]
-        
-        ax.plot(years, boys_values, marker='o', linestyle='-', color='blue', label='Boys')
-        ax.plot(years, girls_values, marker='s', linestyle='-', color='red', label='Girls')
-        
-        # Add confidence intervals as lines if provided
-        if confidence_intervals is not None:
-            if 'M' in confidence_intervals and metric in confidence_intervals['M'].get(years[0], {}):
-                boys_lower = [confidence_intervals['M'][y][metric][0] for y in years]
-                boys_upper = [confidence_intervals['M'][y][metric][1] for y in years]
-                ax.plot(years, boys_lower, linestyle='--', color='blue', alpha=0.7, linewidth=1)
-                ax.plot(years, boys_upper, linestyle='--', color='blue', alpha=0.7, linewidth=1)
+        # For each gender, collect valid data points (years where the metric exists)
+        for gender, color, marker, label in [
+            ('M', 'blue', 'o', 'Boys'), 
+            ('F', 'red', 's', 'Girls')
+        ]:
+            # Get years where this metric exists for this gender
+            valid_years = []
+            valid_values = []
             
-            if 'F' in confidence_intervals and metric in confidence_intervals['F'].get(years[0], {}):
-                girls_lower = [confidence_intervals['F'][y][metric][0] for y in years]
-                girls_upper = [confidence_intervals['F'][y][metric][1] for y in years]
-                ax.plot(years, girls_lower, linestyle='--', color='red', alpha=0.7, linewidth=1)
-                ax.plot(years, girls_upper, linestyle='--', color='red', alpha=0.7, linewidth=1)
+            for year in all_years:
+                # Check if year exists in metrics and if the metric exists for that year
+                if year in all_metrics[gender] and metric in all_metrics[gender][year]:
+                    valid_years.append(year)
+                    valid_values.append(all_metrics[gender][year][metric])
+            
+            # Only plot if we have valid data
+            if valid_years and valid_values:
+                ax.plot(valid_years, valid_values, marker=marker, linestyle='-', 
+                        color=color, label=label)
+                
+                # Add confidence intervals if available
+                if confidence_intervals is not None:
+                    # Check if confidence intervals exist for this metric and gender
+                    valid_ci_years = []
+                    valid_ci_lower = []
+                    valid_ci_upper = []
+                    
+                    for year in valid_years:
+                        if (year in confidence_intervals[gender] and 
+                            metric in confidence_intervals[gender][year]):
+                            valid_ci_years.append(year)
+                            valid_ci_lower.append(confidence_intervals[gender][year][metric][0])
+                            valid_ci_upper.append(confidence_intervals[gender][year][metric][1])
+                    
+                    if valid_ci_years:
+                        ax.plot(valid_ci_years, valid_ci_lower, linestyle='--', 
+                                color=color, alpha=0.7, linewidth=1)
+                        ax.plot(valid_ci_years, valid_ci_upper, linestyle='--', 
+                                color=color, alpha=0.7, linewidth=1)
         
         ax.set_title(metric)
         ax.legend(frameon=False)
@@ -105,11 +128,9 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
     plt.tight_layout()
     plt.suptitle(title)
     
-    # Save to BytesIO and return
-    # Save plot to a file and return filename
+    # Save plot to a file
     plt.savefig(filename, dpi=300)
-    plt.close(fig)
-    #return plot_filename
+    plt.close(fig)    
 
 
 # def create_gender_plot(years, male_counts, female_counts, db_name):

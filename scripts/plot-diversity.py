@@ -16,8 +16,8 @@ from web.db import db_options, get_name_year
 from web.visualize import plot_multi_panel_trends
 
 # Constants for sampling runs
-MIN_RUNS = 1
-MAX_RUNS = 2
+MIN_RUNS = 10
+MAX_RUNS = 1000
 
 # Berger-Parker index top N values
 BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]
@@ -61,8 +61,25 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
     ci_lower = dd(lambda: dd(float))
     ci_upper = dd(lambda: dd(float))
     actual_runs = {}
-    previous_names = set()
-    for year, names in sorted(data.items()):
+    
+    # Create a consistent sample of previous year's names for comparison
+    previous_year_samples = {}
+    years = sorted(data.keys())
+    
+    # First, create consistent samples for each year
+    for year in years:
+        names = data[year]
+        if len(names) > sample_size:
+            # For consistent results, use a fixed seed for the initial sampling
+            random.seed(42 + int(year))  # Use year in seed for variety but consistency
+            previous_year_samples[year] = set(random.sample(names, sample_size))
+            random.seed()  # Reset the seed for subsequent random operations
+        else:
+            previous_year_samples[year] = set(names)
+    
+    # Now perform the analysis using these consistent samples
+    for i, year in enumerate(years):
+        names = data[year]
         year_metrics = {
             'Shannon': [],
             'Evenness': [],
@@ -72,9 +89,13 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             'Char TTR': [],
             'Char Newness': [],
         }
-        for i in BERGER_PARKER_TOP_N:
-            year_metrics[f'Berger-Parker ({i})'] = []
+        for n in BERGER_PARKER_TOP_N:
+            year_metrics[f'Berger-Parker ({n})'] = []
             
+        # Get the previous year's sample for comparison
+        is_first_year = (i == 0)
+        previous_year_sample = set() if is_first_year else previous_year_samples[years[i-1]]
+        
         converged = False
         run_count = 0
         
@@ -84,38 +105,40 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             else:
                 sample = names.copy()
             
-            # Calculate all metrics for this sample
-            # Calculate diversity metrics for the sample
+            # Calculate diversity metrics
             shannon = calculate_shannon_diversity(sample)
             evenness = calculate_evenness(shannon, len(set(sample)))
             gini_simpson = calculate_gini_simpson(sample)
             bp = dict()
-            for i in BERGER_PARKER_TOP_N:
-                bp[i] = 1 - calculate_berger_parker(sample, top_n=i)
-                year_metrics[f'Berger-Parker ({i})'].append(bp[i])
+            for n in BERGER_PARKER_TOP_N:
+                bp[n] = 1 - calculate_berger_parker(sample, top_n=n)
+                year_metrics[f'Berger-Parker ({n})'].append(bp[n])
                 
             # Store metrics for this run
             year_metrics['Shannon'].append(shannon)
             year_metrics['Evenness'].append(evenness)
             year_metrics['Gini-Simpson'].append(gini_simpson)
             
-            # Calculate TTR and newness for names
+            # Calculate TTR for all years
             ttr = calculate_ttr(sample)
-            newness = calculate_newness(sample, previous_names)
-
-            # Calculate TTR and newness for characters
+            year_metrics['TTR'].append(ttr)
+            
+            # Calculate newness only for non-first years
+            if not is_first_year:
+                newness = calculate_newness(sample, previous_year_sample)
+                year_metrics['Newness'].append(newness)
+            
+            # Calculate character metrics
             all_chars = [char for name in sample for char in name[0]]
             char_ttr = calculate_ttr(all_chars)
-            previous_chars = [char for name in previous_names for char in name[0]]
-            char_newness = calculate_newness(all_chars, previous_chars)
-
-            # Store TTR and newness metrics
-            year_metrics['TTR'].append(ttr)
-            year_metrics['Newness'].append(newness)
             year_metrics['Char TTR'].append(char_ttr)
-            year_metrics['Char Newness'].append(char_newness)
-
-            previous_names = set(sample)            
+            
+            # Calculate character newness only for non-first years
+            if not is_first_year:
+                previous_chars = [char for name in previous_year_sample for char in name[0]]
+                char_newness = calculate_newness(all_chars, previous_chars)
+                year_metrics['Char Newness'].append(char_newness)
+            
             if run_count >= min_runs:
                 # Check convergence based on Shannon diversity
                 converged = check_convergence(year_metrics['Shannon'])
@@ -127,13 +150,14 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             if year_metrics[metric]:  # Ensure there are values to calculate
                 mean_value = np.mean(year_metrics[metric])
                 std_error = np.std(year_metrics[metric]) / np.sqrt(run_count)
-            
-            results[metric][year] = mean_value
-            ci_lower[metric][year] = mean_value - 1.96 * std_error
-            ci_upper[metric][year] = mean_value + 1.96 * std_error
-        
-        
-
+                
+                # Skip adding newness metrics for first year
+                if is_first_year and metric in ['Newness', 'Char Newness']:
+                    continue
+                
+                results[metric][year] = mean_value
+                ci_lower[metric][year] = mean_value - 1.96 * std_error
+                ci_upper[metric][year] = mean_value + 1.96 * std_error
         
     return results, ci_lower, ci_upper, actual_runs
 
@@ -225,6 +249,7 @@ for src in db_options:
         print(f'Smallest sample is: {min_size}')
         sample_size = int(0.9 * min_size)  # Use 90% of the smallest sample size
         print(f'Using sample size: {sample_size}')
+        
         # Initialize structures to store metrics and confidence intervals
         all_metrics = {'M': {}, 'F': {}}
         confidence_intervals  = {'M': dd(lambda: dd(list)),
@@ -243,12 +268,23 @@ for src in db_options:
                     "Gini-Simpson": results['Gini-Simpson'][year],
                     "Runs": run_counts[year]
                 }
+                
+                # Add TTR metric (should be available for all years)
                 all_metrics[gender][year]["TTR"] = results['TTR'][year]
-                all_metrics[gender][year]["Newness"] = results['Newness'][year]
                 all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
-                all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
+                
+                # Add newness metrics only if they exist for this year
+                # (they won't exist for the first year)
+                if year in results['Newness']:
+                    all_metrics[gender][year]["Newness"] = results['Newness'][year]
+                if year in results['Char Newness']:
+                    all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
+                
+                # Add Berger-Parker metrics
                 for i in BERGER_PARKER_TOP_N:
                     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
+                
+                # Add confidence intervals
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
@@ -273,15 +309,8 @@ for src in db_options:
             plot_multi_panel_trends(all_metrics, ["TTR", "Newness", "Char TTR", "Char Newness"],
                                     "TTR and Newness Measures",
                                     plot_path)
-        diversity_data = {
-            "metrics": all_metrics
-        }
-
-        output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
-        with open(output_path, 'w') as f:
-            json.dump(diversity_data, f)
-
-        # Save diversity metrics and plot paths to JSON
+        
+        # Save diversity metrics to JSON
         diversity_data = {
             "metrics": all_metrics
         }

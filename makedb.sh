@@ -48,6 +48,7 @@ sqlite3 ../web/db/namae.db < add_indexes.sql
 
 # Build name_year_cache
 echo "Building yearly name cache"
+
 python scripts/calculate-years.py
 
 # make the graphs

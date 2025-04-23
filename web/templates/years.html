@@ -23,21 +23,30 @@
       <th>M Freq</th>
       <th>Y Freq</th>
       <th>Total</th>
+      <th>M % of births</th>
+      <th>F % of births</th>
+      <th>M births</th>
+      <th>F births</th>
   </tr>
   </thead>
   <tbody>
     {% for year in names %}
     <tr>
       <td>{{year}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['M']|length)}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['F']|length)}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['M']|length + names[year]['F']|length)}}</td>
-    </tr>
+      <td align='right'>{{"{:,d}".format(names[year]['M'])}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['F'])}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['M'] + names[year]['F'])}}</td>
+      <td align='right'>{{format_percentage(names[year]['M'], births[year]['M'])}}</td>
+      <td align='right'>{{format_percentage(names[year]['F'], births[year]['F'])}}</td>
+      <td align='right'>{{"{:,d}".format(births[year]['M'])}}</td>
+      <td align='right'>{{"{:,d}".format(births[year]['F'])}}</td>
+     </tr>
     {% endfor %}
   </tbody>
   
 </table>
 
+   <img src="{{ url_for('years_png', births=True) }}" alt="Names per Year">
 
 </div>
 

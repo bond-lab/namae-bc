@@ -1,42 +1,52 @@
 import sqlite3
 import os
+from db import db_options
 
 def main():
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
-    # Create the cache table if it doesn't exist
+    # Re-Create the cache table
+    c.execute('DROP TABLE IF EXISTS name_year_cache;')
     c.execute('''
-    CREATE TABLE IF NOT EXISTS name_year_cache (
+    CREATE TABLE name_year_cache (
         src TEXT,
+        dtype TEXT,
         year INTEGER,
         gender TEXT,
         count INTEGER,
-        PRIMARY KEY (src, year, gender)
+        PRIMARY KEY (src, dtype, year, gender)
     )
     ''')
 
-    # Clear existing cache entries for these sources
-    c.execute("DELETE FROM name_year_cache WHERE src IN ('hs', 'hs+bc')")
+    for src in db_options:
+        table = db_options[src][0]
+    
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, COUNT(*)  as freq
+        FROM {table}
+        WHERE src = '{src}'
+        GROUP BY year, gender
+        HAVING freq > 0
+        ''')
 
-    # Populate cache for 'hs'
-    c.execute('''
-    INSERT INTO name_year_cache (src, year, gender, count)
-    SELECT 'hs', year, gender, COUNT(*)
-    FROM namae
-    WHERE src = 'hs'
-    GROUP BY year, gender
-    ''')
-
-    # Populate cache for 'hs+bc' (combining both sources)
-    c.execute('''
-    INSERT INTO name_year_cache (src, year, gender, count)
-    SELECT 'hs+bc', year, gender, COUNT(*)
-    FROM namae
-    WHERE src IN ('hs', 'bc')
-    GROUP BY year, gender
-    ''')
+    # let's also add the number of live births
+    fh = open('data/live_births_year.tsv')
+    for l in fh:
+        row = l.strip().split()
+        if row[0] == 'Year':
+            continue
+        else:
+            c.execute("""
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            VALUES ('births', 'orth', ?, 'M', ?)
+            """, (int(row[0]), int(row[2])))
+            c.execute("""
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            VALUES ('births', 'orth', ?, 'F', ?)
+            """, (int(row[0]), int(row[3])))
 
     conn.commit()
     conn.close()

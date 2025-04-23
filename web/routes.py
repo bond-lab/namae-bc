@@ -9,7 +9,7 @@ import sqlite3, os
 from collections import defaultdict as dd
 
 from web.db import get_db, get_name, get_name_year, get_stats, get_feature, \
-                get_redup, db_options
+                get_redup, db_options, dtypes
 from web.visualize import create_gender_plot
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
@@ -91,11 +91,11 @@ def diversity():
     """
     diversity_data = {}
     for src in db_options:
-        for data_type in ['orth', 'pron', 'both']:
+        for dtype in dtypes:
             try:
-                file_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{data_type}.json")
+                file_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{dtype}.json")
                 with open(file_path) as f:
-                    diversity_data[f"{src}_{data_type}"] = json.load(f)
+                    diversity_data[f"{src}_{dtype}"] = json.load(f)
             except FileNotFoundError:
                 continue
 
@@ -258,23 +258,24 @@ def feature():
 def years_png():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-
-    if 'hs' in db_settings['db_src']:
-        data_type='orth'
+    births = request.args.get('births', 'False') == 'True'
+    if births:
+        src = 'births'
     else:
-        data_type='both'
+        src=db_settings['db_src']
+    dtype='orth'
     names = get_name_year(conn,
-                          table=db_settings['db_table'],
-                          src=db_settings['db_src'],
-                          data_type=data_type)
+                          src=src,
+                          dtype=dtype)
     years = []
     male_counts = []
     female_counts = []
 
     for year in names:
-        years.append(year)
-        male_counts.append(len(names[year]['M']))
-        female_counts.append(len(names[year]['F']))
+        if year >= 1989:
+            years.append(year)
+            male_counts.append(names[year]['M'])
+            female_counts.append(names[year]['F'])
 
     print(male_counts)
         
@@ -291,18 +292,26 @@ def years():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     
-    if 'hs' in db_settings['db_src']:
-        data_type='orth'
-    else:
-        data_type='both'
+    dtype='orth'
     names = get_name_year(conn,
-                          table=db_settings['db_table'],
                           src=db_settings['db_src'],
-                          data_type=data_type) 
+                          dtype=dtype) 
+    births = get_name_year(conn,
+                           src='births',
+                           dtype=dtype)
+
+    def format_percentage(num1, num2):
+        try:
+            return f"{num1/num2:.1%}%"
+        except (KeyError, TypeError, ZeroDivisionError):
+            return "N/A"
+
     
     return render_template(
         f"years.html",
         names=names,
+        births=births,
+        format_percentage = format_percentage,
         title=f'Data per year ({db_settings["db_name"]})',
     )
 
