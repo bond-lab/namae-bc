@@ -8,7 +8,8 @@ import pathlib
 import sqlite3, os
 from collections import defaultdict as dd
 
-from web.db import get_db, get_name, get_name_year, get_stats, get_feature, \
+from web.db import get_db, get_name, get_name_year, get_name_count_year, \
+                get_stats, get_feature, \
                 get_redup, db_options, dtypes
 from web.visualize import create_gender_plot
 import json
@@ -264,7 +265,7 @@ def years_png():
     else:
         src=db_settings['db_src']
     dtype='orth'
-    names = get_name_year(conn,
+    names = get_name_count_year(conn,
                           src=src,
                           dtype=dtype)
     years = []
@@ -293,16 +294,16 @@ def years():
     db_settings = get_db_settings()
     
     dtype='orth'
-    names = get_name_year(conn,
-                          src=db_settings['db_src'],
-                          dtype=dtype) 
-    births = get_name_year(conn,
-                           src='births',
-                           dtype=dtype)
+    names = get_name_count_year(conn,
+                                src=db_settings['db_src'],
+                                dtype=dtype) 
+    births = get_name_count_year(conn,
+                                 src='births',
+                                 dtype=dtype)
 
     def format_percentage(num1, num2):
         try:
-            return f"{num1/num2:.1%}%"
+            return f"{num1/num2:.1%}"
         except (KeyError, TypeError, ZeroDivisionError):
             return "N/A"
 

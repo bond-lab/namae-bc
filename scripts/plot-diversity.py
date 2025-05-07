@@ -233,7 +233,8 @@ for src in db_options:
         print(f"Processing {src} with {data_type}")
 
         table_name = db_options[src][0]
-        byyear = get_name_year(conn, src=src, dtype=data_type)
+        byyear = get_name_year(conn, src=src,
+                               table=table_name, dtype=data_type)
 
         # Transform the data structure to be by gender first
         names = {'M': dd(list), 'F': dd(list)}

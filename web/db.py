@@ -57,9 +57,10 @@ def get_name(conn, table='namae', src='bc'):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
-def get_name_year(conn, src='bc', dtype='orth'):
+def get_name_count_year(conn, src='bc', dtype='orth'):
     """
-    Retrieve names data from the database, organized by year and gender.
+    Retrieve cached counts of names data from the database, 
+    organized by year and gender.
 
     Args:
         conn: SQLite connection object.
@@ -82,10 +83,60 @@ def get_name_year(conn, src='bc', dtype='orth'):
     WHERE src = ? and dtype = ?
     ORDER BY year
     """, (src, dtype))
-    byyear = dd(lambda: dd(list))
+    byyear = dd(lambda: dd(int))
     for year, gender, cnt in c:
         byyear[year][gender] =  cnt  
     return byyear
+
+
+def get_name_year(conn, table='namae',
+                  src='bc',
+                  dtype='both'):
+    """
+    Retrieve names data from the database, organized by year and gender.
+
+    Args:
+        conn: SQLite connection object.
+        table: Name of the table to query.
+        src: Source of the data ('bc', 'hs', 'hs+bc').
+        dtype: Type of data to retrieve ('orth', 'pron', 'both').
+
+    Returns:
+        A nested defaultdict organized by year and gender containing the names data.
+
+    Raises:
+        ValueError: If an invalid combination of src and dtype is provided.
+    """
+    if src in ['hs', 'hs+bc'] and dtype != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
+    c = conn.cursor()
+
+    # Determine the columns to select based on dtype
+    if dtype == 'orth':
+        select_columns = "orth, gender, year"
+    elif dtype == 'pron':
+        select_columns = "pron, gender, year"
+    else:
+        select_columns = "orth, pron, gender, year"
+
+    c.execute(f"""SELECT {select_columns}
+    FROM {table}
+    WHERE src = ? ORDER BY year""", (src,))
+    byyear =  dd(lambda:  dd(list))
+    for row in c:
+        if dtype == 'orth':
+            orth, gender, year = row
+            byyear[year][gender].append((orth,))
+        elif dtype == 'pron':
+            pron, gender, year = row
+            byyear[year][gender].append((pron,))
+        else:
+            orth, pron, gender, year = row
+            byyear[year][gender].append((orth, pron))
+    return byyear
+
+
+
 
 def get_stats(conn, table='namae', src='bc'):
     """

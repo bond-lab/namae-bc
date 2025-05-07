@@ -43,6 +43,7 @@ python calculate-features.py
 cp namae.db ../web/db/namae.db
 
 # index the tables
+echo "Adding indexes"
 
 sqlite3 ../web/db/namae.db < add_indexes.sql
 

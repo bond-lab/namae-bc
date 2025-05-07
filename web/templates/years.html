@@ -11,7 +11,6 @@
 <div class="container">
   <h1>Data by Year</h1>
 
-
    <img src="{{ url_for('years_png') }}" alt="Names per Year">
 
    <h2>Table: Number of Names per Year ({{db_name}})</a>
@@ -38,15 +37,21 @@
       <td align='right'>{{"{:,d}".format(names[year]['M'] + names[year]['F'])}}</td>
       <td align='right'>{{format_percentage(names[year]['M'], births[year]['M'])}}</td>
       <td align='right'>{{format_percentage(names[year]['F'], births[year]['F'])}}</td>
+      {% if births[year]['M'] != 0 %} 
       <td align='right'>{{"{:,d}".format(births[year]['M'])}}</td>
       <td align='right'>{{"{:,d}".format(births[year]['F'])}}</td>
+      {% else %}
+      <td align='right'>No data</td>
+      <td align='right'>No data</td>
+      {% endif %}
      </tr>
     {% endfor %}
   </tbody>
   
 </table>
 
-   <img src="{{ url_for('years_png', births=True) }}" alt="Names per Year">
+<h2>Table: Number of Births per Year</a>
+   <img src="{{ url_for('years_png', births=True) }}" alt="Births per Year">
 
 </div>
 
