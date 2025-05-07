@@ -33,7 +33,7 @@ def main():
         ''')
 
     # let's also add the number of live births
-    fh = open('data/live_births_year.tsv')
+    fh = open('../data/live_births_year.tsv')
     for l in fh:
         row = l.strip().split()
         if row[0] == 'Year':

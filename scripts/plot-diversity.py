@@ -16,8 +16,8 @@ from web.db import db_options, get_name_year
 from web.visualize import plot_multi_panel_trends
 
 # Constants for sampling runs
-MIN_RUNS = 10
-MAX_RUNS = 1000
+MIN_RUNS = 1 #10
+MAX_RUNS = 2 # 1000
 
 # Berger-Parker index top N values
 BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]
@@ -233,7 +233,7 @@ for src in db_options:
         print(f"Processing {src} with {data_type}")
 
         table_name = db_options[src][0]
-        byyear = get_name_year(conn, table=table_name, src=src, data_type=data_type)
+        byyear = get_name_year(conn, src=src, dtype=data_type)
 
         # Transform the data structure to be by gender first
         names = {'M': dd(list), 'F': dd(list)}
