@@ -1,4 +1,4 @@
-import regex as re
+import regex
 
 _YOON = {"ゃ", "ゅ", "ょ", "ぁ", "ぃ", "ぇ", "ゎ"}    # Obsolete:  ゎ ぇ o, u
 
@@ -129,13 +129,13 @@ def whichScript (name):
     >>> whichScript ("耀士郎")
     'kanji'
     """
-    if re.match('^[\p{scx=Katakana}]+$', name):
+    if regex.match(r'^[\p{scx=Katakana}]+$', name):
         return 'kata'
-    elif re.match('^[\p{scx=Hiragana}]+$', name):
+    elif regex.match(r'^[\p{scx=Hiragana}]+$', name):
         return 'hira'
-    elif re.search('[\p{scx=Hiragana}]', name): 
+    elif regex.search(r'[\p{scx=Hiragana}]', name): 
         return 'mixhira'
-    elif re.search('[\p{scx=Katakana}]', name):
+    elif regex.search(r'[\p{scx=Katakana}]', name):
         return 'mixkata'
     else:
         return 'kanji'
@@ -171,7 +171,7 @@ def mora_hiragana(word):
   if not word:
     return []
   else:
-    assert re.match('^[\p{scx=Hiragana}]+$', word), "not Hiragana"
+    assert regex.match(r'^[\p{scx=Hiragana}]+$', word), "not Hiragana"
   mora = []
   for char in word:
     if char in _YOON:
