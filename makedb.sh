@@ -31,6 +31,10 @@ python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 echo "Adding Heisei data"
 python add-heisei.py "../data/heisei"
 
+# add Meiji data
+echo "Adding Heisei data"
+python add-meiji.py "../data/meiji.xlsx" "../data/meiji_total_year.tsv"
+
 # add a table of single characters
 echo "Adding Kanji"
 python add-kanji.py

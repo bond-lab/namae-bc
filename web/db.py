@@ -7,10 +7,16 @@ from scipy.stats import chi2_contingency, fisher_exact
 
 
 # Database options
+# which table, Name, dtypes
 db_options = {
-    'bc': ('namae', 'Baby Calendar'),
-    'hs': ('namae', 'Heisei'),
-    'hs+bc': ('combined', 'Combined')
+    'bc': ('namae', 'Baby Calendar',
+           ('orth', 'pron', 'both')),
+    'hs': ('namae', 'Heisei',
+           ('orth')),
+    'hs+bc': ('combined', 'Combined',
+              ('orth')),
+    'meiji': ('namae', 'Meiji',
+              ('orth'))
 }
 
 dtypes = ('orth', 'pron', 'both')
