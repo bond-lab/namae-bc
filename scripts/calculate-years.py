@@ -24,7 +24,7 @@ def store_years(src):
     for src in db_options:
         table = db_options[src][0]
         dtypes =  db_options[src][2]
-        for dtyps in stypes:
+        for dtyps in dtypes:
             c.execute(f'''
             INSERT INTO name_year_cache (src, dtype, year, gender, count)
             SELECT src, 'orth', year, gender, COUNT(*)  as freq
