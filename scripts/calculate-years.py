@@ -123,8 +123,8 @@ def create_gender_plot(src):
         bar_width = ax.patches[i].get_width()
         ax.text(years[i], female, format_number(female, bar_width),
                 ha='center', va='bottom', fontsize=font_size(years), color='black')
-        ax.text(years[i], - (1.2 * male), format_number(male, bar_width),
-                ha='center', va='bottom', fontsize=font_size(years), color='black')
+        ax.text(years[i], -male, format_number(male, bar_width),
+                ha='center', va='top', fontsize=font_size(years), color='black')
 
     # Remove all spines and ticks for a minimalist look
     ax.spines['top'].set_visible(False)
