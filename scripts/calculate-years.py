@@ -119,6 +119,9 @@ def create_gender_plot(src):
     ax.set_yticks([])  # Remove y-axis numbers
     ax.tick_params(left=False, bottom=False)
 
+    # Ensure x-axis shows only whole numbers for years
+    ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+
     # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
     ax.set_ylabel('Number of Names', fontsize=12)
