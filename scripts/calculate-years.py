@@ -88,6 +88,8 @@ def create_gender_plot(src):
 
     if src == 'births':
         db_name = 'Births'
+    elif src == 'totals':
+        db_name = 'Meiji total data'
     else:
         db_name = db_options[src][1]
             
@@ -104,9 +106,9 @@ def create_gender_plot(src):
     # Add numbers on top of each bar for both male and female counts
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
         ax.text(years[i], female - 72, str(female),
-                ha='center', va='bottom', fontsize=10, color='white')
+                ha='center', va='bottom', fontsize=10, color='black')
         ax.text(years[i], - male + 24, str(male),
-                ha='center', va='bottom', fontsize=10, color='white')
+                ha='center', va='bottom', fontsize=10, color='black')
 
     # Remove all spines and ticks for a minimalist look
     ax.spines['top'].set_visible(False)
@@ -140,5 +142,8 @@ for src in db_options:
     
 print(f'Creating Graph for Births')
 create_gender_plot('births')
-        
+
+print(f'Creating Graph for Meiji Totals')
+create_gender_plot('totals')
+         
 
