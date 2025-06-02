@@ -16,6 +16,11 @@
 
    <img src="{{ url_for('static', filename='plot/years_' ~ db_src ~ '.png') }}" alt="Names per Year">
 
+   {% if db_src == 'meiji' %}
+   <p>The meiji data shows the most common 50 names from their yearly sample.</p>
+   <img src="{{ url_for('static', filename='plot/years_totals.png')}}" alt="Meiji Totals">
+   {% endif %}
+   
    <h2>Table: Number of Names per Year ({{db_name}})</a>
 
 <table class="table table-md table-hover w-auto">
