@@ -104,27 +104,27 @@ def create_gender_plot(src):
     ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
 
     # Function to format numbers based on bar width
-    def calculate_text_width(text, fontsize):
-        """Estimate the width of the text in the plot."""
-        # This is a rough estimate; adjust the factor if needed
-        return len(text) * fontsize * 0.6
     def format_number(num, bar_width):
-        # Calculate the width of "000" as a threshold
-        threshold_width = calculate_text_width("000", fontsize=10)
-        if bar_width < threshold_width:
-            if num >= 1000:
-                return f"{num/1000:.1f}k"
-            else:
-                return f"{num}"
-        return f"{num:,}"
+        if 'hs' in src:
+            return f"{round(num / 1000)}"
+        else:
+            return f"{num}"
+    def font_size(years):
+        ny = len(years)
+        if ny  < 16:
+            return 10
+        else:
+            return 8
+        
 
     # Add numbers on top of each bar for both male and female counts
+    
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
         bar_width = ax.patches[i].get_width()
-        ax.text(years[i], female - 72, format_number(female, bar_width),
-                ha='center', va='bottom', fontsize=10, color='black')
-        ax.text(years[i], - male + 24, format_number(male, bar_width),
-                ha='center', va='bottom', fontsize=10, color='black')
+        ax.text(years[i], female, format_number(female, bar_width),
+                ha='center', va='bottom', fontsize=font_size(years), color='black')
+        ax.text(years[i], - (1.2 * male), format_number(male, bar_width),
+                ha='center', va='bottom', fontsize=font_size(years), color='black')
 
     # Remove all spines and ticks for a minimalist look
     ax.spines['top'].set_visible(False)
