@@ -104,8 +104,14 @@ def create_gender_plot(src):
     ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
 
     # Function to format numbers based on bar width
+    def calculate_text_width(text, fontsize):
+        """Estimate the width of the text in the plot."""
+        # This is a rough estimate; adjust the factor if needed
+        return len(text) * fontsize * 0.6
     def format_number(num, bar_width):
-        if bar_width < 0.3:
+        # Calculate the width of "000" as a threshold
+        threshold_width = calculate_text_width("000", fontsize=10)
+        if bar_width < threshold_width:
             if num >= 1000:
                 return f"{num/1000:.1f}k"
             else:
