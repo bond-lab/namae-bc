@@ -2,26 +2,33 @@ import sqlite3
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from db import db_options
+from db import db_options, get_name_count_year
 
-def main():
+def store_years(src):
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
     for src in db_options:
         table = db_options[src][0]
+        dtypes =  db_options[src][2]
+        for dtyps in stypes:
+            c.execute(f'''
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            SELECT src, 'orth', year, gender, COUNT(*)  as freq
+            FROM {table}
+            WHERE src = '{src}'
+            GROUP BY year, gender
+            HAVING freq > 0
+            ''')
+    conn.commit()
+    conn.close()
     
-        c.execute(f'''
-        INSERT INTO name_year_cache (src, dtype, year, gender, count)
-        SELECT src, 'orth', year, gender, COUNT(*)  as freq
-        FROM {table}
-        WHERE src = '{src}'
-        GROUP BY year, gender
-        HAVING freq > 0
-        ''')
-
+def store_births():       
     # let's also add the number of live births
+    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
     fh = open('../data/live_births_year.tsv')
     for l in fh:
         row = l.strip().split()
@@ -37,21 +44,39 @@ def main():
             VALUES ('births', 'orth', ?, 'F', ?)
             """, (int(row[0]), int(row[3])))
 
-    # Example data for plotting
-    years = [2000, 2001, 2002]  # Replace with actual years
-    male_counts = [100, 150, 200]  # Replace with actual male counts
-    female_counts = [120, 130, 180]  # Replace with actual female counts
-    db_name = "ExampleDB"  # Replace with actual database name
-
-    create_gender_plot(years, male_counts, female_counts, db_name)
-
     conn.commit()
     conn.close()
 
-def create_gender_plot(years, male_counts, female_counts, db_name):
+def create_gender_plot(src):
+
+
+    # get data
+    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+    conn = sqlite3.connect(db_path)
+    names = get_name_count_year(conn,
+                                src=src,
+                                dtype='orth')
+    years = []
+    male_counts = []
+    female_counts = []
+
+    for year in names:
+        if year >= 1989:
+            years.append(year)
+            male_counts.append(names[year]['M'])
+            female_counts.append(names[year]['F'])
+
+    if src == 'births':
+        db_name = 'Births'
+    else:
+        db_name = db_options[src][1]
+            
     # Create the figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
 
+    filename =f'years_{src}'
+    plot_path = os.path.join(os.path.dirname(__file__), f'../web/static/plot/{filename}.png')
+     
     # Plot men and women counts
     ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
     ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
@@ -75,13 +100,24 @@ def create_gender_plot(years, male_counts, female_counts, db_name):
     # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
     ax.set_ylabel('Number of Names', fontsize=12)
-    ax.set_title('Number of Names per Year, Divided by Gender', fontsize=14, weight='bold')
+    ax.set_title(f'Number of Names per Year, Divided by Gender ({db_name})', fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling
     ax.legend(frameon=False)
 
     # Save the plot to a file
-    plot_path = os.path.join(os.path.dirname(__file__), '../web/static/plot/years_gender_plot.png')
     plt.savefig(plot_path, format='png')
     plt.close(fig)
-    main()
+
+for src in db_options:
+    print(f'Updating Year Counts for {src}')
+
+
+    print(f'Creating Graph for {src}')
+    create_gender_plot(src)
+
+    
+print(f'Creating Graph for Births')
+create_gender_plot('births')
+        
+

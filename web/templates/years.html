@@ -9,9 +9,12 @@
 
 
 <div class="container">
+
+<br><br><br>
+  
   <h1>Data by Year</h1>
 
-   <img src="{{ url_for('static', filename='plot/years_gender_plot.png') }}" alt="Names per Year">
+   <img src="{{ url_for('static', filename='plot/years_' ~ db_src ~ '.png') }}" alt="Names per Year">
 
    <h2>Table: Number of Names per Year ({{db_name}})</a>
 
@@ -51,7 +54,7 @@
 </table>
 
 <h2>Table: Number of Births per Year</a>
-   <img src="{{ url_for('years_png', births=True) }}" alt="Births per Year">
+<img src="{{ url_for('static', filename='plot/years_births.png')}}" alt="Births per Year">
 
 </div>
 
