@@ -11,7 +11,6 @@ from collections import defaultdict as dd
 from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes
-from web.visualize import create_gender_plot
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
@@ -255,35 +254,6 @@ def feature():
         title=name,
     )
 
-@app.route('/years.png')
-def years_png():
-    conn = get_db(current_directory, "namae.db")
-    db_settings = get_db_settings()
-    births = request.args.get('births', 'False') == 'True'
-    if births:
-        src = 'births'
-    else:
-        src=db_settings['db_src']
-    dtype='orth'
-    names = get_name_count_year(conn,
-                          src=src,
-                          dtype=dtype)
-    years = []
-    male_counts = []
-    female_counts = []
-
-    for year in names:
-        if year >= 1989:
-            years.append(year)
-            male_counts.append(names[year]['M'])
-            female_counts.append(names[year]['F'])
-
-    print(male_counts)
-        
-    # Create the plot using the function
-    buf = create_gender_plot(years, male_counts, female_counts, db_settings['db_name'])
-
-    return make_response(buf.getvalue(), 200, {'Content-Type': 'image/png'})
 
 @app.route("/years.html")
 def years():

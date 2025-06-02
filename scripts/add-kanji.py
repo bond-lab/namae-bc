@@ -1,9 +1,11 @@
 from jamdict import Jamdict
 import sqlite3 
 import sys, os
-from utils import whichScript
+#from utils import whichScript
 from collections import defaultdict as dd
+import yaml
 import jaconv
+
 
 # Initialize Jamdict
 jam = Jamdict()
@@ -19,15 +21,22 @@ conn.execute("BEGIN TRANSACTION")
 # Fetch all name data
 c.execute("SELECT nid, orth, gender FROM namae")
 
-# Process names and collect kanji
+with open('kanji.yaml') as fh:
+    kanji = yaml.load(fh, Loader=yaml.SafeLoader)
+    allowed=kanji['joyo'].union(kanji['jinmei']).union(kanji['iterator'])
+
+    # Process names and collect kanji
 kanji = set()            
 nid = dd(set)
 for n, o, g in c:
     nid[o].add(n)
     for k in o:
-        if whichScript(k) == 'kanji':
+        if k in allowed:
             kanji.add(k)
 
+
+
+            
 # Prepare batch inserts
 kanji_data = []
 kid = {}
@@ -76,7 +85,7 @@ c.executemany("""
 ntok_data = []
 for o in nid:
     for k in o:
-        if whichScript(k) == 'kanji':
+        if k in allowed:
             if k in kid:
                 for n in nid[o]:
                     ntok_data.append((n, kid[k]))

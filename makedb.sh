@@ -28,8 +28,8 @@ echo "Making Tables and reading names"
 python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
 # add Heisei data
-#echo "Adding Heisei data"
-#python add-heisei.py "../data/heisei"
+echo "Adding Heisei data"
+python add-heisei.py "../data/heisei"
 
 # add Meiji data
 echo "Adding Meiji data"
@@ -43,6 +43,9 @@ python add-kanji.py
 echo "Calculate attributes"
 
 python calculate-features.py
+
+
+echo "Copy scripts/namae.db to web/db/namae.db'"
 
 cp namae.db ../web/db/namae.db
 
@@ -64,7 +67,7 @@ python plot-diversity.py
 
 popd
 
-### need to make the jinmei graph
+### need to make the jinmei graph, but only once
 
+# python scripts/img-jinmei.py -o web/static/plot/
 
-echo "Still need to 'cp scripts/namae.db web/db/namae.db'"
