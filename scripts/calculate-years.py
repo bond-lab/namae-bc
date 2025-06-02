@@ -1,3 +1,9 @@
+"""
+This script calculates and stores the number of names per year from a database,
+and generates plots to visualize the data. It also includes functionality to
+store the number of live births per year.
+"""
+
 import sqlite3
 import os
 import matplotlib.pyplot as plt
@@ -5,6 +11,12 @@ import numpy as np
 from db import db_options, get_name_count_year
 
 def store_years(src):
+    """
+    Store the number of names per year in the database for a given source.
+
+    Args:
+        src (str): The source identifier for the data.
+    """
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
@@ -24,8 +36,10 @@ def store_years(src):
     conn.commit()
     conn.close()
     
-def store_births():       
-    # let's also add the number of live births
+def store_births():
+    """
+    Store the number of live births per year in the database.
+    """
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
@@ -48,9 +62,15 @@ def store_births():
     conn.close()
 
 def create_gender_plot(src):
+    """
+    Create and save a bar plot showing the number of names per year divided by gender.
+
+    Args:
+        src (str): The source identifier for the data.
+    """
 
 
-    # get data
+    # Get data from the database
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     names = get_name_count_year(conn,
@@ -71,17 +91,17 @@ def create_gender_plot(src):
     else:
         db_name = db_options[src][1]
             
-    # Create the figure and axis
+    # Create the figure and axis for plotting
     fig, ax = plt.subplots(figsize=(10, 6))
 
     filename =f'years_{src}'
     plot_path = os.path.join(os.path.dirname(__file__), f'../web/static/plot/{filename}.png')
      
-    # Plot men and women counts
+    # Plot male and female counts
     ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
     ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
 
-    # Add numbers on top of each bar for both men and women
+    # Add numbers on top of each bar for both male and female counts
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
         ax.text(years[i], female - 72, str(female),
                 ha='center', va='bottom', fontsize=10, color='white')
@@ -109,6 +129,7 @@ def create_gender_plot(src):
     plt.savefig(plot_path, format='png')
     plt.close(fig)
 
+# Iterate over each data source and update year counts and create plots
 for src in db_options:
     print(f'Updating Year Counts for {src}')
 
