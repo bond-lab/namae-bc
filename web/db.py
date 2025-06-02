@@ -7,7 +7,7 @@ from scipy.stats import chi2_contingency, fisher_exact
 
 
 # Database options
-# which table, Name, dtypes
+
 db_options = {
     'bc': ('namae', 'Baby Calendar',
            ('orth', 'pron', 'both')),

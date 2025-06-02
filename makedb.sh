@@ -28,12 +28,12 @@ echo "Making Tables and reading names"
 python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
 # add Heisei data
-echo "Adding Heisei data"
-python add-heisei.py "../data/heisei"
+#echo "Adding Heisei data"
+#python add-heisei.py "../data/heisei"
 
 # add Meiji data
-echo "Adding Heisei data"
-python add-meiji.py "../data/meiji.xlsx" "../data/meiji_total_year.tsv"
+echo "Adding Meiji data"
+python add-meiji.py "../data/meiji.xlsx"
 
 # add a table of single characters
 echo "Adding Kanji"
@@ -47,9 +47,9 @@ python calculate-features.py
 cp namae.db ../web/db/namae.db
 
 # index the tables
-echo "Adding indexes"
+#echo "Adding indexes"
 
-sqlite3 ../web/db/namae.db < add_indexes.sql
+#sqlite3 ../web/db/namae.db < add_indexes.sql
 
 # Build name_year_cache
 echo "Building yearly name cache"

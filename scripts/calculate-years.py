@@ -7,19 +7,6 @@ def main():
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
-    # Re-Create the cache table
-    c.execute('DROP TABLE IF EXISTS name_year_cache;')
-    c.execute('''
-    CREATE TABLE name_year_cache (
-        src TEXT,
-        dtype TEXT,
-        year INTEGER,
-        gender TEXT,
-        count INTEGER,
-        PRIMARY KEY (src, dtype, year, gender)
-    )
-    ''')
-
     for src in db_options:
         table = db_options[src][0]
     

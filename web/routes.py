@@ -28,9 +28,9 @@ threshold = 2
 
 ### [(feat1, feat2, name, (possible combinations)), ...
 features = [
-    ('char1', '', '1st Char.', ('bc', 'hs', 'hs+bc')),
-    ('char_1', '', 'Last Char.', ('bc', 'hs', 'hs+bc')),
-    ('char_2', 'char_1', 'Last 2 Chars', ('bc', 'hs', 'hs+bc')),
+    ('char1', '', '1st Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
+    ('char_1', '', 'Last Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
+    ('char_2', 'char_1', 'Last 2 Chars', ('bc', 'hs', 'hs+bc', 'meiji')),
     ('mora1', '', '1st Mora', ('bc')),
     ('mora_1', '', 'Last Mora', ('bc')),
     ('mora_2', 'mora_1', 'Last 2. Moras', ('bc')),
@@ -41,8 +41,8 @@ features = [
     ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc')),
     ('char_1', 'syll_1', 'Last Char. +  Syllable', ('bc')),
     ('char1', 'syll1', 'First Char. +  Syllable', ('bc')),
-    ('uni_ch', '', '1 Char. Name', ('bc', 'hs', 'hs+bc')),
-    ('kanji', '', 'Kanji', ('bc', 'hs', 'hs+bc')),
+    ('uni_ch', '', '1 Char. Name', ('bc', 'hs', 'hs+bc', 'meiji')),
+    ('kanji', '', 'Kanji', ('bc', 'hs', 'hs+bc', 'meiji')),
 ]
 
 overall = [

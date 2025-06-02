@@ -12,12 +12,12 @@ import sys
 # Add the parent directory to the system path for module imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from web.db import db_options, get_name_year
+from web.db import db_options, get_name_year, get_name_count_year
 from web.visualize import plot_multi_panel_trends
 
 # Constants for sampling runs
 MIN_RUNS = 1 #10
-MAX_RUNS = 2 # 1000
+MAX_RUNS = 10 # 1000
 
 # Berger-Parker index top N values
 BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]
@@ -225,8 +225,10 @@ conn = get_db_connection(db_path)
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
+    if 'hs' in src or 'db' in src:
+        continue
     for data_type in types:
-        if src in ['hs', 'hs+bc'] and data_type != 'orth':
+        if src in ['hs', 'hs+bc', 'meiji'] and data_type != 'orth':
             print(f"Skipping invalid combination: {src} with {data_type}")
             continue
 
