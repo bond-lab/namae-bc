@@ -103,11 +103,21 @@ def create_gender_plot(src):
     ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
     ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
 
+    # Function to format numbers based on bar width
+    def format_number(num, bar_width):
+        if bar_width < 0.3:
+            if num >= 1000:
+                return f"{num/1000:.1f}k"
+            else:
+                return f"{num}"
+        return f"{num:,}"
+
     # Add numbers on top of each bar for both male and female counts
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
-        ax.text(years[i], female - 72, str(female),
+        bar_width = ax.patches[i].get_width()
+        ax.text(years[i], female - 72, format_number(female, bar_width),
                 ha='center', va='bottom', fontsize=10, color='black')
-        ax.text(years[i], - male + 24, str(male),
+        ax.text(years[i], - male + 24, format_number(male, bar_width),
                 ha='center', va='bottom', fontsize=10, color='black')
 
     # Remove all spines and ticks for a minimalist look
