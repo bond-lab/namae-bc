@@ -26,7 +26,7 @@ def store_years(db_path, src):
         for dtyps in dtypes:
             print(table, dtyps)
             c.execute(f'''
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            INSERT OR IGNORE INTO name_year_cache (src, dtype, year, gender, count)
             SELECT src, 'orth', year, gender, COUNT(*)  as freq
             FROM {table}
             WHERE src = '{src}'
