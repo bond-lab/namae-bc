@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Book Diagrams and Tables</h1>
+  <p>This page contains all the diagrams and tables that will be used in the book.</p>
+
+  <!-- Add diagrams and tables here -->
+  <img src="{{ url_for('static', filename='plot/years_births.png') }}" alt="Births per Year">
+  <img src="{{ url_for('static', filename='plot/years_totals.png') }}" alt="Meiji Totals">
+  <!-- Add more images or tables as needed -->
+
+</div>
+{% endblock %}

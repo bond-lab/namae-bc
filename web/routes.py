@@ -307,6 +307,16 @@ def redup():
         stats=stats
     )
 
+@app.route("/book")
+def book():
+    """
+    Show all diagrams and tables for the book.
+    """
+    return render_template(
+        "book.html",
+        title='Book Diagrams and Tables',
+    )
+
 @app.route("/phenomena/jinmeiyou.html")
 def jinmei():
     """
