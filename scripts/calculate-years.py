@@ -10,14 +10,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from db import db_options, get_name_count_year
 
-def store_years(src):
+def store_years(db_path, src):
     """
     Store the number of names per year in the database for a given source.
 
     Args:
         src (str): The source identifier for the data.
     """
-    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
@@ -25,6 +24,7 @@ def store_years(src):
         table = db_options[src][0]
         dtypes =  db_options[src][2]
         for dtyps in dtypes:
+            print(table, dtyps)
             c.execute(f'''
             INSERT INTO name_year_cache (src, dtype, year, gender, count)
             SELECT src, 'orth', year, gender, COUNT(*)  as freq
@@ -36,11 +36,10 @@ def store_years(src):
     conn.commit()
     conn.close()
     
-def store_births():
+def store_births(db_path):
     """
     Store the number of live births per year in the database.
     """
-    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     fh = open('../data/live_births_year.tsv')
@@ -156,9 +155,14 @@ def create_gender_plot(src):
     plt.close(fig)
 
 # Iterate over each data source and update year counts and create plots
+
+db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+
+store_births(db_path)
+
 for src in db_options:
     print(f'Updating Year Counts for {src}')
-
+    store_years(db_path, src)
 
     print(f'Creating Graph for {src}')
     create_gender_plot(src)
