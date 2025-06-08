@@ -25,7 +25,18 @@ def store_years(db_path, src):
         dtypes =  db_options[src][2]
         for dtyps in dtypes:
             print(table, dtyps)
+            # Fetch the data that will be inserted
             c.execute(f'''
+            SELECT src, 'orth', year, gender, COUNT(*) as freq
+            FROM {table}
+            WHERE src = '{src}'
+            GROUP BY year, gender
+            HAVING freq > 0
+            ''')
+            rows = c.fetchall()
+            for row in rows:
+                print(f"Attempting to insert: src={row[0]}, dtype='orth', year={row[2]}, gender={row[3]}, count={row[4]}")
+            
             INSERT OR IGNORE INTO name_year_cache (src, dtype, year, gender, count)
             SELECT src, 'orth', year, gender, COUNT(*)  as freq
             FROM {table}
