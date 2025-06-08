@@ -45,10 +45,10 @@ features = [
 ]
 
 overall = [
-    ('script', '', 'Script'),
-    ('olength', '', 'Length Char.'),
-    ('mlength', '', 'Length Mora'),
-    ('slength', '', 'Length Syllables'),
+    ('script', '', 'Script', ('bc', 'hs', 'hs+bc', 'meiji')),
+    ('olength', '', 'Length Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
+    ('mlength', '', 'Length Mora', ('bc')),
+    ('slength', '', 'Length Syllables', ('bc')),
 ]
 
 phenomena = [

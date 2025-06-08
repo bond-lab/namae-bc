@@ -113,18 +113,20 @@ def create_gender_plot(src):
         ny = len(years)
         if ny  < 16:
             return 10
-        else:
+        elif ny  < 30:
             return 8
+        else:
+            return 7
         
 
     # Add numbers on top of each bar for both male and female counts
     
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
         bar_width = ax.patches[i].get_width()
-        ax.text(years[i], female, format_number(female, bar_width),
-                ha='center', va='bottom', fontsize=font_size(years), color='black')
-        ax.text(years[i], -male, format_number(male, bar_width),
+        ax.text(years[i],  0.98 * female, format_number(female, bar_width),
                 ha='center', va='top', fontsize=font_size(years), color='black')
+        ax.text(years[i], -0.98 * male, format_number(male, bar_width),
+                ha='center', va='bottom', fontsize=font_size(years), color='black')
 
     # Remove all spines and ticks for a minimalist look
     ax.spines['top'].set_visible(False)
@@ -140,7 +142,10 @@ def create_gender_plot(src):
 
     # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
-    ax.set_ylabel('Number of Names', fontsize=12)
+    if 'hs' in src:
+        ax.set_ylabel('Number of Names (in thousands)', fontsize=12)
+    else:
+        ax.set_ylabel('Number of Names', fontsize=12)
     ax.set_title(f'Number of Names per Year, Divided by Gender ({db_name})', fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling
