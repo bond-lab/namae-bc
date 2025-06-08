@@ -37,12 +37,14 @@ def store_years(db_path, src):
             for row in rows:
                 print(f"Attempting to insert: src={row[0]}, dtype='orth', year={row[2]}, gender={row[3]}, count={row[4]}")
             
+            c.execute(f'''
             INSERT OR IGNORE INTO name_year_cache (src, dtype, year, gender, count)
             SELECT src, 'orth', year, gender, COUNT(*)  as freq
             FROM {table}
             WHERE src = '{src}'
             GROUP BY year, gender
             HAVING freq > 0
+            ''')
             ''')
     conn.commit()
     conn.close()
