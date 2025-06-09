@@ -15,13 +15,18 @@ else
     uv pip install -r requirements-build.txt
 fi
 
+## location of database
+mkdir -p web/db
 
 ### Run scripts
 
 
 pushd scripts
 
-mv --backup=numbered namae.db namae.db.bak
+if [ -f namae.db ]; then
+    mv --backup=numbered namae.db namae.db.bak
+fi
+
 
 echo "Making Tables and reading names"
 # make table copy from excel
