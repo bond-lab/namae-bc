@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from db import db_options, get_name_count_year
 
-def store_years(db_path, src):
+def store_years(db_path):
     """
     Store the number of names per year in the database for a given source.
 
@@ -22,29 +22,14 @@ def store_years(db_path, src):
 
     for src in db_options:
         table = db_options[src][0]
-        dtypes =  db_options[src][2]
-        for dtyps in dtypes:
-            print(table, dtyps)
-            # Fetch the data that will be inserted
-            c.execute(f'''
-            SELECT src, 'orth', year, gender, COUNT(*) as freq
-            FROM {table}
-            WHERE src = '{src}'
-            GROUP BY year, gender
-            HAVING freq > 0
-            ''')
-            rows = c.fetchall()
-            for row in rows:
-                print(f"Attempting to insert: src={row[0]}, dtype='orth', year={row[2]}, gender={row[3]}, count={row[4]}")
-            
-            INSERT OR IGNORE INTO name_year_cache (src, dtype, year, gender, count)
-            SELECT src, 'orth', year, gender, COUNT(*)  as freq
-            FROM {table}
-            WHERE src = '{src}'
-            GROUP BY year, gender
-            HAVING freq > 0
-            ''')
-            ''')
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, COUNT(*)  as freq
+        FROM {table}
+        WHERE src = ?
+        GROUP BY year, gender
+        HAVING freq > 0
+        ''', (src, ))
     conn.commit()
     conn.close()
     
@@ -170,12 +155,15 @@ def create_gender_plot(src):
 
 db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
 
+
+print(f'Storing Year Counts')
+store_years(db_path)
+print(f'Storing Year for Births')
 store_births(db_path)
 
-for src in db_options:
-    print(f'Updating Year Counts for {src}')
-    store_years(db_path, src)
 
+
+for src in db_options:
     print(f'Creating Graph for {src}')
     create_gender_plot(src)
 
