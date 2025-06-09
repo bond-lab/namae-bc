@@ -312,9 +312,18 @@ def book():
     """
     Show all diagrams and tables for the book.
     """
+    try:
+        file_path = os.path.join(current_directory, f"static/data/book_tables.json")
+        with open(file_path) as f:
+            table_data = json.load(f)
+    except FileNotFoundError:
+        table_data=dict()    
+
+    
     return render_template(
         "book.html",
         title='Book Diagrams and Tables',
+        table_data=table_data,
     )
 
 @app.route("/phenomena/jinmeiyou.html")
