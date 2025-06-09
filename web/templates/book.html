@@ -21,10 +21,10 @@
 
   <h2><a name='ch01'>Chapter 01</a> </h2>
 
-  <h3>{{ table_data.caption }}</h3>
-  {{ render_table(table_data) }}
-
-
+  {% for key, table in table_data['ch01'].items() %}
+  <h3 name='{{key}}'>{{ table.caption }}</h3>
+  {{ render_table(table) }}
+  {% endfor %}
   
   <h2><a name='ch02'>Chapter 02</a> </h2>
   <h2><a name='ch03'>Chapter 03</a> </h2>

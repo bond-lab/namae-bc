@@ -1,9 +1,1 @@
-{
-    "headers": ["Product", "Price", "Quantity", "Total"],
-    "rows": [
-        ["Widget A", "1250.50", "100", "125050"],
-        ["Widget B", "2400", "75", "180000"],
-        ["Widget C", "500.25", "200", "100050"]
-    ],
-    "caption": "Sales Data - Q1 2024"
-}
+{"ch01": {"data_sum": {"caption": "Overview of data", "headers": ["Source", "From", "To", "# Names", "#/year", "Comment"], "rows": [["Baby Calendar", 2008, 2022, 15058, 1003.87, "Includes Pronunciation"], ["Meiji", 2006, 2022, 45658, 2685.76, "Most popular 100 names only"], ["Heisei", 1989, 2009, 14534080, 692099.05, "Noisy data"], ["Births", 1873, 2021, 223421443, 1499472.77, "Number of children born each year"]]}}}
