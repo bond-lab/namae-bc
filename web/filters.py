@@ -7,7 +7,10 @@ def format_cell(value):
     used in the render_table macro
     """
     if isinstance(value, (int, float)):
-        return {'value': f'{value:,}', 'is_number': True}
+        if isinstance(value, int) and value >= 1989 and value <=2023: # it's a year
+            return {'value': f'{value}', 'is_number': False}
+        else:
+            return {'value': f'{value:,}', 'is_number': True}
     
     if isinstance(value, str):
         clean_value = value.replace(',', '').replace('$', '').strip()
@@ -17,7 +20,10 @@ def format_cell(value):
                 return {'value': f'{num:,.2f}', 'is_number': True}
             else:
                 num = int(clean_value)
-                return {'value': f'{num:,}', 'is_number': True}
+                if num >= 1989 and num <=2023: # it's a year
+                    return {'value': f'{num}', 'is_number': False}
+                else:
+                    return {'value': f'{num:,}', 'is_number': True}
         except ValueError:
             pass
     

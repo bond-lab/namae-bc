@@ -42,7 +42,7 @@ def store_births(db_path):
     fh = open('../data/live_births_year.tsv')
     for l in fh:
         row = l.strip().split()
-        if row[0] == 'Year':
+        if not row or row[0] == 'Year':
             continue
         else:
             c.execute("""

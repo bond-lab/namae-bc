@@ -217,7 +217,12 @@ if __name__ == "__main__":
     # Method 1: Load from database
     db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     data = get_data(db_path)
-    create_japanese_names_chart(data, 'japanese_names_book_figure.png')
-    create_japanese_names_chart(data, 'japanese_names_book_figure_log.png',
+    outdir =  os.path.join(os.path.dirname(__file__), '../web/static/plot')
+
+    figpath = os.path.join(outdir, 'book_overview.png')
+    create_japanese_names_chart(data, figpath)
+
+    figpath = os.path.join(outdir, 'book_overview_log.png')
+    create_japanese_names_chart(data, figpath,
                                 use_log_scale=True)
     

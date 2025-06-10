@@ -26,6 +26,8 @@ base = { 'caption':'',
 
 def DBname(src):
     names = {'totals':'Meiji (Total)',
+             'meiji':'Meiji Yasuda',
+             'hs':'Heisei Namae',
              'births':'Births'}
     if src in names:
         return names[src]
@@ -35,7 +37,7 @@ def DBname(src):
         'Unknown'
     
 
-def make_overview(c):
+def make_overview(c, start=1989):
     """
     Summarise the data sources
     """
@@ -43,11 +45,12 @@ def make_overview(c):
     table['caption'] = "Overview of data"
     table['headers'] = ["Source", "From", "To", '# Names', "#/year", "Comment"]
     
-    c.execute("""select src, min(year), max(year), sum(count) as freq
-    from name_year_cache
-    where src in ('bc', 'hs', 'meiji', 'births')
-    group by src
-    order by freq""")
+    c.execute("""SELECT src, min(year), max(year), sum(count) AS freq
+    FROM name_year_cache
+    WHERE src IN ('bc', 'hs', 'meiji', 'births')
+    AND year >= ? 
+    GROUP BY src
+    ORDER BY freq""", (start,))
 
     comment = { 'bc': 'Includes Pronunciation',
                 'hs': 'Noisy data',
