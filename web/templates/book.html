@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% from 'macros.html' import render_table %}
+{% from 'macros.html' import render_table, show_plot %}
 
 {% block content %}
 <div class="container">
@@ -25,10 +25,22 @@
   <h3 name='{{key}}'>{{ table.caption }}</h3>
   {{ render_table(table) }}
   {% endfor %}
+
+  {{ show_plot('book_overview.png', "Data sets size over time, linear scale") }}
+
+  {{ show_plot('book_overview_log.png', "Data sets size over time, log scale") }}
   
   <h2><a name='ch02'>Chapter 02</a> </h2>
   <h2><a name='ch03'>Chapter 03</a> </h2>
   <h2><a name='ch04'>Chapter 04</a> </h2>
+
+  {% for key, table in table_data['ch04'].items() %}
+  <h3 name='{{key}}'>{{ table.caption }}</h3>
+  {{ render_table(table) }}
+  {% endfor %}
+
+  {{ show_plot('book_meiji_vs_hs.png', "Similarity of Meiji and Heisei") }}
+  {{ show_plot('book_meiji_vs_bc.png', "Similarity of Meiji and Baby Calendar") }}
   <h2><a name='ch05'>Chapter 05</a> </h2>
   <h2><a name='ch06'>Chapter 06</a> </h2>
   <h2><a name='ch07'>Chapter 07</a> </h2>

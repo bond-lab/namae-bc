@@ -69,6 +69,17 @@ echo "Making Graphs"
 
 python plot-diversity.py
 
+# make things for the book
+
+### make tables
+python pub-tables.py
+
+### make year plots
+python pub-years.py
+
+### compare meiji and other data
+python pub-agreement.py
+
 
 popd
 

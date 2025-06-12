@@ -1,5 +1,7 @@
 from flask import session
 import matplotlib.pyplot as plt
+import matplotlib.style as style
+from cycler import cycler
 import numpy as np
 import io
 
@@ -91,6 +93,67 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
     plt.close(fig)    
 
 
+ 
+
+def setup_tufte_style():
+    """Apply Tufte-inspired styling to matplotlib"""
+    
+    # Tufte color palette (muted)
+    tufte_colors = ['#4C72B0', '#55A868', '#C44E52', '#8172B2', 
+                   '#CCB974', '#64B5CD', '#DA8BC8']
+    
+    plt.rcParams.update({
+        # Figure
+        'figure.facecolor': 'white',
+        'figure.edgecolor': 'none',
+        'figure.figsize': (10, 6),
+        
+        # Axes
+        'axes.facecolor': 'white',
+        'axes.edgecolor': 'none',
+        'axes.linewidth': 0,
+        'axes.spines.left': False,
+        'axes.spines.bottom': False,
+        'axes.spines.top': False,
+        'axes.spines.right': False,
+        'axes.grid': False,
+        'axes.prop_cycle': cycler('color', tufte_colors),
+        
+        # Ticks
+        'xtick.bottom': False,
+        'xtick.top': False,
+        'ytick.left': False,  
+        'ytick.right': False,
+        
+        # Font
+        'font.size': 11,
+        'axes.labelsize': 12,
+        'axes.titlesize': 14,
+        'legend.fontsize': 10,
+        
+        # Lines
+        'lines.linewidth': 2,
+        'lines.solid_capstyle': 'round',
+    })
+
+def add_minimal_labels(ax, show_values=True):
+    """Add minimal labels directly to data points (Tufte style)"""
+    if show_values:
+        # Remove traditional axes labels and add direct labeling
+        ax.set_xlabel('')
+        ax.set_ylabel('')
+        
+        # You can add custom direct labeling here
+        # This depends on your specific plot type
+
+def save_plot(filename, dpi=300, bbox_inches='tight'):
+    """Consistent save settings"""
+    plt.savefig(f'static/plot/{filename}', 
+               dpi=dpi, 
+               bbox_inches=bbox_inches,
+               facecolor='white',
+               edgecolor='none')
+    
 # def create_gender_plot(years, male_counts, female_counts, db_name):
 #     # Create the figure and axis
 #     fig, ax = plt.subplots(figsize=(12, 6))
