@@ -1,14 +1,22 @@
 # filters.py
-def format_cell(value):
+def format_cell(value, round_decimals=3):
     """
     Format cell - return formatted number
        and indicate if it should be right-aligned
-
     used in the render_table macro
+    
+    Parameters:
+    -----------
+    value : any
+        The value to format
+    round_decimals : int, optional
+        Number of decimal places to round float values to (default: 3)
     """
     if isinstance(value, (int, float)):
         if isinstance(value, int) and value >= 1989 and value <=2023: # it's a year
             return {'value': f'{value}', 'is_number': False}
+        elif isinstance(value, float):
+            return {'value': f'{value:,.{round_decimals}f}', 'is_number': True}
         else:
             return {'value': f'{value:,}', 'is_number': True}
     
@@ -17,7 +25,7 @@ def format_cell(value):
         try:
             if '.' in clean_value:
                 num = float(clean_value)
-                return {'value': f'{num:,.2f}', 'is_number': True}
+                return {'value': f'{num:,.{round_decimals}f}', 'is_number': True}
             else:
                 num = int(clean_value)
                 if num >= 1989 and num <=2023: # it's a year

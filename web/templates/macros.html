@@ -23,6 +23,7 @@
 </div>
 {%- endmacro %}
 
+
 <!-- Sample Table -->
 <!-- { -->
 <!--     "headers": ["Product", "Price", "Quantity", "Total"], -->
@@ -33,3 +34,8 @@
 <!--     ], -->
 <!--     "caption": "Sales Data - Q1 2024" -->
 <!-- } -->
+
+{%- macro show_plot(filename, alt_text) -%}
+<h3>{{ alt_text }}</h3>
+<img class="img-fluid" src="{{ url_for('static', filename='plot/' + filename) }}" alt="{{ alt_text }}">
+{%- endmacro %}
