@@ -1,0 +1,58 @@
+{
+  "baseLinkURLMale": "/listM.html",
+  "nameListMale": [
+    {
+      "rankNum": 1,
+      "viewText": "翔",
+      "targetURL": "name01"
+    },
+    {
+      "rankNum": 2,
+      "viewText": "陽",
+      "targetURL": "name02"
+    },
+    {
+      "rankNum": 3,
+      "viewText": "斗",
+      "targetURL": "name03"
+    },
+    {
+      "rankNum": 4,
+      "viewText": "大",
+      "targetURL": "name04"
+    },
+    {
+      "rankNum": 5,
+      "viewText": "真",
+      "targetURL": "name05"
+    }
+  ],
+  "baseLinkURLFemale": "/listF.html",
+  "nameListFemale": [
+    {
+      "rankNum": 1,
+      "viewText": "愛",
+      "targetURL": "name01"
+    },
+    {
+      "rankNum": 2,
+      "viewText": "心",
+      "targetURL": "name02"
+    },
+    {
+      "rankNum": 3,
+      "viewText": "莉",
+      "targetURL": "name03"
+    },
+    {
+      "rankNum": 4,
+      "viewText": "菜",
+      "targetURL": "name04"
+    },
+    {
+      "rankNum": 5,
+      "viewText": "花",
+      "targetURL": "name05"
+    }
+  ]
+}
