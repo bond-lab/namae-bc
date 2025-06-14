@@ -65,10 +65,22 @@ def make_overview(c, start=1989):
         table['rows'].append(cols)
     return table
     
+def make_summary(src):
+    table = base.copy()
+    table['caption'] = f"Overview of data for {DBname(src)}"
+    table['headers'] = ["Year", "Boys", "Girls", 'Ratio']
+    
 
+
+
+    
 tables['ch01']['data_sum'] = make_overview(cursor)
 
+target_sources = ['bc', 'heisei', 'meiji', 'births']
+ 
+for src in target_sources:
+    tables['ch0A'][f'data_sum_{src}'] =  make_summary(src)
 
-
+    
 with open(data_path, 'w') as out:
     json.dump(tables, out)

@@ -54,7 +54,8 @@ def load_heisei_data(data_dir, db_path):
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     log = open("heisei.log", 'w')
-    stats =dd(int)        
+    stats =dd(int)
+    ranked = []
     for directory, gender in [('boy', 'M'), ('girl', 'F')]:
         dir_path = os.path.join(data_dir, directory)
         for filename in os.listdir(dir_path):
@@ -64,7 +65,7 @@ def load_heisei_data(data_dir, db_path):
                     for line in file:
                         parts = line.strip().split('\t')
                         if len(parts) == 3:
-                            name, frequency = parts[1], int(parts[2])
+                            rank, name, frequency = int(parts[0]), parts[1], int(parts[2])
                             for (f, t) in mapping:
                                 oldname = name
                                 name = name.replace(f, t)
@@ -80,6 +81,7 @@ def load_heisei_data(data_dir, db_path):
                                     c.executemany(""" 
                                     INSERT INTO namae (year, orth, gender, src)
                                     VALUES (?, ?, ?, ?)""", data)
+                                    ranked.append((year, orth, rank, gender, freqency, src))
                                     stats['good\ttype'] += 1
                                     stats['good\ttoken'] += frequency
                                 else:
@@ -92,7 +94,11 @@ def load_heisei_data(data_dir, db_path):
                                       file=log)
                                 stats['reject\ttype'] += 1
                                 stats['reject\ttoken'] += frequency
-
+    c.executemany("""
+    INSERT INTO ranked (year, orth, rank, gender, src)
+                VALUES (?, ?, ?, ?, ?, ?)""", data)
+    """, ranked)
+                                
     print("\n\n## Statistics\n", file=log)
     for s, f in stats.items():
         print(f'{s}\t{f}', file=log)

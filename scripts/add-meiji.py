@@ -18,7 +18,9 @@ def load_meiji_data(excel_path, db_path):
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     data = []
-    totals = []
+    # from https://osf.io/za6x7/files/osfstorage
+    # https://doi.org/10.17605/OSF.IO/ZA6X7
+    totals = [(2004, 'M', 4861), (2004, 'F', 4419), (2005, 'M', 4292), (2005, 'F', 4082) ]
     for year in range(2006,2023):
         excel_data = pd.read_excel(excel_path,
                                    sheet_name=str(year),
