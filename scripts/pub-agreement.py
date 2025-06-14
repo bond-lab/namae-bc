@@ -259,10 +259,12 @@ def get_meiji(conn):
     """
     c = conn.cursor()
     c.execute(f"""
-    SELECT year, gender, orth, count(orth)
-    FROM namae
+    SELECT year, gender, orth, freq
+    FROM nrank
     WHERE src = 'meiji'
-    GROUP BY year, gender, orth
+    AND orth IS NOT NULL
+    AND freq IS NOT NULL
+    ORDER by year, rank
     """)
     byyear = dd(lambda: dd(lambda: dd(int)))
     for year, gender, orth, freq in c:
@@ -384,11 +386,13 @@ if __name__ == "__main__":
         print(f"Plot saved as: {filename}")
 
     # Save results to JSON
+    #print(tables)
     data_path = os.path.join(os.path.dirname(__file__), '../web/static/data/book_tables.json')
     try:
         with open(data_path) as f:
             old_tables = json.load(f)
-        tables.update(old_tables)
+        old_tables.update(tables)
+        tables = old_tables
     except FileNotFoundError:
         print(f"Warning: {data_path} not found, creating new file")
     

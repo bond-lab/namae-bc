@@ -8,6 +8,15 @@ CREATE TABLE namae (nid  INTEGER primary key,
 		   explanation TEXT,
 		   src TEXT);
 
+CREATE TABLE nrank (nrid  INTEGER primary key,
+       	     	   year INTEGER,  -- year
+		   orth TEXT,     -- written form
+		   pron TEXT,	  -- pronunciation (in hiragana)
+		   rank INTEGER,     -- 1 is most frequent, same frequency are tied
+		   gender TEXT,   -- M or F
+		   freq INTEGER,     -- how often it occurs
+		   src TEXT);     -- source: hs, meiji, ..
+
 CREATE TABLE attr (nid  INTEGER NOT NULL,
       olength INTEGER, --length of name
       plength INTEGER, --length of pronunciation

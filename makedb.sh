@@ -38,7 +38,11 @@ python add-heisei.py "../data/heisei"
 
 # add Meiji data
 echo "Adding Meiji data"
-python add-meiji.py "../data/meiji.xlsx"
+python add-meiji-api.py namae.db \
+       ../data/meiji_yasuda_data/processed/combined_rankings.csv \
+       ../data/meiji_total_year.tsv 
+
+# python add-meiji.py "../data/meiji.xlsx"
 
 # add a table of single characters
 echo "Adding Kanji"
