@@ -145,7 +145,7 @@ m    -----------
     # Save as high-quality PNG
     plt.savefig(output_filename, dpi=dpi, bbox_inches='tight', 
                facecolor='white', edgecolor='none')
-    plt.show()
+    #plt.show()
     
     # Print summary statistics for the book
     print(f"\nDataset Coverage Summary:")
