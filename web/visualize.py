@@ -39,8 +39,8 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
         
         # For each gender, collect valid data points (years where the metric exists)
         for gender, color, marker, label in [
-            ('M', 'blue', 'o', 'Boys'), 
-            ('F', 'red', 's', 'Girls')
+            ('M', 'orange', 'o', 'Boys'), 
+            ('F', 'purple', 's', 'Girls')
         ]:
             # Get years where this metric exists for this gender
             valid_years = []
@@ -76,7 +76,8 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
                                 color=color, alpha=0.7, linewidth=1)
                         ax.plot(valid_ci_years, valid_ci_upper, linestyle='--', 
                                 color=color, alpha=0.7, linewidth=1)
-        
+
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         ax.set_title(metric)
         ax.legend(frameon=False)
         ax.grid(False)

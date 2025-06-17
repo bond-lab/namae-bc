@@ -17,6 +17,16 @@ CREATE TABLE nrank (nrid  INTEGER primary key,
 		   freq INTEGER,     -- how often it occurs
 		   src TEXT);     -- source: hs, meiji, ..
 
+CREATE TABLE name_year_cache (
+       src TEXT,     -- where its from
+       dtype TEXT,   -- dtype orth|pron|both|total|birth
+       year INTEGER, -- year
+       gender TEXT,
+       count INTEGER, -- how many
+       PRIMARY KEY (src, dtype, year, gender)
+    );
+
+
 CREATE TABLE attr (nid  INTEGER NOT NULL,
       olength INTEGER, --length of name
       plength INTEGER, --length of pronunciation
@@ -53,15 +63,6 @@ CREATE TABLE kanji (kid  INTEGER primary key,
        other TEXT,
        nanori TEXT,
        scount INTEGER);
-
-CREATE TABLE name_year_cache (
-       src TEXT,     -- where its from
-       dtype TEXT,   -- dtype orth|pron|both|total|birth
-       year INTEGER, -- year
-       gender TEXT,
-       count INTEGER, -- how many
-       PRIMARY KEY (src, dtype, year, gender)
-    );
 
 
 -- Create a view that combines names from Heisei and Baby Calendar

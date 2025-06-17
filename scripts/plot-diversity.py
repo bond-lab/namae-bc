@@ -17,7 +17,7 @@ from web.visualize import plot_multi_panel_trends
 
 # Constants for sampling runs
 MIN_RUNS = 1 #10
-MAX_RUNS = 10 # 1000
+MAX_RUNS = 1 # 1000
 
 # Berger-Parker index top N values
 BERGER_PARKER_TOP_N = [1, 5, 10, 50, 100]

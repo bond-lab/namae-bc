@@ -38,9 +38,10 @@ python add-heisei.py "../data/heisei"
 
 # add Meiji data
 echo "Adding Meiji data"
-python add-meiji-api.py namae.db \
-       ../data/meiji_yasuda_data/processed/combined_rankings.csv \
-       ../data/meiji_total_year.tsv 
+python add-meiji-api.py  namae.db  \
+       ../data/meiji_yasuda_data/processed/combined_rankings.csv   \
+       ../data/meiji_total_year.tsv  \
+       ../data/meiji.xlsx 
 
 # python add-meiji.py "../data/meiji.xlsx"
 
@@ -84,6 +85,8 @@ python pub-years.py
 ### compare meiji and other data
 python pub-agreement.py
 
+### make meiji diversity
+python plot-meiji.py
 
 popd
 

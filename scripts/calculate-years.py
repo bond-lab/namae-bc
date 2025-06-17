@@ -22,14 +22,26 @@ def store_years(db_path):
 
     for src in db_options:
         table = db_options[src][0]
-        c.execute(f'''
-        INSERT INTO name_year_cache (src, dtype, year, gender, count)
-        SELECT src, 'orth', year, gender, COUNT(*)  as freq
-        FROM {table}
-        WHERE src = ?
-        GROUP BY year, gender
-        HAVING freq > 0
-        ''', (src, ))
+        if src in ('meiji', 'hs'):
+            c.execute(f'''
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
+            FROM nrank
+            WHERE src = ?
+            GROUP BY year, gender
+            HAVING tfreq > 0
+            ORDER BY year, gender
+            ''', (src, ))
+        else:
+            c.execute(f'''
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
+            FROM {table}
+            WHERE src = ?
+            GROUP BY year, gender
+            HAVING tfreq > 0
+            ORDER BY year, gender
+            ''', (src, ))
     conn.commit()
     conn.close()
     

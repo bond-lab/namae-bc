@@ -19,7 +19,7 @@ c = conn.cursor()
 conn.execute("BEGIN TRANSACTION")
 
 # Fetch all name data
-c.execute("SELECT nid, orth, gender FROM namae")
+c.execute("SELECT nid, orth, gender FROM namae WHERE orth IS NOT null")
 
 with open('kanji.yaml') as fh:
     kanji = yaml.load(fh, Loader=yaml.SafeLoader)

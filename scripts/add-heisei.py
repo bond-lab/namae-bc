@@ -81,7 +81,7 @@ def load_heisei_data(data_dir, db_path):
                                     c.executemany(""" 
                                     INSERT INTO namae (year, orth, gender, src)
                                     VALUES (?, ?, ?, ?)""", data)
-                                    ranked.append((year, orth, rank, gender, freqency, src))
+                                    ranked.append((year, name, rank, gender, frequency, 'hs'))
                                     stats['good\ttype'] += 1
                                     stats['good\ttoken'] += frequency
                                 else:
@@ -95,9 +95,8 @@ def load_heisei_data(data_dir, db_path):
                                 stats['reject\ttype'] += 1
                                 stats['reject\ttoken'] += frequency
     c.executemany("""
-    INSERT INTO ranked (year, orth, rank, gender, src)
-                VALUES (?, ?, ?, ?, ?, ?)""", data)
-    """, ranked)
+    INSERT INTO nrank (year, orth, rank, gender, freq, src)
+                VALUES (?, ?, ?, ?, ?, ?)""", ranked)
                                 
     print("\n\n## Statistics\n", file=log)
     for s, f in stats.items():
