@@ -3,6 +3,8 @@ import sqlite3
 import numpy as np
 import sys, os
 
+from db import cache_years
+
 db = "namae.db"
 
 scriptdir = os.path.dirname(sys.argv[0])
@@ -42,6 +44,7 @@ for (sheet, gender) in [(0, 'M'), (1, 'F')]:
                                        'bc'))
 conn.commit()
 
+cache_years(db, 'bc')
 
 
 

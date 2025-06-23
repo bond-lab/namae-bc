@@ -5,6 +5,10 @@ import regex
 import yaml
 from collections import defaultdict as dd
 
+
+from db import cache_years
+
+
 mapping = [('―', 'ー'),
            ('－', 'ー'),
            ('-', 'ー'),
@@ -106,6 +110,8 @@ def load_heisei_data(data_dir, db_path):
     conn.close()
 
 if __name__ == "__main__":
-    data_directory = sys.argv[1]
-    database_path = "namae.db"
+
+    database_path = sys.argv[1]
+    data_directory = sys.argv[2]
     load_heisei_data(data_directory, database_path)
+    cache_years(database_path, 'hs')

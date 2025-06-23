@@ -28,15 +28,14 @@ if [ -f namae.db ]; then
 fi
 
 
-echo "Making Tables and reading names"
-# make table copy from excel
+echo "Making Tables and reading names from Baby Calender"
 python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
-# add Heisei data
-echo "Adding Heisei data"
-python add-heisei.py "../data/heisei"
 
-# add Meiji data
+echo "Adding Heisei data"
+python add-heisei.py namae.db "../data/heisei"
+
+
 echo "Adding Meiji data"
 python add-meiji-api.py  namae.db  \
        ../data/meiji_yasuda_data/processed/combined_rankings.csv   \
@@ -44,6 +43,10 @@ python add-meiji-api.py  namae.db  \
        ../data/meiji.xlsx 
 
 # python add-meiji.py "../data/meiji.xlsx"
+
+
+echo "Adding Birth data"
+python add-births.py namae.db
 
 # add a table of single characters
 echo "Adding Kanji"
@@ -64,20 +67,21 @@ cp namae.db ../web/db/namae.db
 
 #sqlite3 ../web/db/namae.db < add_indexes.sql
 
-# Build name_year_cache
-echo "Building yearly name cache"
 
-python calculate-years.py
+echo "Make Year graphs"
 
-# make the graphs
-echo "Making Graphs"
+python plot-years.py ../web/db/namae.db \
+       ../web/static/plot/
+
+echo "Making Diversity Graphs"
 
 python plot-diversity.py
 
 # make things for the book
 
 ### make tables
-python pub-tables.py
+python pub-tables.py ../web/db/namae.db \
+       ../web/static/data/book_tables.json ## output file
 
 ### make year plots
 python pub-years.py
@@ -86,7 +90,7 @@ python pub-years.py
 python pub-agreement.py
 
 ### make meiji diversity
-python plot-meiji.py
+python plot_meiji.py
 
 popd
 

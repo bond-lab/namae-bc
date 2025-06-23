@@ -5,71 +5,13 @@ store the number of live births per year.
 """
 
 import sqlite3
-import os
+import os, sys
 import matplotlib.pyplot as plt
 import numpy as np
 from db import db_options, get_name_count_year
 
-def store_years(db_path):
-    """
-    Store the number of names per year in the database for a given source.
 
-    Args:
-        src (str): The source identifier for the data.
-    """
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-
-    for src in db_options:
-        table = db_options[src][0]
-        if src in ('meiji', 'hs'):
-            c.execute(f'''
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
-            SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
-            FROM nrank
-            WHERE src = ?
-            GROUP BY year, gender
-            HAVING tfreq > 0
-            ORDER BY year, gender
-            ''', (src, ))
-        else:
-            c.execute(f'''
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
-            SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
-            FROM {table}
-            WHERE src = ?
-            GROUP BY year, gender
-            HAVING tfreq > 0
-            ORDER BY year, gender
-            ''', (src, ))
-    conn.commit()
-    conn.close()
-    
-def store_births(db_path):
-    """
-    Store the number of live births per year in the database.
-    """
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-    fh = open('../data/live_births_year.tsv')
-    for l in fh:
-        row = l.strip().split()
-        if not row or row[0] == 'Year':
-            continue
-        else:
-            c.execute("""
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
-            VALUES ('births', 'orth', ?, 'M', ?)
-            """, (int(row[0]), int(row[2])))
-            c.execute("""
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
-            VALUES ('births', 'orth', ?, 'F', ?)
-            """, (int(row[0]), int(row[3])))
-
-    conn.commit()
-    conn.close()
-
-def create_gender_plot(src):
+def create_gender_plot(src, db_path, plot_dir):
     """
     Create and save a bar plot showing the number of names per year divided by gender.
 
@@ -79,7 +21,6 @@ def create_gender_plot(src):
 
 
     # Get data from the database
-    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
     conn = sqlite3.connect(db_path)
     names = get_name_count_year(conn,
                                 src=src,
@@ -105,7 +46,7 @@ def create_gender_plot(src):
     fig, ax = plt.subplots(figsize=(10, 6))
 
     filename =f'years_{src}'
-    plot_path = os.path.join(os.path.dirname(__file__), f'../web/static/plot/{filename}.png')
+    plot_path = os.path.join(plot_dir, f'{filename}.png')
      
     # Plot male and female counts
     ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
@@ -168,22 +109,25 @@ def create_gender_plot(src):
 db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
 
 
-print(f'Storing Year Counts')
-store_years(db_path)
-print(f'Storing Year for Births')
-store_births(db_path)
+#print(f'Storing Year Counts')
+#store_years(db_path)
+#print(f'Storing Year for Births')
+#store_births(db_path)
+
+if __name__ == "__main__":
+    db_path  = sys.argv[1] or os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+    plot_dir = sys.argv[2] or os.path.join(os.path.dirname(__file__), f'../web/static/plot/')
 
 
+    for src in db_options:
+        print(f'Creating Graph for {src}')
+        create_gender_plot(src, db_path, plot_dir)
 
-for src in db_options:
-    print(f'Creating Graph for {src}')
-    create_gender_plot(src)
 
-    
-print(f'Creating Graph for Births')
-create_gender_plot('births')
+    print(f'Creating Graph for Births')
+    create_gender_plot('births', db_path, plot_dir)
 
-print(f'Creating Graph for Meiji Totals')
-create_gender_plot('totals')
+    print(f'Creating Graph for Meiji Totals')
+    create_gender_plot('totals', db_path, plot_dir)
          
 

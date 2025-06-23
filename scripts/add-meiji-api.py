@@ -3,6 +3,8 @@ import sqlite3
 import sys
 import jaconv
 
+from db import cache_years
+
 def add_meiji(database_path, data_path, total_path):
     """
     Add this data:
@@ -124,11 +126,11 @@ ORDER BY year, orth, counter""", (src,))
 
     
 if __name__ == "__main__":
-    database_path = sys.argv[1]
+    db_path = sys.argv[1]
     data_path = sys.argv[2]
     total_path = sys.argv[3]
     excel_path = sys.argv[4]
-    add_meiji(database_path, data_path, total_path)
-    add_missing(excel_path, database_path)
-    update_namae (database_path, 'meiji')
-
+    add_meiji(db_path, data_path, total_path)
+    add_missing(excel_path, db_path)
+    update_namae (db_path, 'meiji')
+    cache_years(db_path, 'meiji')

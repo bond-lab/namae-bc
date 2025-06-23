@@ -63,7 +63,10 @@ def get_name(conn, table='namae', src='bc'):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
-def get_name_count_year(conn, src='bc', dtype='orth'):
+def get_name_count_year(conn, src='bc',
+                        dtype='orth',
+                        start =1989,
+                        end = 2022):
     """
     Retrieve cached counts of names data from the database, 
     organized by year and gender.
@@ -87,8 +90,9 @@ def get_name_count_year(conn, src='bc', dtype='orth'):
     SELECT year, gender, count
     FROM name_year_cache
     WHERE src = ? and dtype = ?
+    AND year >= ? and year <= ?
     ORDER BY year
-    """, (src, dtype))
+    """, (src, dtype, start, end))
     byyear = dd(lambda: dd(int))
     for year, gender, cnt in c:
         byyear[year][gender] =  cnt  
@@ -97,7 +101,9 @@ def get_name_count_year(conn, src='bc', dtype='orth'):
 
 def get_name_year(conn, table='namae',
                   src='bc',
-                  dtype='both'):
+                  dtype='both',
+                  start =1989,
+                  end = 2022):
     """
     Retrieve names data from the database, organized by year and gender.
 
@@ -127,7 +133,9 @@ def get_name_year(conn, table='namae',
 
     c.execute(f"""SELECT {select_columns}
     FROM {table}
-    WHERE src = ? ORDER BY year""", (src,))
+    WHERE src = ?
+    AND year >= ? and year <= ?
+    ORDER BY year""", (src, start, end))
     byyear =  dd(lambda:  dd(list))
     for row in c:
         if dtype == 'orth':
@@ -392,4 +400,40 @@ def get_readings(conn, kanjis):
 # get_readings(conn, ['妃'])
 # Output: { '妃': {'on': ['ひ'], 'kun': ['きさき'], 'nanori': ['き', 'ぴ', 'み']} }
 
+    
+
+def cache_years(db_path, src):
+    """
+    Store the number of names per year in the database for a given source.
+
+    Args:
+        src (str): The source identifier for the data.
+    """
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    
+    if src in ('meiji', 'hs', 'births'):
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
+        FROM nrank
+        WHERE src = ?
+        GROUP BY year, gender
+        HAVING tfreq > 0
+        ORDER BY year, gender
+        ''', (src, ))
+    else: 
+        table = db_options[src][0]
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
+        FROM {table}
+        WHERE src = ?
+        GROUP BY year, gender
+        HAVING tfreq > 0
+        ORDER BY year, gender
+        ''', (src, ))
+    conn.commit()
+    conn.close()
     

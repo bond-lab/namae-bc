@@ -43,15 +43,19 @@
   {{ show_plot('book_meiji_vs_bc.png', "Similarity of Meiji and Baby Calendar") }}
   <h2><a name='ch05'>Chapter 05</a> </h2>
   <h2><a name='ch06'>Chapter 06</a> </h2>
-  {{ show_plot('diversity_hs_orth_BP_slope.png', "Diversity for Heisei using Berger-Parker (orth)") }}
-  {{ show_plot('diversity_meiji_orth_BP_slope.png', "Diversity for Meiji using Berger-Parker (orth)") }}
-  {{ show_plot('diversity_meiji_pron_BP_slope.png', "Diversity for Meiji using Berger-Parker (pron)") }}
+  {{ show_plot('diversity_hs_orth_BP_slope.png', "Diversity for Heisei Namae using Berger-Parker (orth)") }}
+  {{ show_plot('diversity_meiji_orth_BP_slope.png', "Diversity for Meiji Yasuda using Berger-Parker (orth)") }}
+  {{ show_plot('diversity_meiji_pron_BP_slope.png', "Diversity for Meiji Yasuda using Berger-Parker (pron)") }}
+  {{ show_plot('diversity_hs_orth_diversity.png', "Diversity Measures for Heisei Namae (orth)") }}
   
   <h2><a name='ch07'>Chapter 07</a> </h2>
   <h2><a name='ch08'>Chapter 08</a> </h2>
   <h2><a name='ch09'>Chapter 09</a> </h2>
   <h2><a name='ch0A'>Appendix A</a> </h2>
-
+  {% for key, table in table_data['ch0A'].items() %}
+  <h3 name='{{key}}'>{{ table.caption }}</h3>
+  {{ render_table(table) }}
+  {% endfor %}
   
   <!-- Add diagrams and tables here -->
   <img src="{{ url_for('static', filename='plot/years_births.png') }}" alt="Births per Year">

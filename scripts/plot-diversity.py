@@ -14,6 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from web.db import db_options, get_name_year, get_name_count_year
 from web.visualize import plot_multi_panel_trends
+from plot_meiji import calculate_trend_statistics, plot_multi_panel_trends_with_stats
 
 # Constants for sampling runs
 MIN_RUNS = 1 #10
@@ -225,7 +226,7 @@ conn = get_db_connection(db_path)
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
-    if 'hs' in src or 'db' in src:
+    if 'hs' not in src:
         continue
     for data_type in types:
         if src in ['hs', 'hs+bc', 'meiji'] and data_type != 'orth':
@@ -312,7 +313,17 @@ for src in db_options:
             plot_multi_panel_trends(all_metrics, ["TTR", "Newness", "Char TTR", "Char Newness"],
                                     "TTR and Newness Measures",
                                     plot_path)
-        
+
+        # plot for book
+        plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
+        selected_metrics= ["Shannon", "Evenness", "Gini-Simpson", "TTR"]
+        trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
+        plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
+                                           "Diversity Measures",
+                                           plot_path,
+                                           trend_stats=trend_stats,  
+                                           confidence_intervals=None)
+            
         # Save diversity metrics to JSON
         diversity_data = {
             "metrics": all_metrics
