@@ -3,6 +3,7 @@ from collections import Counter, defaultdict as dd
 import sqlite3
 import random
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
 from tabulate import tabulate
 
@@ -215,9 +216,9 @@ def blend_colors(color1, color2, blend_ratio):
     """
     # Convert colors to RGB if they're strings
     if isinstance(color1, str):
-        color1 = plt.colors.to_rgb(color1)
+        color1 = mcolors.to_rgb(color1)
     if isinstance(color2, str):
-        color2 = plt.colors.to_rgb(color2)
+        color2 = mcolors.to_rgb(color2)
     
     # Blend the colors
     blended = tuple(
@@ -264,8 +265,8 @@ def graph_proportion2(data, gname):
 
     # Bar plot with mixed colors and transparency
     for i, bin in enumerate(bins):
-    blended_color = blend_colors(female_color, male_color, male_percentages[i])
-    plt.bar(bin, totals[i], color=blended_color, alpha=0.6)
+        blended_color = blend_colors(female_color, male_color, male_percentages[i])
+        plt.bar(bin, totals[i], color=blended_color, alpha=0.6)
 
     # Line plots for M and F
     #plt.plot(bins, male_values, color='blue', marker='o', label='M')
