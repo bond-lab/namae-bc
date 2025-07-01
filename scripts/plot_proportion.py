@@ -201,6 +201,35 @@ def graph_proportion(stats, total_names, gname):
     plt.savefig(f'pron_gender_proportion_histogram_{gname}.png', dpi=300, bbox_inches='tight')
     #plt.show()
 
+def blend_colors(color1, color2, blend_ratio):
+    """
+    Blend two colors based on a ratio.
+    
+    Parameters:
+    color1: tuple or string - first color (RGB tuple or matplotlib color name)
+    color2: tuple or string - second color (RGB tuple or matplotlib color name)
+    blend_ratio: float - ratio of color2 (0 = all color1, 1 = all color2)
+    
+    Returns:
+    tuple - blended RGB color
+    """
+    # Convert colors to RGB if they're strings
+    if isinstance(color1, str):
+        color1 = plt.colors.to_rgb(color1)
+    if isinstance(color2, str):
+        color2 = plt.colors.to_rgb(color2)
+    
+    # Blend the colors
+    blended = tuple(
+        color1[i] * (1 - blend_ratio) + color2[i] * blend_ratio
+        for i in range(3)
+    )
+    return blended
+
+# Define your colors
+female_color = 'purple'  # or (0.5, 0, 0.5)
+male_color = 'orange'    # or (1, 0.65, 0)
+
 
 def graph_proportion2(data, gname):
     xlabel = {0:'0',
@@ -235,7 +264,8 @@ def graph_proportion2(data, gname):
 
     # Bar plot with mixed colors and transparency
     for i, bin in enumerate(bins):
-        plt.bar(bin, totals[i], color=(1-male_percentages[i], 0, male_percentages[i]), alpha=0.6)
+    blended_color = blend_colors(female_color, male_color, male_percentages[i])
+    plt.bar(bin, totals[i], color=blended_color, alpha=0.6)
 
     # Line plots for M and F
     #plt.plot(bins, male_values, color='blue', marker='o', label='M')
