@@ -75,7 +75,7 @@ python plot-years.py ../web/db/namae.db \
 
 echo "Making Diversity Graphs"
 
-python plot-diversity.py
+python plot_diversity.py
 
 # make things for the book
 
@@ -91,6 +91,16 @@ python pub-agreement.py
 
 ### make meiji diversity
 python plot_meiji.py
+
+echo "Plot proportions"
+python plot_proportion.py
+
+echo "Plot gender overlap"
+python plot_overlap.py ../web/db/namae.db
+
+echo "calculate grapheme/phoneme mapping"
+python calc_regular.py > poi
+
 
 popd
 
