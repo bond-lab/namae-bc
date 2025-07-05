@@ -67,7 +67,7 @@ def add_missing(excel_path, db_path):
     df.fillna('', inplace=True) #
     df.columns = 'male mcount _ _ _ female fcount'.split()
     for index, row in df.iterrows():
-        print (index, row['male'], row['mcount'])
+        #print (index, row['male'], row['mcount'])
         if row['male'] and row['mcount']:
                 # year, orth, pron, loc, gender, explanation, src
             try:
