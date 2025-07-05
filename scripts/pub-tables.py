@@ -32,7 +32,7 @@ def DBname(src):
         'Unknown'
     
 
-def make_overview(c, start=1989, end=2022):
+def make_overview(c, start=1989, end=2024):
     """
     Summarise the data sources
     """
@@ -60,7 +60,7 @@ def make_overview(c, start=1989, end=2022):
         table['rows'].append(cols)
     return table
     
-def make_summary(c, src, start=1989, end=2022):
+def make_summary(c, src, start=1989, end=2024):
     table = base.copy()
     
     c.execute("""SELECT
@@ -80,6 +80,20 @@ def make_summary(c, src, start=1989, end=2022):
     table['rows'] = [ ['Boys', boys],
                       ['Girls', girls],
                       ['Total', total]]
+
+    if src == 'meiji':
+        table['headers'] = ["", "Top 100", "Frequency"]
+        c.execute("""SELECT
+        SUM(count) FILTER (WHERE gender = 'M') AS boys,
+        SUM(count) FILTER (WHERE gender = 'F') AS girls,
+        SUM(count) AS total
+        FROM name_year_cache 
+        WHERE src = ? and count > 0
+        AND year >= ? AND year <= ?""", ('totals', start, end))
+        (aboys, agirls, atotal) = c.fetchone()
+        table['rows'][0].append(aboys)
+        table['rows'][1].append(agirls)
+        table['rows'][2].append(atotal)
 
     return table
     
