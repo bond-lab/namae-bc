@@ -33,12 +33,13 @@
   <h2><a name='ch02'>Chapter 02</a> </h2>
   <h2><a name='ch03'>Chapter 03</a> </h2>
   <h2><a name='ch04'>Chapter 04</a> </h2>
-
+  {% if 'ch04' in table_data %}
   {% for key, table in table_data['ch04'].items() %}
   <h3 name='{{key}}'>{{ table.caption }}</h3>
   {{ render_table(table) }}
   {% endfor %}
-
+  {% endif %}
+  
   {{ show_plot('book_meiji_vs_hs.png', "Similarity of Meiji and Heisei") }}
   {{ show_plot('book_meiji_vs_bc.png', "Similarity of Meiji and Baby Calendar") }}
   <h2><a name='ch05'>Chapter 05</a> </h2>

@@ -105,7 +105,7 @@ def load_heisei_data(data_dir, db_path):
     print("\n\n## Statistics\n", file=log)
     for s, f in stats.items():
         print(f'{s}\t{f}', file=log)
-                                
+        
     conn.commit()
     conn.close()
 
