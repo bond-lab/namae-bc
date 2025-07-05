@@ -67,7 +67,7 @@ def add_missing(excel_path, db_path):
     df.fillna('', inplace=True) #
     df.columns = 'male mcount _ _ _ female fcount'.split()
     for index, row in df.iterrows():
-        #print (row)
+        print (index, row['male'], row['mcount'])
         if row['male'] and row['mcount']:
                 # year, orth, pron, loc, gender, explanation, src
             try:
@@ -87,7 +87,7 @@ def add_missing(excel_path, db_path):
                  UPDATE nrank set freq= ?
                  WHERE year = 2013 
                    AND orth = ?
-                   AND gender = 'M'
+                   AND gender = 'F'
                    AND src = 'meiji'""",
                            ((int(row['fcount']),
                              row['female'].strip())))
