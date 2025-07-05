@@ -46,8 +46,40 @@ conn.commit()
 
 cache_years(db, 'bc')
 
+### add bc data to nrank
+c.executescript("""
+-- Insert aggregated data by orth only (pron = NULL)
+INSERT INTO nrank (year, orth, pron, rank, gender, freq, src)
+SELECT 
+  year,
+  orth,
+  NULL AS pron,
+  ROW_NUMBER() OVER (PARTITION BY year, gender ORDER BY COUNT(*) DESC) AS rank,
+  gender,
+  COUNT(*) AS freq,
+  src
+FROM namae 
+WHERE src = 'bc'
+GROUP BY year, orth, gender, src
+ORDER BY year, gender, COUNT(*) DESC;
 
+-- Insert aggregated data by pron only (orth = NULL)
+INSERT INTO nrank (year, orth, pron, rank, gender, freq, src)
+SELECT 
+  year,
+  NULL AS orth,
+  pron,
+  ROW_NUMBER() OVER (PARTITION BY year, gender ORDER BY COUNT(*) DESC) AS rank,
+  gender,
+  COUNT(*) AS freq,
+  src
+FROM namae 
+WHERE src = 'bc'
+GROUP BY year, pron, gender, src
+ORDER BY year, gender, COUNT(*) DESC;
+""")
 
+conn.commit()
 
 
 # kanji = dd(lambda: dd(lambda: dd(list)))
