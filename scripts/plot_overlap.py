@@ -12,82 +12,9 @@ import sqlite3
 import json
 import argparse
 import matplotlib.pyplot as plt
+from collections import defaultdict as dd
 import pandas as pd
 from pathlib import Path
-
-def get_overlap_data(db_path, src_filter, data_type, n_top=50):
-    """
-    Calculate overlap between male and female names for a given source and data type.
-    
-    Args:
-        db_path: Path to SQLite database
-        src_filter: Source filter ('bc', 'meiji', etc.)
-        data_type: 'pron' for pronunciation, 'orth' for orthography
-        n_top: Number of top names to consider (default 50)
-    
-    Returns:
-        List of tuples: (year, overlap_count, weighted_overlap)
-    """
-    conn = sqlite3.connect(db_path)
-    
-    if data_type == 'pron':
-        field_name = 'pron'
-        null_check = 'AND m.pron IS NOT NULL AND f.pron IS NOT NULL'
-    else:  # orth
-        field_name = 'orth'
-        null_check = 'AND m.orth IS NOT NULL AND f.orth IS NOT NULL'
-    
-    # Get years that have at least n_top names for both genders
-    years_query = f"""
-    SELECT year
-    FROM (
-        SELECT year, gender, MAX(rank) as max_rank
-        FROM nrank 
-        WHERE src = ? 
-          AND {field_name} IS NOT NULL
-        GROUP BY year, gender
-    ) year_gender_ranks
-    GROUP BY year
-    HAVING COUNT(CASE WHEN max_rank >= ? THEN 1 END) = 2
-    ORDER BY year
-    """
-    
-    cursor = conn.execute(years_query, (src_filter, n_top))
-    all_years = [row[0] for row in cursor.fetchall()]
-    
-    # Then get overlap data for each year
-    results = []
-    for year in all_years:
-        overlap_query = f"""
-        SELECT 
-          COUNT(*) AS overlap_count,
-          COALESCE(SUM(m.freq + f.freq), 0) AS weighted_overlap
-        FROM nrank m
-        INNER JOIN nrank f ON f.src = m.src 
-                          AND f.year = m.year
-                          AND f.gender = 'F'
-                          AND m.gender = 'M'
-                          AND f.{field_name} = m.{field_name}
-        WHERE m.rank <= ?
-          AND f.rank <= ?
-          AND m.src = ?
-          AND m.year = ?
-          {null_check}
-        """
-        
-        cursor = conn.execute(overlap_query, (n_top, n_top, src_filter, year))
-        overlap_count, weighted_overlap = cursor.fetchone()
-        
-        # If no overlap found, both values will be 0
-        if overlap_count is None:
-            overlap_count = 0
-        if weighted_overlap is None:
-            weighted_overlap = 0
-            
-        results.append((year, overlap_count, weighted_overlap))
-    
-    conn.close()
-    return results
 
 def get_overlap_details(db_path, src_filter, data_type, n_top=50):
     """
@@ -113,23 +40,26 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
         null_check = 'AND m.orth IS NOT NULL AND f.orth IS NOT NULL'
         select_field = 'm.orth'
     
-    # Get years that have at least n_top names for both genders
-    years_query = f"""
-    SELECT year
-    FROM (
-        SELECT year, gender, MAX(rank) as max_rank
-        FROM nrank 
-        WHERE src = ? 
-          AND {field_name} IS NOT NULL
-        GROUP BY year, gender
-    ) year_gender_ranks
-    GROUP BY year
-    HAVING COUNT(CASE WHEN max_rank >= ? THEN 1 END) = 2
-    ORDER BY year
-    """
+#     # Get years that have at least n_top names for both genders
+#     years_query = f"""
+# SELECT year
+# FROM (
+#   SELECT
+#       year,
+#       gender,
+#       COUNT(DISTINCT CASE WHEN nrank <= ? THEN nrank END) AS n_le_top
+#   FROM nrank
+#   WHERE src = ?
+#     AND {field_name} IS NOT NULL
+#   GROUP BY year, gender
+# ) AS g
+# GROUP BY year
+# HAVING COUNT(CASE WHEN n_le_top = ? THEN 1 END) = 2
+# ORDER BY year;
+#     """
     
-    cursor = conn.execute(years_query, (src_filter, n_top))
-    all_years = [row[0] for row in cursor.fetchall()]
+#     cursor = conn.execute(years_query, (n_top, src_filter, n_top))
+#     all_years = [row[0] for row in cursor.fetchall()]
     
     # Get detailed overlap data
     query = f"""
@@ -148,20 +78,16 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
     WHERE m.rank <= ?
       AND f.rank <= ?
       AND m.src = ?
-      AND m.year IN ({','.join('?' * len(all_years))})
       {null_check}
     ORDER BY m.year, (m.freq + f.freq) DESC;
     """
     
-    cursor = conn.execute(query, (n_top, n_top, src_filter, *all_years))
+    cursor = conn.execute(query, (n_top, n_top, src_filter))
     results = cursor.fetchall()
     conn.close()
-    
-    # Group by year, including years with no overlap
-    details_by_year = {}
-    for year in all_years:
-        details_by_year[year] = []
-    
+
+    # Group by year
+    details_by_year = dd(list)
     for row in results:
         year = row[0]
         details_by_year[year].append(row[1:])  # Exclude year from the tuple
@@ -210,52 +136,61 @@ def create_details_json(details_data, src, data_type):
     
     return tables_by_year
 
-def create_graph(data, src, data_type, output_dir):
-    """Create and save overlap graphs."""
+import matplotlib.pyplot as plt
+
+def _plot_single_graph(years, values, ylabel, title, marker, output_file, with_title=True):
+    """Helper to plot and save a single graph."""
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.plot(years, values, marker=marker, color='blue', linewidth=2, markersize=6)
+    if with_title and title:
+        ax.set_title(title)
+    ax.set_xlabel('Year')
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.3)
+    ax.set_ylim(bottom=0)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_xticks(range(min(years), max(years) + 1,
+                        max(1, (max(years) - min(years)) // 10)))
+    plt.tight_layout()
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"Graph saved: {output_file}")
+
+
+def create_graph(data, src, data_type, output_dir, n_top=50, with_title=True):
+    """Create and save overlap graphs separately (count & weighted)."""
     if not data:
         print(f"No data available for {src} {data_type}")
         return
-    
+
     years = [row[0] for row in data]
     overlap_counts = [row[1] for row in data]
     weighted_overlaps = [row[2] for row in data]
-    
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
-    
+
     # Overlap count graph
-    ax1.plot(years, overlap_counts, marker='o', color='blue', linewidth=2, markersize=6)
-    ax1.set_title(f'{src.upper()} - {data_type.title()} Overlap Count Over Time')
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('Number of Overlapping Names')
-    ax1.grid(True, alpha=0.3)
-    ax1.set_ylim(bottom=0)
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    
-    # Set year ticks to whole numbers only
-    ax1.set_xticks(range(min(years), max(years) + 1, max(1, (max(years) - min(years)) // 10)))
-    
+    _plot_single_graph(
+        years, overlap_counts,
+        ylabel="Number of Overlapping Names",
+        title=f"{src.upper()} - {data_type.title()} Overlap Count Over Time",
+        marker="o",
+        output_file=output_dir / f"{src}_{data_type}_{n_top}_overlap_count.png",
+        with_title=with_title,
+    )
+
     # Weighted overlap graph
-    ax2.plot(years, weighted_overlaps, marker='s', color='blue', linewidth=2, markersize=6)
-    ax2.set_title(f'{src.upper()} - {data_type.title()} Weighted Overlap Over Time')
-    ax2.set_xlabel('Year')
-    ax2.set_ylabel('Weighted Overlap Score')
-    ax2.grid(True, alpha=0.3)
-    ax2.set_ylim(bottom=0)
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    
-    # Set year ticks to whole numbers only
-    ax2.set_xticks(range(min(years), max(years) + 1, max(1, (max(years) - min(years)) // 10)))
-    
-    plt.tight_layout()
-    
-    # Save the graph
-    output_file = output_dir / f"{src}_{data_type}_overlap.png"
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    plt.close()
-    
-    print(f"Graph saved: {output_file}")
+    _plot_single_graph(
+        years, weighted_overlaps,
+        ylabel="Weighted Overlap Score",
+        title=f"{src.upper()} - {data_type.title()} Weighted Overlap Over Time",
+        marker="s",
+        output_file=output_dir / f"{src}_{data_type}_{n_top}_overlap_weighted.png",
+        with_title=with_title,
+    )
+
+
+
+
 
 def create_html_summary(all_tables, all_details, output_dir):
     """Create a human-readable HTML summary report."""
@@ -395,7 +330,13 @@ def main():
             print(f"Processing {src} {data_type}...")
             
             # Get overlap data
-            data = get_overlap_data(args.database, src, data_type, args.n_top)
+            data = []
+            details = get_overlap_details(args.database, src, data_type, args.n_top)
+            for year in details:
+                data.append((year,
+                            len(details[year]),
+                            sum(x[3] for x in details[year])))
+                            
             
             if data:
                 # Create JSON table for summary
@@ -403,13 +344,11 @@ def main():
                 all_tables[table_key] = create_json_table(data, src, data_type)
                 
                 # Get detailed overlap data
-                details_data = get_overlap_details(args.database, src, data_type, args.n_top)
-                if details_data:
-                    details_key = f"{src}_{data_type}_details"
-                    all_details[details_key] = create_details_json(details_data, src, data_type)
+                details_key = f"{src}_{data_type}_details"
+                all_details[details_key] = create_details_json(details, src, data_type)
                 
                 # Create graph
-                create_graph(data, src, data_type, output_dir)
+                create_graph(data, src, data_type, output_dir, n_top=args.n_top, with_title=False)
             else:
                 print(f"No data found for {src} {data_type} with {args.n_top} top names")
     
