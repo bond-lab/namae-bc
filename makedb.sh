@@ -92,5 +92,6 @@ popd
 
 ### need to make the jinmei graph, but only once
 
-# python scripts/img-jinmei.py -o web/static/plot/
+## used in Chapter 6
+# python scripts/img-jinmei.py -o web/static/plot/jinmei
 
