@@ -13,6 +13,149 @@
 {% set precision = 3 %}
 <p>Measures rounded to {{precision}} decimal places.</p>
 
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Shannon-Wiener Index</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This measure captures both how many different names are used and how evenly they're distributed. Think of it like measuring the "richness" of a naming system. A higher Shannon-Wiener score means either there are more different names being used, or the popular names aren't completely dominating (or both). For example, if everyone used the same name, the score would be 0. If names were perfectly evenly distributed, the score would be higher. This measure is borrowed from ecology, where it's used to measure species diversity in ecosystems.
+                </p>
+                <div class="text-muted fst-italic">
+                    Originally developed by Claude Shannon (1948) for information theory, later applied to ecology by Margalef (1958) and widely adopted following MacArthur (1965).
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Evenness</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This specifically measures how equally distributed the names are, regardless of how many different names exist. An evenness score close to 1 means that all names are used about equally often - no single name dominates. A score close to 0 means a few names are very popular while most others are rarely used. You can think of this as measuring whether naming practices are "democratic" (everyone gets roughly equal representation) or "hierarchical" (a few names dominate).
+                </p>
+                <div class="text-muted fst-italic">
+                    Evenness measures were formalized by Pielou (1966) and Lloyd & Ghelardi (1964) in ecological contexts.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Gini-Simpson Index</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Similar to Shannon-Wiener, this measures diversity, but it has a more intuitive interpretation. The Gini-Simpson value represents the probability that two randomly selected children would have different names. A score of 0.8, for instance, means there's an 80% chance that any two children picked at random would have different names. Higher scores indicate more diverse naming practices.
+                </p>
+                <div class="text-muted fst-italic">
+                    Based on Simpson's diversity index (Simpson, 1949), with the Gini-Simpson transformation (1 - Simpson's D) providing the probability of encountering different types.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Type-Token Ratio</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This is the ratio of unique names (types) to total children (tokens). If 100 children have 50 different names between them, the type-token ratio is 0.5. A higher ratio means more naming diversity - closer to 1 would mean almost every child has a unique name, while closer to 0 means many children share the same few names. This measure is commonly used in linguistics to assess vocabulary diversity in texts.
+                </p>
+                <div class="text-muted fst-italic">
+                    Originally developed in linguistics by Johnson (1944) for vocabulary analysis. Applied to naming research by Gerhards and Hackenbroch (2000) to measure the diversity of German names.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Berger-Parker Diversity Index</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">
+          This measure represents the proportion of individuals who do NOT have the most common name in the dataset. For example, if the most popular name is "John" and 20% of all children are named John, the Berger-Parker Diversity Index would be 0.8 (since 80% of children have names other than John). This index captures naming diversity from a dominance perspective - higher values indicate that no single name dominates the naming landscape, while lower values suggest that one name is used by a large portion of the population. It's the simplest measure of evenness and provides an intuitive sense of how "spread out" naming practices are beyond the single most popular choice.
+
+The complement of this measure is the <b>Berger-Parker Dominance Index</b>, which directly measures what proportion of the population shares the most common name. Together, these two measures provide a clear picture of naming concentration versus diversity.
+                </p>
+                <div class="text-muted fst-italic">
+                    The Berger-Parker Dominance Index was developed by Berger and Parker (1970) as a dominance measure in ecology to assess how much a single species dominates a community. The index has been widely adopted across disciplines as a simple measure of concentration.  It has been used in the study of names by e.g. Ogihara (2022).  
+                </div>
+            </div>
+        </div>
+
+	
+        <div class="card mb-3 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Singleton Ratio (Tokens)</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This measures what percentage of individuals have a name that appears only once in the dataset - essentially, what proportion of people have a "unique" name that no one else shares. For example, if 30% of children have singleton names, it means 30% of the population has a name that's theirs alone. This measure captures the individual experience of name uniqueness, telling us how common it is for someone to have a name that sets them apart from everyone else in their cohort.
+                </p>
+                <div class="text-muted fst-italic">
+                    The concept of singleton analysis originated in ecology for rare species studies (Fisher et al., 1943). Applied to naming research by Lieberson and Mikelson (1995) in their study of African American names, where they found that 31% of African-American girls and 25% of African-American boys in Illinois (1920) had unique names.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4 border-secondary">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0">References</h5>
+            </div>
+<div class="card-body">
+  <div class="small">
+    <p class="mb-2">Berger, W. H., & Parker, F. L. (1970). Diversity of planktonic foraminifera in deep-sea sediments. <em>Science</em>, <em>168</em>(3937), 1345-1347. <a href="https://doi.org/10.1126/science.168.3937.1345" target="_blank">https://doi.org/10.1126/science.168.3937.1345</a></p>
+ 
+    
+        <p class="mb-2">
+            Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943). The relation between the number of species and the number of individuals in a random sample of an animal population. <em>Journal of Animal Ecology</em>, <em>12</em>(1), 42-58. <a href="https://doi.org/10.2307/1411" target="_blank">https://doi.org/10.2307/1411</a>
+        </p>
+
+        <p class="mb-2">
+	  Gerhards, J., & Hackenbroch, R. (2000). Trends and Causes of Cultural Modernization: An Empirical Study of First Names. <em>International Sociology</em>, <em>15</em>(3), 501-531.
+	  <a href="https://doi.org/10.1177/026858000015003004">10.1177/026858000015003004</a>
+        </p>
+
+        <p class="mb-2">
+            Johnson, W. (1944). Studies in language behavior: A program of research. <em>Psychological Monographs</em>, <em>56</em>(2), 1-15. <a href="https://doi.org/10.1037/h0093508" target="_blank">https://doi.org/10.1037/h0093508</a>
+        </p>
+
+        <p class="mb-2">
+            Lieberson, S., & Mikelson, K. S. (1995). Distinctive African American names: An experimental, historical, and linguistic analysis of innovation. <em>American Sociological Review</em>, <em>60</em>(6), 928-946. <a href="https://doi.org/10.2307/2096433" target="_blank">https://doi.org/10.2307/2096433</a>
+        </p>
+
+        <p class="mb-2">
+            Lloyd, M., & Ghelardi, R. J. (1964). A table for calculating the "equitability" component of species diversity. <em>Journal of Animal Ecology</em>, <em>33</em>(2), 217-225. <a href="https://doi.org/10.2307/2628" target="_blank">https://doi.org/10.2307/2628</a>
+        </p>
+
+        <p class="mb-2">
+            MacArthur, R. H. (1965). Patterns of species diversity. <em>Biological Reviews</em>, <em>40</em>(4), 510-533. <a href="https://doi.org/10.1111/j.1469-185X.1965.tb00815.x" target="_blank">https://doi.org/10.1111/j.1469-185X.1965.tb00815.x</a>
+        </p>
+
+        <p class="mb-2">
+            Margalef, R. (1958). Information theory in ecology. <em>General Systems</em>, <em>3</em>, 36-71.
+
+        </p>
+    <p class="mb-2">
+      Ogihara Y. Common names decreased in Japan: Further evidence of an increase in individualism. Experimental Results. 2022;3:e5. <a href='https://doi.org/10.1017/exp.2021.27'>doi:10.1017/exp.2021.27</a>
+      </p>
+
+        <p class="mb-2">
+            Pielou, E. C. (1966). The measurement of diversity in different types of biological collections. <em>Journal of Theoretical Biology</em>, <em>13</em>, 131-144. <a href="https://doi.org/10.1016/0022-5193(66)90013-0" target="_blank">https://doi.org/10.1016/0022-5193(66)90013-0</a>
+        </p>
+
+        <p class="mb-2">
+            Shannon, C. E. (1948). A mathematical theory of communication. <em>Bell System Technical Journal</em>, <em>27</em>(3), 379-423. <a href="https://doi.org/10.1002/j.1538-7305.1948.tb01338.x" target="_blank">https://doi.org/10.1002/j.1538-7305.1948.tb01338.x</a>
+        </p>
+
+        <p class="mb-0">
+            Simpson, E. H. (1949). Measurement of diversity. <em>Nature</em>, <em>163</em>(4148), 688. <a href="https://doi.org/10.1038/163688a0" target="_blank">https://doi.org/10.1038/163688a0</a>
+        </p>
+    </div>
+</div>
+        </div>
 
 {% for key, data in diversity_data.items() %}
     <div>

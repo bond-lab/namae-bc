@@ -21,7 +21,7 @@ conn = sqlite3.connect(db_path)
 
 c = conn.cursor()
 
-def get_bp(top_n, dtype='orth', src='meiji'):
+def get_bp(top_n, dtype='orth', src='meiji', start=1989, end=2024):
     assert dtype in ('orth', 'pron'), f"Unknown data {dtype}, should be orth or list"
     assert src in ('meiji', 'hs'), f"Unknown data {dtype}, should be orth or list"
     if src == 'meiji':
@@ -35,6 +35,7 @@ WITH top_names AS (
     ROW_NUMBER() OVER (PARTITION BY year, gender ORDER BY freq DESC) as freq_rank
   FROM nrank 
   WHERE src = ?
+    AND year >= ? and year <= ?
     AND {dtype} IS NOT NULL
 )
 SELECT 
@@ -47,8 +48,9 @@ FROM top_names t
 JOIN name_year_cache c ON t.year = c.year AND t.gender = c.gender
 WHERE t.freq_rank <= ?
   AND c.src = ?
+    AND t.year >= ? and t.year <= ?
 GROUP BY t.year, t.gender, c.count
-ORDER BY t.year, t.gender""", (src, top_n, total_src))
+ORDER BY t.year, t.gender""", (src, start, end, top_n, total_src, start, end))
     byyear = dd(dict)
     for (year, gender, count, sample, proportion) in c:
         byyear[gender][year] =  (proportion, count, sample)
@@ -289,13 +291,17 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                 if trend_stats and show_stats:
                     stats_data = trend_stats[gender][metric]
                     if not np.isnan(stats_data['correlation']) and stats_data['p_value'] < 0.05:
-                        # Add trend line
-                        years_array = np.array(valid_years)
-                        trend_line = stats_data['slope'] * years_array + (
-                            np.mean(valid_values) - stats_data['slope'] * np.mean(years_array)
-                        )
-                        ax.plot(years_array, trend_line, color=color, linestyle='-', 
-                               alpha=0.7, linewidth=1)
+                        lstyle = '-'
+                    else:
+                        lstyle = '--'
+                    # Add trend line
+                    years_array = np.array(valid_years)
+                    trend_line = stats_data['slope'] * years_array + (
+                        np.mean(valid_values) - stats_data['slope'] * np.mean(years_array)
+                    )
+                    ax.plot(years_array, trend_line, color=color, linestyle=lstyle, 
+                            alpha=0.7, linewidth=1)
+                        
                 
                 # Add confidence intervals if available
                 if confidence_intervals is not None:

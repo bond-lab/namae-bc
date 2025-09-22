@@ -3,6 +3,8 @@ import sqlite3
 import sys
 import jaconv
 
+from db import cache_years
+
 def add_meiji(database_path, data_path, total_path):
     """
     Add this data:
@@ -65,7 +67,7 @@ def add_missing(excel_path, db_path):
     df.fillna('', inplace=True) #
     df.columns = 'male mcount _ _ _ female fcount'.split()
     for index, row in df.iterrows():
-        #print (row)
+        #print (index, row['male'], row['mcount'])
         if row['male'] and row['mcount']:
                 # year, orth, pron, loc, gender, explanation, src
             try:
@@ -85,7 +87,7 @@ def add_missing(excel_path, db_path):
                  UPDATE nrank set freq= ?
                  WHERE year = 2013 
                    AND orth = ?
-                   AND gender = 'M'
+                   AND gender = 'F'
                    AND src = 'meiji'""",
                            ((int(row['fcount']),
                              row['female'].strip())))
@@ -124,11 +126,11 @@ ORDER BY year, orth, counter""", (src,))
 
     
 if __name__ == "__main__":
-    database_path = sys.argv[1]
+    db_path = sys.argv[1]
     data_path = sys.argv[2]
     total_path = sys.argv[3]
     excel_path = sys.argv[4]
-    add_meiji(database_path, data_path, total_path)
-    add_missing(excel_path, database_path)
-    update_namae (database_path, 'meiji')
-
+    add_meiji(db_path, data_path, total_path)
+    add_missing(excel_path, db_path)
+    update_namae (db_path, 'meiji')
+    cache_years(db_path, 'meiji')

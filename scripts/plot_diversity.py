@@ -1,5 +1,6 @@
 import os
 import math
+import copy
 import random
 import sqlite3
 import numpy as np
@@ -14,6 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from web.db import db_options, get_name_year, get_name_count_year
 from web.visualize import plot_multi_panel_trends
+from plot_meiji import calculate_trend_statistics, plot_multi_panel_trends_with_stats
 
 # Constants for sampling runs
 MIN_RUNS = 1 #10
@@ -30,6 +32,96 @@ plot_dir = os.path.join(current_directory, "../web/static/plot")
 os.makedirs(json_dir, exist_ok=True)
 os.makedirs(plot_dir, exist_ok=True)
 
+
+
+
+base_metrics = {
+    'Shannon': [],
+    'Evenness': [],
+    'Gini-Simpson': [],
+    'TTR': [],
+    'Newness': [],
+    'Char TTR': [],
+    'Char Newness': [],
+    'Singleton': [],
+    'Singleton (types)': []
+}
+for n in BERGER_PARKER_TOP_N:
+    base_metrics[f'Berger-Parker ({n})'] = []
+
+
+def calculate_shannon_diversity(names):
+    """Calculate Shannon's diversity index for a given list of names."""
+    """Calculate Shannon's diversity index for a given list of names."""
+    name_counts = dd(int)
+    for name in names:
+        name_counts[name] += 1
+    
+    total = len(names)
+    diversity = 0
+    for count in name_counts.values():
+        p = count / total
+        diversity -= p * math.log(p)
+    return diversity
+
+
+def calculate_evenness(H, S):
+    """Calculate Pielou's evenness index based on Shannon's diversity and species count."""
+    return H / math.log(S) if S > 1 else 0
+
+def calculate_gini_simpson(names):
+    """Calculate Gini-Simpson index for a given list of names."""
+    name_counts = dd(int)
+    for name in names:
+        name_counts[name] += 1
+    
+    total = len(names)
+    simpson_D = sum((count / total) ** 2 for count in name_counts.values())
+    return 1 - simpson_D
+
+def calculate_berger_parker(names, top_n=1):
+    """Calculate Berger–Parker index considering the top_n most frequent names."""
+    name_counts = Counter(names)
+    total = len(names)
+    top_counts = sum(count for _, count in name_counts.most_common(top_n))
+    return top_counts / total
+
+def calculate_singleton_ratio_types(names):
+    """Calculate singleton ratio - proportion of names that appear only once."""
+    name_counts = Counter(names)
+    singletons = sum(1 for count in name_counts.values() if count == 1)
+    total_unique_names = len(name_counts)
+    return singletons / total_unique_names
+
+def calculate_singleton_ratio(names):
+    """
+    Calculate singleton ratio over tokens - proportion of people who have singleton names.
+    
+    This measures what percentage of individuals have a name that appears only once
+    in the dataset (i.e., a unique name that no one else has).
+    
+    Args:
+        names: List of names (one per person)
+    
+    Returns:
+        float: Proportion of people who have singleton names (0.0 to 1.0)
+    
+    Example:
+        names = ['John', 'Mary', 'Unique1', 'John', 'Unique2']
+        # John appears 2 times, Mary appears 1 time, Unique1 appears 1 time, Unique2 appears 1 time
+        # 3 out of 5 people have singleton names (Mary, Unique1, Unique2)
+        # Returns: 0.6 (60%)
+    """
+    name_counts = Counter(names)
+  
+    # Count how many people have singleton names
+    people_with_singleton_names = sum(
+        count for count in name_counts.values() if count == 1
+    )
+    
+    total_people = len(names)
+    return people_with_singleton_names / total_people if total_people > 0 else 0.0
+
 def calculate_ttr(names):
     """Calculate Type Token Ratio (TTR) for a given list of names."""
     unique_names = set(names)
@@ -40,6 +132,8 @@ def calculate_newness(current_names, previous_names):
     new_items = set(current_names) - set(previous_names)
     total_types = len(set(current_names))
     return (len(new_items) / total_types) if total_types > 0 else 0
+
+
 
 def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUNS):
     """
@@ -80,18 +174,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
     # Now perform the analysis using these consistent samples
     for i, year in enumerate(years):
         names = data[year]
-        year_metrics = {
-            'Shannon': [],
-            'Evenness': [],
-            'Gini-Simpson': [],
-            'TTR': [],
-            'Newness': [],
-            'Char TTR': [],
-            'Char Newness': [],
-        }
-        for n in BERGER_PARKER_TOP_N:
-            year_metrics[f'Berger-Parker ({n})'] = []
-            
+        year_metrics = copy.deepcopy(base_metrics)
         # Get the previous year's sample for comparison
         is_first_year = (i == 0)
         previous_year_sample = set() if is_first_year else previous_year_samples[years[i-1]]
@@ -109,6 +192,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             shannon = calculate_shannon_diversity(sample)
             evenness = calculate_evenness(shannon, len(set(sample)))
             gini_simpson = calculate_gini_simpson(sample)
+            singleton = calculate_singleton_ratio(sample)
             bp = dict()
             for n in BERGER_PARKER_TOP_N:
                 bp[n] = 1 - calculate_berger_parker(sample, top_n=n)
@@ -118,7 +202,8 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
             year_metrics['Shannon'].append(shannon)
             year_metrics['Evenness'].append(evenness)
             year_metrics['Gini-Simpson'].append(gini_simpson)
-            
+            year_metrics['Singleton'].append(singleton)
+                        
             # Calculate TTR for all years
             ttr = calculate_ttr(sample)
             year_metrics['TTR'].append(ttr)
@@ -180,44 +265,6 @@ def get_db_connection(db_path):
     """Establish a direct connection to the SQLite database."""
     return sqlite3.connect(db_path)
 
-def calculate_shannon_diversity(names):
-    """Calculate Shannon's diversity index for a given list of names."""
-    """Calculate Shannon's diversity index for a given list of names."""
-    name_counts = dd(int)
-    for name in names:
-        name_counts[name] += 1
-    
-    total = len(names)
-    diversity = 0
-    for count in name_counts.values():
-        p = count / total
-        diversity -= p * math.log(p)
-    return diversity
-
-
-def calculate_evenness(H, S):
-    """Calculate Pielou's evenness index based on Shannon's diversity and species count."""
-    return H / math.log(S) if S > 1 else 0
-
-def calculate_gini_simpson(names):
-    """Calculate Gini-Simpson index for a given list of names."""
-    name_counts = dd(int)
-    for name in names:
-        name_counts[name] += 1
-    
-    total = len(names)
-    simpson_D = sum((count / total) ** 2 for count in name_counts.values())
-    return 1 - simpson_D
-
-def calculate_berger_parker(names, top_n=1):
-    """Calculate Berger–Parker index considering the top_n most frequent names."""
-    name_counts = Counter(names)
-    total = len(names)
-    top_counts = sum(count for _, count in name_counts.most_common(top_n))
-    return top_counts / total
-
-
-
 
 
 conn = get_db_connection(db_path)
@@ -225,7 +272,7 @@ conn = get_db_connection(db_path)
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
-    if 'hs' in src or 'db' in src:
+    if src != 'hs': #'hs' not in src:
         continue
     for data_type in types:
         if src in ['hs', 'hs+bc', 'meiji'] and data_type != 'orth':
@@ -265,29 +312,31 @@ for src in db_options:
             )
             # Using Shannon as reference since all metrics will have the same years
             for year in results['Shannon'].keys():
-                all_metrics[gender][year] = {
-                    "Shannon": results['Shannon'][year],
-                    "Evenness": results['Evenness'][year],
-                    "Gini-Simpson": results['Gini-Simpson'][year],
-                    "Runs": run_counts[year]
-                }
+                all_metrics[gender][year] = dict()
+                for metric in base_metrics:
+                      if year in results[metric]:
+                          all_metrics[gender][year][metric] = results[metric][year]
+                #     "Evenness": results['Evenness'][year],
+                #     "Gini-Simpson": results['Gini-Simpson'][year],
+                #     "Runs": run_counts[year]
+                # }
                 
-                # Add TTR metric (should be available for all years)
-                all_metrics[gender][year]["TTR"] = results['TTR'][year]
-                all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
+                # # Add TTR metric (should be available for all years)
+                # all_metrics[gender][year]["TTR"] = results['TTR'][year]
+                # all_metrics[gender][year]["Char TTR"] = results['Char TTR'][year]
                 
                 # Add newness metrics only if they exist for this year
                 # (they won't exist for the first year)
-                if year in results['Newness']:
-                    all_metrics[gender][year]["Newness"] = results['Newness'][year]
-                if year in results['Char Newness']:
-                    all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
+                # if year in results['Newness']:
+                #     all_metrics[gender][year]["Newness"] = results['Newness'][year]
+                # if year in results['Char Newness']:
+                #     all_metrics[gender][year]["Char Newness"] = results['Char Newness'][year]
                 
-                # Add Berger-Parker metrics
-                for i in BERGER_PARKER_TOP_N:
-                    all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
+                # # Add Berger-Parker metrics
+                # for i in BERGER_PARKER_TOP_N:
+                #     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
                 
-                # Add confidence intervals
+                # # Add confidence intervals
                 confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
@@ -312,7 +361,17 @@ for src in db_options:
             plot_multi_panel_trends(all_metrics, ["TTR", "Newness", "Char TTR", "Char Newness"],
                                     "TTR and Newness Measures",
                                     plot_path)
-        
+
+        # plot for book
+        plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
+        selected_metrics= ["Shannon", "Gini-Simpson", "Singleton", "TTR"]
+        trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
+        plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
+                                           "", # "Diversity Measures",
+                                           plot_path,
+                                           trend_stats=trend_stats,  
+                                           confidence_intervals=None)
+            
         # Save diversity metrics to JSON
         diversity_data = {
             "metrics": all_metrics
