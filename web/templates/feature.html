@@ -7,11 +7,12 @@
 {% block content %}
 
 <!-- Color and sort according to type   -->
+{% set m = data|length %}
 
 <div class="container">
   <h1>{{title}}</h1>
   <div>
-    <p>There are {{"{:,d}".format(data|length)}} different features with more than
+    <p>There are {{"{:,d}".format(m)}} different features with more than
       {{threshold}} example(s) from the {{db_name}} database.
       These come from {{"{:,d}".format(summ['allm'])}} male names
       and {{"{:,d}".format(summ['allf'])}}
@@ -63,9 +64,77 @@
       {% endfor %}
         </tbody>
     </table>
+
+<hr>
+<h2>Table for {{ title }} (Book Version)</h2>
+
+{% set ns = namespace(sep_inserted=False) %}
+<table id="book-table" style="border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>{{ title }}</th>
+      <th>Boys</th>
+      <th>Girls</th>
+      <th>F Ratio</th>
+      <th>p-adj</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for (feat, male, female, fratio, odds, pvalue, sig, exe) in tests|sort(attribute=3, reverse=True) %}
+      {% set p_adj = m * pvalue %}
+      {% if fratio > (1 - beta) or fratio < beta %}
+        {% if not ns.sep_inserted and fratio <  (1 - beta) %}
+          <tr class="separator"><td colspan="7" style="text-align:center;">…</td></tr>
+          {% set ns.sep_inserted = True %}
+        {% endif %}
+        {% set signif = p_adj < 0.05 %}
+        <tr class="{% if not signif %}nonsig{% endif %}">
+          <td>{{ feat }}</td>
+          <td style="text-align:right;">{{ male }}</td>
+          <td style="text-align:right;">{{ female }}</td>
+          <td style="text-align:right;">{{ "%.3f"|format(fratio) }}</td>
+          <td style="text-align:right;">
+            {% if signif %}<strong>{% endif %}
+            {% if p_adj < 0.0001 %}
+              &lt;0.0001
+            {% else %}
+              {{ "%.4f"|format(p_adj) }}
+            {% endif %}
+            {% if signif %}</strong>{% endif %}
+          </td>
+          <td>
+            {% for (o, p) in exe %}
+              <a href='{{ url_for("namae", orth=o, pron=p) }}'>{{ o }}</a>{{ ", " if not loop.last else "" }}
+            {% endfor %}
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+<p id="sig-note" class="caption-note">
+  Significance uses Bonferroni correction (m = {{ m }}, familywise α = 0.05).
+  <span id="note-hide">Only significant features shown.</span>
+  <span id="note-show" style="display:none;">
+    Rows in <strong>bold</strong> pass the corrected threshold.
+  </span>
+  Only strongly feminine features (F-ratio &gt; {{ "%.1f"|format(1 - beta) }})
+  and strongly masculine features (F-ratio &lt; {{ "%.1f"|format(beta) }}) shown.
+</p>
+<p><label>
+  <input type="checkbox" id="show-nonsig"
+         data-default='false'>
+  Show non-significant rows
+</label></p>
+
+
+
+
   </div>
   </div>
 {% endblock %}
+
 
 {% block scripts %}
   <script>
@@ -124,6 +193,30 @@
     });
 
     });
+
+    /* toggle for the book table */
+   document.addEventListener("DOMContentLoaded", function () {
+    const checkbox = document.getElementById("show-nonsig");
+    const rows = document.querySelectorAll("#book-table tbody tr.nonsig");
+    const noteHide = document.getElementById("note-hide");
+    const noteShow = document.getElementById("note-show");
+
+    // apply initial state from Jinja
+    const defaultState = checkbox.dataset.default === "true";
+    checkbox.checked = defaultState;
+
+    function updateState() {
+      const show = checkbox.checked;
+      // toggle row visibility
+      rows.forEach(r => r.style.display = show ? "" : "none");
+      // toggle which text span is visible
+      noteHide.style.display = show ? "none" : "";
+      noteShow.style.display = show ? "" : "none";
+    }
+
+    checkbox.addEventListener("change", updateState);
+    updateState(); // initialize on load
+  });
     </script>
   <style>
     /* CSS to align elements inline and provide spacing */
@@ -137,6 +230,15 @@
         width: auto; /* Adjust width for dropdowns to be compact */
     } 
 </style>
-    
+ <style>
+  .caption-note {
+    font-size: 90%;
+    font-style: italic;
+    color: #444;
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
+    max-width: 70em;
+  }
+</style>   
 </div>
 {% endblock %}

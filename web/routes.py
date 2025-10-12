@@ -233,6 +233,7 @@ def feature():
     """
     show the distribution of the given feauture(s)
     """
+    beta=0.1
     feat1 = request.args.get('f1', type=str, default='')
     feat2 = request.args.get('f2', type=str, default='')
     name = request.args.get('nm', type=str, default='')
@@ -248,6 +249,7 @@ def feature():
     return render_template(
         f"feature.html",
         data=data,
+        beta=beta,
         tests=tests,
         summ=summ,
         threshold=threshold,

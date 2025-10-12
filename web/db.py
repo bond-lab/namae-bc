@@ -157,9 +157,9 @@ def get_stats(conn, table='namae', src='bc'):
     return various statistics
     stats[name][gender] = X
     DISTINCT
-    stats['dname'][gender] = X
-    stats['pron'][gender] = X
-    stats['orth'][gender] = X
+    stats['dname'][gender] = X   # distinct names
+    stats['pron'][gender] = X    # distinct pronunciation
+    stats['orth'][gender] = X    # distinct orthography
     """
 
     stats = dd(lambda: dd(lambda: dd(int))) 
