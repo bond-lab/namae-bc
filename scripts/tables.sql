@@ -8,7 +8,7 @@ CREATE TABLE namae (nid  INTEGER primary key,
 		   explanation TEXT,
 		   src TEXT);
 
-CREATE TABLE nrank (nrid  INTEGER primary key,
+TABLE nrank (nrid  INTEGER primary key,
        	     	   year INTEGER,  -- year
 		   orth TEXT,     -- written form
 		   pron TEXT,	  -- pronunciation (in hiragana)
@@ -25,6 +25,29 @@ CREATE TABLE name_year_cache (
        count INTEGER, -- how many
        PRIMARY KEY (src, dtype, year, gender)
     );
+
+-- Information about the different orthographies
+CREATE TABLE orth (orth_id INTEGER primary key,
+       orth TEXT,  --- orthography
+       script TEXT --- which script is the text 
+       );
+
+-- Information about the different phonological forms
+-- mora and syllables are separated by spaces
+CREATE TABLE pron (pron_id INTEGER primary key,
+       pron TEXT,  --- pronunciation
+       mora TEXT,  --- the pronunciation split into mora
+       syll TEXT  --- the pronunciation split into syllables	
+       );
+       
+-- Information about the orth-pron mapping
+-- e.g. 日乃世 ひのせ 日/ひ/kun 乃/の/kun 世/せ/o
+--      春椛 はるか 春/はる/kun 椛//irregular
+CREATE TABLE mapp (mapp_id INTEGER primary key,
+       pron TEXT,  --- pronunciation
+       orth TEXT,  --- orthography	
+       mapping TEXT  --- the mapping split into characters	
+       );
 
 
 CREATE TABLE attr (nid  INTEGER NOT NULL,
