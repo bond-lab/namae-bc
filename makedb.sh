@@ -57,6 +57,8 @@ echo "Calculate attributes"
 
 python calculate-features.py
 
+python calc_feat_uniq.py namae.db
+
 
 echo "Copy scripts/namae.db to web/db/namae.db'"
 
@@ -90,6 +92,7 @@ python pub-years.py
 python pub-agreement.py
 
 ### make meiji diversity
+
 python plot_meiji.py
 
 echo "Plot proportions"
