@@ -8,7 +8,7 @@ CREATE TABLE namae (nid  INTEGER primary key,
 		   explanation TEXT,
 		   src TEXT);
 
-TABLE nrank (nrid  INTEGER primary key,
+CREATE TABLE nrank (nrid  INTEGER primary key,
        	     	   year INTEGER,  -- year
 		   orth TEXT,     -- written form
 		   pron TEXT,	  -- pronunciation (in hiragana)
@@ -35,18 +35,18 @@ CREATE TABLE orth (orth_id INTEGER primary key,
 -- Information about the different phonological forms
 -- mora and syllables are separated by spaces
 CREATE TABLE pron (pron_id INTEGER primary key,
-       pron TEXT,  --- pronunciation
-       mora TEXT,  --- the pronunciation split into mora
-       syll TEXT  --- the pronunciation split into syllables	
+       pron TEXT,  -- pronunciation
+       mora TEXT,  -- the pronunciation split into mora
+       syll TEXT   -- the pronunciation split into syllables	
        );
        
 -- Information about the orth-pron mapping
 -- e.g. 日乃世 ひのせ 日/ひ/kun 乃/の/kun 世/せ/o
 --      春椛 はるか 春/はる/kun 椛//irregular
 CREATE TABLE mapp (mapp_id INTEGER primary key,
-       pron TEXT,  --- pronunciation
-       orth TEXT,  --- orthography	
-       mapping TEXT  --- the mapping split into characters	
+       pron TEXT,   -- pronunciation
+       orth TEXT,   -- orthography	
+       mapping TEXT -- the mapping split into characters	
        );
 
 
@@ -61,9 +61,9 @@ CREATE TABLE attr (nid  INTEGER NOT NULL,
       mora1 TEXT,      -- first mora in pronuncation
       mora_1 TEXT,     -- last mora in pronuncation
       mora_2 TEXT,     -- second to last mora in pronuncation
-      syll1 TEXT,      -- first mora in pronuncation
-      syll_1 TEXT,     -- last mora in pronuncation
-      syll_2 TEXT,     -- second to last mora in pronuncation
+      syll1 TEXT,      -- first mora in pronunciation
+      syll_1 TEXT,     -- last syllable in pronunciation
+      syll_2 TEXT,     -- second to last syllable in pronuncation
       uni_ch TEXT,     -- single character name
       script TEXT,     -- kata, hira, kanji, mix
       Foreign KEY (nid) REFERENCES namae (nid));
