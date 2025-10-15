@@ -18,7 +18,12 @@ CREATE TABLE nrank (nrid  INTEGER primary key,
 		   src TEXT);     -- source: hs, meiji, ..
 
 CREATE TABLE name_year_cache (
-       src TEXT,     -- where its from
+       -- src is 
+       --   bc, hs are totals of all instances
+       --   meiji  (total of the top 50/100 instances)
+       --   totals (total for meiji from API)	
+       --   births (total number of births)
+       src TEXT,     -- where it's from
        dtype TEXT,   -- dtype orth|pron|both|total|birth
        year INTEGER, -- year
        gender TEXT,

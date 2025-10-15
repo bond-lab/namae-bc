@@ -6,8 +6,12 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
 from tabulate import tabulate
-
-
+# Try to do something like this
+# https://familyinequality.wordpress.com/2023/05/15/us-name-androgyny-hit-record-high-again-in-2022/
+# https://familyinequality.wordpress.com/tag/names/page/3/
+# more discussion here
+# https://www.npr.org/transcripts/92621093?storyId=92621093
+# https://inequalitybyinteriordesign.wordpress.com/2016/02/25/why-popular-boy-names-are-more-popular-than-popular-girl-names/
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from web.db import db_options, get_name_year
