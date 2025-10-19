@@ -39,3 +39,11 @@
 <h3>{{ alt_text }}</h3>
 <img class="img-fluid" src="{{ url_for('static', filename='plot/' + filename) }}" alt="{{ alt_text }}">
 {%- endmacro %}
+
+{% macro add_pron(text, feat) -%}
+{% if feat.startswith('mora') or feat.startswith('syll') -%}
+{{ text }} /{{ text|hira2roma }}/
+{%- else -%}
+{{ text }}
+{%- endif %}
+{%- endmacro %}

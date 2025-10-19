@@ -14,6 +14,7 @@ from web.db import get_db, get_name, get_name_year, get_name_count_year, \
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
+
 def get_db_connection(root, db):
     dbpath = os.path.join(root, db)
     conn = sqlite3.connect(dbpath)
@@ -249,6 +250,7 @@ def feature():
     return render_template(
         f"feature.html",
         data=data,
+        feats=(feat1,feat2),
         beta=beta,
         tests=tests,
         summ=summ,
