@@ -46,7 +46,7 @@ CREATE TABLE pron (pron_id INTEGER primary key,
        );
        
 -- Information about the orth-pron mapping
--- e.g. 日乃世 ひのせ 日/ひ/kun 乃/の/kun 世/せ/o
+-- e.g. 日乃世 ひのせ 日/ひ/kun 乃/の/kun 世/せ/on
 --      春椛 はるか 春/はる/kun 椛//irregular
 CREATE TABLE mapp (mapp_id INTEGER primary key,
        pron TEXT,   -- pronunciation

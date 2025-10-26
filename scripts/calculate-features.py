@@ -6,8 +6,13 @@ import sqlite3
 import sys, os
 from utils import whichScript, mora_hiragana, syllable_hiragana
 
-db = "namae.db"
+
 #scriptdir = os.path.dirname(sys.argv[0])
+
+if len(sys.argv) > 1:
+    db  = sys.argv[1]
+else:
+    db = "namae.db"
 conn = sqlite3.connect(db)
 
     

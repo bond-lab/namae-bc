@@ -7,7 +7,7 @@
 
 <div class="container">
   <h1>Pronunciation: {{hira}}</h1>
-  <p>Other names pronounced the same:</p>
+  <p>Names with this pronunciation:</p>
   <ul>
     {% for orth, pron in hindex[hira] %}
       <li><a href="{{ url_for('namae', orth=orth, pron=hira) }}">{{orth}}</a></li>

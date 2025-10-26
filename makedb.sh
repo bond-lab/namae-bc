@@ -105,7 +105,7 @@ cp output/meiji_*_50_* ../web/static/plot/.
 cp output/heisei_orth_50_* ../web/static/plot/.
 
 echo "calculate grapheme/phoneme mapping"
-python calc_regular.py > poi
+python calc_regular.py ../web/db/namae.db
 
 
 popd

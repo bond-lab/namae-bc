@@ -7,7 +7,7 @@
 
 <div class="container">
   <h1>Orthography: {{name}}</h1>
-  <p>Other pronunciations:</p>
+  <p>Possible pronunciations:</p>
   <ul>
     {% for orth, pron in kindex[name] %}
       <li><a href="{{ url_for('namae', orth=name, pron=pron) }}">{{pron}}</a></li>

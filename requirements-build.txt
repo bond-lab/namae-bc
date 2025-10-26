@@ -11,3 +11,4 @@ regex
 tabulate
 pyyaml
 Flask
+kanaconv

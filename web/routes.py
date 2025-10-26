@@ -10,7 +10,8 @@ from collections import defaultdict as dd
 
 from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
-                get_redup, db_options, dtypes
+                get_redup, db_options, dtypes, \
+                get_mapping
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
@@ -147,15 +148,19 @@ def namae():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'], src=db_settings['db_src'])
-    mora = mora_hiragana(pron)
-    
+    if pron:
+        mora = mora_hiragana(pron)
+        syll=syllable_hiragana(mora)
+
     if pron and orth:
+        mapp = get_mapping(conn, orth, pron)
         return render_template(
-            f"orth+pron.html",
+            f"namae-both.html",
             name=orth,
             hira=pron,
             mora=mora,
-            syll=syllable_hiragana(mora),
+            syll=syll,
+            mapp=mapp,
             script=whichScript(orth),
             mfname=mfname,
             kindex=kindex,

@@ -355,7 +355,16 @@ ORDER BY pron, freq DESC, orth""")
                                 reverse=True))
     return data
 
- 
+def get_mapping(conn, orth, pron):
+    """
+    return the mapping between the orthography and the ponunciation
+    """
+    c = conn.cursor()
+    c.execute("""SELECT mapping FROM mapp
+    WHERE orth = ? and pron = ?""", (orth, pron))
+    return c.fetchone()         
+    
+    
 def get_readings(conn, kanjis):
     """
     Retrieve the readings of the given kanjis from the database.
