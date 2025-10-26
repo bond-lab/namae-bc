@@ -279,7 +279,7 @@ def years():
         try:
             return f"{num1/num2:.1%}"
         except (KeyError, TypeError, ZeroDivisionError):
-            return "N/A"
+            return "---"
 
     
     return render_template(
