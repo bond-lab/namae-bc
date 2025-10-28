@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% from 'macros.html' import add_pron %}
+
+
+{% block content %}
+
+<!-- Color and sort according to type   -->
+
+<div class="container">
+  <h1>{{name}} ({{add_pron(hira)}})</h1>
+
+
+    <table class="table w-auto">
+      <tr>
+	<td>Orthograpy</td>
+ 	<td>{{name}}</td>
+	<td class='text-end'>{{name|length}}</td>
+	<td>{{script}}</td>
+      </tr>
+      <tr>
+	<td>Morae</td>
+	<td> {{add_pron(mora|join('.'))}}</td>
+	<td  class='text-end'>{{mora|length}}</td>
+      </tr>
+      <tr>
+	 <td>Syllables</td>
+	 <td>{{add_pron(syll|join('.'))}}</td>
+	 <td class='text-end'>{{syll|length}}</td>
+      </tr>
+      <tr>
+	 <td>Mapping</td>
+	 <td>{{mapp|join(', ')}}</td>
+      </tr>
+
+      
+    </table>
+
+  
+  
+  {% set M = mfname[(name, hira)]['M'] %}
+  {% set F = mfname[(name, hira)]['F'] %}
+
+  <p>Frequency = {{M|length + F|length}}
+    (Male {{M|length}}, Female {{F|length}})
+
+  <p>F-Ratio (F/M+F) = {{ "%.2f"|format(F|length/(M|length + F|length))}}
+  <p>Years M = {{M|join(', ')}}; F = {{F|join(', ')}} 
+
+
+    
+  {% if kindex[name]|length > 1 %}
+  <p>Other pronunciations:
+    {% for (kk, hh) in kindex[name] %}
+    {% if hh != hira %}
+    <a href='{{url_for('namae', orth=kk, pron=hh)}}'>{{add_pron(hh)}}</a>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    
+  {% if hindex[hira]|length > 1 %}
+  <p>Other names pronounced the same:
+    {% for (kk, hh) in hindex[hira] %}
+    {% if kk != name %}
+    <a href='{{url_for('namae', orth=kk, pron=hh)}}'>{{kk}}</a>
+    {% endif %}
+     {% endfor %}
+    {% endif %}
+    
+<!-- <p>Explanations: -->
+    
+
+</div>
+{% endblock %}

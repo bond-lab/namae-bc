@@ -47,3 +47,15 @@ echo "calculate grapheme/phoneme mapping"
 python calc_regular.py > poi
 
 I could also do more to make things uniform and share code, .....
+
+
+## Notes on tables for the book:
+ * use boys/girls
+ * include only  F-ratio
+ * bold signifigant figures, generally only include them,
+ * signifigant figures: 2 for f-ratio, 3 for p-adj
+ * show adjusted p-value
+ * don't include examples?
+ * don't label gender bias
+ * Sort masculine then feminine
+ * Don't use color

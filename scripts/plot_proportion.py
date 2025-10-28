@@ -150,7 +150,7 @@ def tabulate_proportion(stats, total_names, gname):
 
 
     # Save HTML to a file
-    with open(f'table-{gname}.html', 'w') as file:
+    with open(f'proportion/table-{gname}.html', 'w') as file:
         file.write(html_table + html_table2)
 
 
@@ -203,7 +203,7 @@ def graph_proportion(stats, total_names, gname):
     # Show the plot
     plt.tight_layout()
 
-    plt.savefig(f'pron_gender_proportion_histogram_{gname}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'proportion/pron_gender_proportion_histogram_{gname}.png', dpi=300, bbox_inches='tight')
     #plt.show()
 
 def blend_colors(color1, color2, blend_ratio):
@@ -236,7 +236,7 @@ female_color = 'purple'  # or (0.5, 0, 0.5)
 male_color = 'orange'    # or (1, 0.65, 0)
 
 
-def graph_proportion2(data, gname):
+def graph_proportion2(data, gname, title=True):
     xlabel = {0:'0',
                1:'0-10',
                2:'10-20',
@@ -250,8 +250,6 @@ def graph_proportion2(data, gname):
                10:'90-100',
                11:'100',
     }
-
-
 
     # Prepare the data
     bins = list(data.keys())
@@ -277,17 +275,24 @@ def graph_proportion2(data, gname):
     #plt.plot(bins, female_values, color='red', marker='o', label='F')
 
     # Add labels, title, and legend
-    plt.xlabel('Name percent female')
-    plt.ylabel('Percent of babies')
-    plt.title(f'Distribution of names in the baby name calendar: {gname}')
+    plt.xlabel('Gender distribution of names (% female)')
+    plt.ylabel('Percentage of babies (%)')
+    if title:
+        plt.title(f'Gender distribution of names (% female): {gname}')
     plt.xticks(bins, [xlabel[b] for b in bins])
+
+    # Format y-axis as percentages
+    ax = plt.gca()
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{int(y*100)}'))
+    
+    
     plt.legend()
 
-    plt.savefig(f'gender_proportion_histogram_{gname}.png',
+    plt.savefig(f'proportion/gender_proportion_histogram_{gname}.png',
               dpi=300, bbox_inches='tight')
     
     #plt.show()# Plot
-
+    plt.close()
 
     
 
@@ -391,7 +396,7 @@ print('year',
       '%A-L', '%A-Lo', '%A-Lp',
       sep='\t')
 
-title = {2090:'1989-2013', 2095:'1989-2022', 2099:'2014-2022'}
+title = {2090:'2008-2013', 2095:'2008-2022', 2099:'2014-2022'}
 
 
 for year in sorted(names.keys()):
@@ -426,7 +431,7 @@ for year in sorted(names.keys()):
                                   ]:
         gname = f"{group} ({title[year]})"
         stats, total_names = calculate_distribution(male, female, f"{year}")
-        graph_proportion2(stats, gname)
+        graph_proportion2(stats, gname, title=False)
         tabulate_proportion(stats, total_names,  gname)
         #print(stats)
 
