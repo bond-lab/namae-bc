@@ -446,3 +446,41 @@ def cache_years(db_path, src):
     conn.commit()
     conn.close()
     
+def get_kanji_distribution(conn, kanji, gender, src):
+    """
+    Get kanji position distribution data.
+    Returns dict where data[year] = [solo, initial, middle, end, count]
+    """
+    c = conn.cursor()
+    data = dd(lambda: [0, 0, 0, 0, 0])
+    
+    # Get solo, initial, middle, end for each year
+    c.execute(f"""
+SELECT 
+    year,
+    sum(CASE WHEN orth GLOB '{kanji}*' AND length(orth) > 1 THEN freq ELSE 0 END) AS initial,
+    sum(CASE WHEN orth GLOB '*{kanji}*' AND orth NOT GLOB '{kanji}*' AND orth NOT GLOB '*{kanji}' AND length(orth) > 2 THEN freq ELSE 0 END) AS middle,
+    sum(CASE WHEN orth GLOB '*{kanji}' AND length(orth) > 1 THEN freq ELSE 0 END) AS end,
+    sum(CASE WHEN orth = '{kanji}' THEN freq ELSE 0 END) AS solo
+FROM nrank
+WHERE (orth GLOB '*{kanji}*') 
+  AND gender = ? 
+  AND src=?
+  AND freq IS NOT NULL
+GROUP BY year""",
+              (gender, src))
+    
+    for year, initial, middle, end, solo in c:
+        data[year] = [solo, initial, middle, end]
+    
+    # Get total names for each year
+    c.execute(f"""
+    SELECT year, count FROM name_year_cache
+    WHERE gender = ? and SRC = ?""",
+              (gender, src))
+    
+    for year, count in c:
+        data[year].append(count)
+    
+    return dict(data)
+

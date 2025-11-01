@@ -1,0 +1,167 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!-- D3.js library from allowed CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared D3 utilities -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Kanji position plotting script - external file -->
+<script src="{{ url_for('static', filename='js/plot_kanji_position.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Position Distribution: 「{{kanji}}」</h1>
+    <button id="download-both" class="btn btn-primary">
+      💾 Download Both Charts
+    </button>
+  </div>
+  
+  <p class="lead">
+    This page shows how the kanji 「{{kanji}}」 is distributed across different positions in names over time.
+  </p>
+  
+
+  
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Male Names (M)</h5>
+          <button id="download-male" class="btn btn-sm btn-outline-primary" title="Download as PNG">
+            💾 Save
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="kanji-plot-male" style="min-height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Female Names (F)</h5>
+          <button id="download-female" class="btn btn-sm btn-outline-primary" title="Download as PNG">
+            💾 Save
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="kanji-plot-female" style="min-height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">About This Visualization</h5>
+        </div>
+        <div class="card-body">
+          <p>
+            This stacked area chart shows the proportion of names containing the kanji 「{{kanji}}」 
+            in different positions over time. The y-axis represents the proportion relative to all names 
+            in that year and gender category from the current data source ({{db_name}}).
+          </p>
+	     <ul class="mb-0">
+      <li><strong>Solo:</strong> The kanji appears as a single-character name</li>
+      <li><strong>Initial:</strong> The kanji appears at the beginning of multi-character names</li>
+      <li><strong>Middle:</strong> The kanji appears in the middle of names (3+ characters)</li>
+      <li><strong>End:</strong> The kanji appears at the end of multi-character names</li>
+    </ul>
+ 
+          <p class="mb-0">
+            <strong>Reading the chart:</strong> Higher values indicate that the kanji is more commonly 
+            used in that position and time period. The total height at any year represents the overall 
+            popularity of this kanji across all positions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mt-3 mb-5">
+    <a href="{{ url_for('kanji') }}" class="btn btn-secondary">← Back to Kanji Search</a>
+  </div>
+</div>
+
+<script>
+  // Data passed from Flask route using tojson filter
+  const dataMale = {{ data_male | tojson }};
+  const dataFemale = {{ data_female | tojson }};
+  const kanji = {{ kanji | tojson }};
+  const src = {{ db_src | tojson }};
+
+  // DEBUG: Check what we received
+  // console.log('=== DATA CHECK ===');
+  // console.log('dataMale type:', typeof dataMale);
+  // console.log('dataMale keys:', Object.keys(dataMale));
+  // console.log('dataMale first entry:', dataMale[Object.keys(dataMale)[0]]);
+  // console.log('dataMale sample:', JSON.stringify(dataMale).substring(0, 200));
+  
+  // Plot when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if function is available
+    if (typeof plotKanjiPositions === 'undefined') {
+      console.error('plotKanjiPositions function not found! JS file not loaded.');
+      document.getElementById('kanji-plot-male').innerHTML = 
+        '<div class="alert alert-danger">Error: JavaScript file not loaded. Check console for details.</div>';
+      document.getElementById('kanji-plot-female').innerHTML = 
+        '<div class="alert alert-danger">Error: JavaScript file not loaded. Check console for details.</div>';
+      return;
+    }
+    
+    // Plot male data
+    plotKanjiPositions(dataMale, kanji, 'M', src, 'kanji-plot-male', {
+      width: document.getElementById('kanji-plot-male').offsetWidth || 600,
+      height: 400,
+      showTitle: false
+    });
+    
+    // Plot female data
+    plotKanjiPositions(dataFemale, kanji, 'F', src, 'kanji-plot-female', {
+      width: document.getElementById('kanji-plot-female').offsetWidth || 600,
+      height: 400,
+      showTitle: false
+    });
+    
+    // Add download functionality
+    setupDownloadButton('download-male', 'kanji-plot-male', `kanji_${kanji}_male_${src}.png`);
+    setupDownloadButton('download-female', 'kanji-plot-female', `kanji_${kanji}_female_${src}.png`);
+    
+    // Download both button
+    document.getElementById('download-both').addEventListener('click', function() {
+      downloadSVGasPNG('kanji-plot-male', `kanji_${kanji}_male_${src}.png`);
+      // Small delay to avoid browser issues with multiple downloads
+      setTimeout(() => {
+        downloadSVGasPNG('kanji-plot-female', `kanji_${kanji}_female_${src}.png`);
+      }, 100);
+    });
+  });
+  
+  // Redraw on window resize
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (typeof plotKanjiPositions !== 'undefined') {
+        plotKanjiPositions(dataMale, kanji, 'M', src, 'kanji-plot-male', {
+          width: document.getElementById('kanji-plot-male').offsetWidth || 600,
+          height: 400,
+          showTitle: false
+        });
+        
+        plotKanjiPositions(dataFemale, kanji, 'F', src, 'kanji-plot-female', {
+          width: document.getElementById('kanji-plot-female').offsetWidth || 600,
+          height: 400,
+          showTitle: false
+        });
+      }
+    }, 250);
+  });
+  
+</script>
+{% endblock %}

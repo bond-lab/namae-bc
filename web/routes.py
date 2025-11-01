@@ -11,7 +11,7 @@ from collections import defaultdict as dd
 from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
-                get_mapping
+                get_mapping,get_kanji_distribution
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
@@ -164,8 +164,10 @@ def namae():
             script=whichScript(orth),
             mfname=mfname,
             kindex=kindex,
-            hindex=hindex
-        )
+            hindex=hindex,
+            male_color=session.get('male_color', 'orange'),
+            female_color=session.get('female_color', 'purple')
+)
     elif pron:
         return render_template(
             f"namae-pron.html",
@@ -346,3 +348,33 @@ def jinmei():
         title='Kanji Allowed for Names',
     )
 
+###
+### Information about kanji 
+###
+@app.route("/kanji")
+def kanji():
+    """
+    Show information about a single character
+    """
+    kanji_char = request.args.get('kanji', type=str, default='')
+    conn = get_db(current_directory, "namae.db")
+    db_settings = get_db_settings()
+    
+    data_male = get_kanji_distribution(conn, kanji_char, 'M',
+                                       db_settings['db_src'])
+    data_female = get_kanji_distribution(conn, kanji_char, 'F',
+                                         db_settings['db_src'])
+   
+    if not kanji_char:
+        return render_template(
+            "kanji-search.html",
+            title='Kanji Position Search'
+        )
+    
+    return render_template(
+        "kanji.html",
+        kanji=kanji_char,
+        title=f'Information about 「{kanji_char}」',
+        data_male=data_male,
+        data_female=data_female,
+    )

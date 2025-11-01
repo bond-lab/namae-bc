@@ -1,6 +1,14 @@
 {% extends 'layout.html' %}
 {% from 'macros.html' import add_pron %}
 
+{% block head %}
+<!-- D3.js library from allowed CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared D3 utilities -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Name frequency plotting script -->
+<script src="{{ url_for('static', filename='js/plot_namae.js') }}"></script>
+{% endblock %}
 
 {% block content %}
 
@@ -44,10 +52,12 @@
     (Male {{M|length}}, Female {{F|length}})
 
   <p>F-Ratio (F/M+F) = {{ "%.2f"|format(F|length/(M|length + F|length))}}
-  <p>Years M = {{M|join(', ')}}; F = {{F|join(', ')}} 
 
-
-    
+  <!-- Frequency Distribution Visualization -->
+      <h5 class="mb-0">Frequency Over Time
+      <button id="download-plot" class="btn btn-sm btn-outline-primary" title="Download as PNG">💾</button></h5>
+      <div id="name-frequency-plot" style="min-height: 300px;"></div>
+      
   {% if kindex[name]|length > 1 %}
   <p>Other pronunciations:
     {% for (kk, hh) in kindex[name] %}
@@ -70,4 +80,52 @@
     
 
 </div>
+
+<script>
+  // Data from template
+  const yearsMale = {{ M | tojson }};
+  const yearsFemale = {{ F | tojson }};
+  const name = {{ name | tojson }};
+  const maleColor = {{ male_color | tojson }};
+  const femaleColor = {{ female_color | tojson }};
+
+  // Plot when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof plotNameFrequency === 'undefined') {
+      console.error('plotNameFrequency function not found!');
+      document.getElementById('name-frequency-plot').innerHTML = 
+        '<div class="alert alert-danger">Error: JavaScript file not loaded.</div>';
+      return;
+    }
+
+    // Create the plot
+    plotNameFrequency(yearsMale, yearsFemale, name, 'name-frequency-plot', {
+      width: document.getElementById('name-frequency-plot').offsetWidth || 800,
+      height: 400,
+      maleColor: maleColor,
+      femaleColor: femaleColor,
+      showTitle: false
+    });
+
+    // Setup download button
+    setupDownloadButton('download-plot', 'name-frequency-plot', `name_${name}_frequency.png`);
+  });
+
+  // Redraw on window resize
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (typeof plotNameFrequency !== 'undefined') {
+        plotNameFrequency(yearsMale, yearsFemale, name, 'name-frequency-plot', {
+          width: document.getElementById('name-frequency-plot').offsetWidth || 800,
+          height: 400,
+          maleColor: maleColor,
+          femaleColor: femaleColor,
+          showTitle: false
+        });
+      }
+    }, 250);
+  });
+</script>
 {% endblock %}

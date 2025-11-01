@@ -73,12 +73,17 @@
 	      <a href="{{ url_for('book') }}"
 		 class="nav-item nav-link">Book</a></li>
 	  </ul>
+	  <!-- Search Forms -->
 	  <form class="d-flex" role="search" action="{{ url_for('namae') }}" method="get">
 	      <input class="form-control me-2" type="search" name="orth" placeholder="書き方" aria-label="書き方"  style="width: 100px;">
 	      <input class="form-control me-2" type="search" name="pron" placeholder="読み方" aria-label="読み方"  style="width: 100px;">
 	      <button class="btn btn-outline-success" type="submit">🔍</button>
 	  </form>
-
+	  <form class="d-flex" role="search" action="{{ url_for('kanji') }}" method="get">
+  	    <input class="form-control me-2" type="search" name="kanji" placeholder="漢字" aria-label="漢字" style="width: 80px;">
+  	    <button class="btn btn-outline-primary" type="submit">🔍</button>
+  	  </form>
+  
 	  
 	  <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 	    <!-- Settings -->

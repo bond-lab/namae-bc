@@ -12,6 +12,9 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
 
 <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% block head %}
+<!-- Child templates can add scripts here -->
+{% endblock %}
 
 </head>
 

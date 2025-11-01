@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+          <h2 class="mb-0">Kanji Position Search</h2>
+          <p class="lead">
+            Search for a kanji to see its position distribution in names over time.
+          </p>
+          
+          <form action="{{ url_for('kanji') }}" method="get" class="mb-4">
+            <div class="input-group input-group-lg">
+              <input 
+                type="text" 
+                class="form-control" 
+                name="kanji" 
+                placeholder="Enter a kanji character (e.g., 美, 翔, 愛)" 
+                aria-label="Kanji character"
+                maxlength="1"
+                required
+                pattern="[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]"
+                title="Please enter a single kanji character"
+              >
+              <button class="btn btn-primary" type="submit">
+                <span style="font-size: 1.2em;">📊</span> Search
+              </button>
+            </div>
+            <div class="form-text mt-2">
+              Enter a single kanji character to analyze its position usage in names.
+            </div>
+          </form>
+          
+          <div class="alert alert-info" role="alert">
+            <h5 class="alert-heading">What does this show?</h5>
+            <p>
+              For each kanji, you'll see interactive charts showing:
+            </p>
+            <ul class="mb-0">
+              <li><strong>Solo:</strong> Used as a single-character name</li>
+              <li><strong>Initial:</strong> Appears at the start of names</li>
+              <li><strong>Middle:</strong> Appears in the middle (for names with 3+ characters)</li>
+              <li><strong>End:</strong> Appears at the end of names</li>
+            </ul>
+            <p class="mt-2 mb-0">
+              The charts show trends over time for both male and female names in the current data source.
+            </p>
+          </div>
+          
+          <div class="card mt-4">
+            <div class="card-header">
+              <h5 class="mb-0">Example Kanji to Try</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>Common Male Kanji:</h6>
+                  <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a href="{{ url_for('kanji', kanji='翔') }}" class="btn btn-outline-primary btn-sm">翔</a>
+                    <a href="{{ url_for('kanji', kanji='太') }}" class="btn btn-outline-primary btn-sm">太</a>
+                    <a href="{{ url_for('kanji', kanji='大') }}" class="btn btn-outline-primary btn-sm">大</a>
+                    <a href="{{ url_for('kanji', kanji='斗') }}" class="btn btn-outline-primary btn-sm">斗</a>
+                    <a href="{{ url_for('kanji', kanji='輝') }}" class="btn btn-outline-primary btn-sm">輝</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h6>Common Female Kanji:</h6>
+                  <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a href="{{ url_for('kanji', kanji='美') }}" class="btn btn-outline-primary btn-sm">美</a>
+                    <a href="{{ url_for('kanji', kanji='子') }}" class="btn btn-outline-primary btn-sm">子</a>
+                    <a href="{{ url_for('kanji', kanji='花') }}" class="btn btn-outline-primary btn-sm">花</a>
+                    <a href="{{ url_for('kanji', kanji='愛') }}" class="btn btn-outline-primary btn-sm">愛</a>
+                    <a href="{{ url_for('kanji', kanji='菜') }}" class="btn btn-outline-primary btn-sm">菜</a>
+                  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
