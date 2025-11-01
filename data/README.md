@@ -1,4 +1,14 @@
 
+## Baby Calendar Data
+
+Cut and pasted by Ivona into:
+
+jmena 2008-2022.xlsx
+
+Hand corrections:
+2016 - 望月蓮(れん) -> 蓮(れん)
+
+## Birth data
 
 * `live_births_year.tsv`
 
@@ -10,7 +20,7 @@ With updates for 2022. 2023 from:
 
 https://www.e-stat.go.jp/en/stat-search/files?page=1&layout=dataset&toukei=00450011&tstat=000001028897&cycle=7&tclass1=000001053058&tclass2=000001053061&tclass3=000001053064&stat_infid=000040207114&alpha=7%2C8%2C9&tclass4val=0
 
-# Meiji data
+## Meiji Yasuda Data
 
 The spread sheet is from pdfs, available on the Meiji Yasuda website from 2006-2022.
 
