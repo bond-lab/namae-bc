@@ -3,4 +3,6 @@ Jinja2
 MarkupSafe
 toml
 regex
-
+numpy
+scipy
+matplotlib

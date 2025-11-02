@@ -10,7 +10,7 @@ db = "namae.db"
 #scriptdir = os.path.dirname(sys.argv[0])
 conn = sqlite3.connect(db)
 
-    
+  
 def tagName (conn):
     """
     Read the database, add information to the database
@@ -59,9 +59,6 @@ def tagName (conn):
                    whichScript(orth)))
     
 
-
-
-        
 tagName(conn)
         
 conn.commit()
