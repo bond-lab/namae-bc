@@ -5,6 +5,22 @@ import numpy as np
 import scipy
 from scipy.stats import chi2_contingency, fisher_exact
 
+
+# Database options
+
+db_options = {
+    'bc': ('namae', 'Baby Calendar',
+           ('orth', 'pron', 'both')),
+    'hs': ('namae', 'Heisei',
+           ('orth')),
+    'hs+bc': ('combined', 'Combined',
+              ('orth')),
+    'meiji': ('namae', 'Meiji',
+              ('orth'))
+}
+
+dtypes = ('orth', 'pron', 'both')
+
 ### limit for most queries
 ### not much point showing more examples than this
 ###
@@ -35,9 +51,9 @@ def close_db(e=None):
 def params(lst):
     return ','.join(['?']*len(lst))
 
-def get_name(conn):
+def get_name(conn, table='namae', src='bc'):
     c = conn.cursor()
-    c.execute("""select orth, pron, gender, year from namae""")
+    c.execute(f"""SELECT orth, pron, gender, year FROM {table} WHERE src = ?""", (src,))
     mfname = dd(lambda: dd(list))
     kindex = dd(set)
     hindex = dd(set)
@@ -47,57 +63,138 @@ def get_name(conn):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
-def get_name_year(conn,
-                  table='namae', src='bc'):
+def get_name_count_year(conn, src='bc',
+                        dtype='orth',
+                        start =1989,
+                        end = 2022):
+    """
+    Retrieve cached counts of names data from the database, 
+    organized by year and gender.
+
+    Args:
+        conn: SQLite connection object.
+        src: Source of the data ('bc', 'hs', 'hs+bc').
+        dtype: Type of data to retrieve ('orth', 'pron', 'both').
+
+    Returns:
+        A nested defaultdict organized by year and gender containing the number of names.
+    Raises:
+        ValueError: If an invalid combination of src and dtype is provided.
+    """
+    if src in ['hs', 'hs+bc'] and dtype != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
+
+    # Use the cache table
     c = conn.cursor()
-    c.execute(f"""SELECT orth, pron, gender, year
-    FROM {table}
-    WHERE src = ? ORDER BY year""", (src,))
-    byyear =  dd(lambda:  dd(list))
-    for (orth, pron, gender, year) in c:
-        byyear[year][gender].append((orth, pron))
+    c.execute(f"""
+    SELECT year, gender, count
+    FROM name_year_cache
+    WHERE src = ? and dtype = ?
+    AND year >= ? and year <= ?
+    ORDER BY year
+    """, (src, dtype, start, end))
+    byyear = dd(lambda: dd(int))
+    for year, gender, cnt in c:
+        byyear[year][gender] =  cnt  
     return byyear
 
-def get_stats(conn):
+
+def get_name_year(conn, table='namae',
+                  src='bc',
+                  dtype='both',
+                  start =1989,
+                  end = 2022):
+    """
+    Retrieve names data from the database, organized by year and gender.
+
+    Args:
+        conn: SQLite connection object.
+        table: Name of the table to query.
+        src: Source of the data ('bc', 'hs', 'hs+bc').
+        dtype: Type of data to retrieve ('orth', 'pron', 'both').
+
+    Returns:
+        A nested defaultdict organized by year and gender containing the names data.
+
+    Raises:
+        ValueError: If an invalid combination of src and dtype is provided.
+    """
+    if src in ['hs', 'hs+bc'] and dtype != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
+    c = conn.cursor()
+
+    # Determine the columns to select based on dtype
+    if dtype == 'orth':
+        select_columns = "orth, gender, year"
+    elif dtype == 'pron':
+        select_columns = "pron, gender, year"
+    else:
+        select_columns = "orth, pron, gender, year"
+
+    c.execute(f"""SELECT {select_columns}
+    FROM {table}
+    WHERE src = ?
+    AND year >= ? and year <= ?
+    ORDER BY year""", (src, start, end))
+    byyear =  dd(lambda:  dd(list))
+    for row in c:
+        if dtype == 'orth':
+            orth, gender, year = row
+            byyear[year][gender].append((orth,))
+        elif dtype == 'pron':
+            pron, gender, year = row
+            byyear[year][gender].append((pron,))
+        else:
+            orth, pron, gender, year = row
+            byyear[year][gender].append((orth, pron))
+    return byyear
+
+
+
+
+def get_stats(conn, table='namae', src='bc'):
     """
     return various statistics
     stats[name][gender] = X
     DISTINCT
-    stats['dname'][gender] = X
-    stats['pron'][gender] = X
-    stats['orth'][gender] = X
+    stats['dname'][gender] = X   # distinct names
+    stats['pron'][gender] = X    # distinct pronunciation
+    stats['orth'][gender] = X    # distinct orthography
     """
 
     stats = dd(lambda: dd(lambda: dd(int))) 
     
     c = conn.cursor()
-    c.execute("""SELECT gender, COUNT (gender) 
-    FROM (SELECT DISTINCT orth, pron, gender FROM namae) 
-    GROUP BY gender""")
+    c.execute(f"""SELECT gender, COUNT (gender) 
+    FROM (SELECT DISTINCT orth, pron, gender FROM {table} WHERE src = ?) 
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['dname'][gender] = freq
 
-    c.execute("""select gender, count(distinct orth) 
-    FROM namae
-    GROUP BY gender""")
+    c.execute(f"""select gender, count(distinct orth) 
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['orth'][gender] = freq
 
-    c.execute("""select gender, count(distinct pron) 
-    FROM namae
-    GROUP BY gender""")
+    c.execute(f"""select gender, count(distinct pron) 
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['pron'][gender] = freq
 
-    c.execute("""select gender, count(gender) 
-    FROM namae
-    GROUP BY gender""")
+    c.execute(f"""select gender, count(gender) 
+    FROM {table}
+    WHERE src = ?
+    GROUP BY gender""", (src,))
     for (gender, freq) in c:
         stats['name'][gender] = freq
 
     return stats
 
-def get_feature(conn, feat1, feat2, threshold, short=False):
+def get_feature(conn, feat1, feat2, threshold, table='namae', src='bc', short=False):
 
     c = conn.cursor()
 
@@ -110,8 +207,9 @@ def get_feature(conn, feat1, feat2, threshold, short=False):
     if feat1 == 'kanji':
        c.execute(f"""select kanji, gender, count(*) as cnt 
        from kanji left join ntok on kanji.kid = ntok.kid 
-       left join namae on ntok.nid = namae.nid 
-       group by kanji, gender""")
+       LEFT JOIN {table} ON ntok.nid = {table}.nid
+       WHERE src = ?
+       group by kanji, gender""", (src,))
 
        for ft, gender, count in c:
            ddata[ft][gender] =  int(count)
@@ -121,36 +219,40 @@ def get_feature(conn, feat1, feat2, threshold, short=False):
         #assert feat1 in ['char1'] 
         c.execute(f"""
         SELECT {feat1}, gender, count(*) as cnt 
-        FROM attr left join namae on attr.nid=namae.nid 
+        FROM attr LEFT JOIN {table} ON attr.nid={table}.nid 
         WHERE {feat1} IS NOT NULL
-        GROUP BY {feat1}, gender""")
+        AND src = ?
+        GROUP BY {feat1}, gender""", (src,))
         
         for ft, gender, count in c:
             ddata[ft][gender] =  int(count)
             
         if not short:
             c.execute(f"""select {feat1}, orth, pron, count({feat1}) 
-            from namae left join attr on namae.nid = attr.nid 
-            group by {feat1}, orth, pron 
-            order by {feat1}, count ({feat1}) DESC""")
+            FROM {table} LEFT JOIN attr ON {table}.nid = attr.nid
+            WHERE src = ?
+            GROUP BY {feat1}, orth, pron 
+            ORDER BY {feat1}, count ({feat1}) DESC""", (src,))
         for ft, orth, pron, freq in c:
             examples[ft].append((orth, pron))
 
     else:  # two features
         c.execute(f"""
         SELECT {feat1}, {feat2}, gender, count(*) as cnt 
-        FROM attr left join namae on attr.nid=namae.nid
+        FROM attr LEFT JOIN {table} ON attr.nid={table}.nid
         WHERE {feat1} is not Null AND {feat2} is not Null
-        GROUP BY {feat1}, {feat2}, gender""")
+        AND src = ?
+        GROUP BY {feat1}, {feat2}, gender""", (src,))
         for ft1, ft2, gender, count in c:
             ddata[f"{ft1}, {ft2}"][gender] =  int(count)
             
         if not short:
             c.execute(f"""
-SELECT {feat1}, {feat2}, orth, pron, count({feat1}) 
-FROM namae left join attr on namae.nid = attr.nid 
-GROUP BY {feat1}, {feat2}, orth, pron 
-ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""")
+            SELECT {feat1}, {feat2}, orth, pron, count({feat1}) 
+            FROM {table} LEFT JOIN attr ON {table}.nid = attr.nid
+            WHERE src = ?
+            GROUP BY {feat1}, {feat2}, orth, pron 
+            ORDER BY {feat1}, {feat2}, count ({feat1}) DESC""", (src,))
             for ft1, ft2, orth, pron, freq in c:
                 examples[f"{ft1}, {ft2}"].append((orth, pron))
 
@@ -298,4 +400,40 @@ def get_readings(conn, kanjis):
 # get_readings(conn, ['妃'])
 # Output: { '妃': {'on': ['ひ'], 'kun': ['きさき'], 'nanori': ['き', 'ぴ', 'み']} }
 
+    
+
+def cache_years(db_path, src):
+    """
+    Store the number of names per year in the database for a given source.
+
+    Args:
+        src (str): The source identifier for the data.
+    """
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    
+    if src in ('meiji', 'hs', 'births'):
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
+        FROM nrank
+        WHERE src = ?
+        GROUP BY year, gender
+        HAVING tfreq > 0
+        ORDER BY year, gender
+        ''', (src, ))
+    else: 
+        table = db_options[src][0]
+        c.execute(f'''
+        INSERT INTO name_year_cache (src, dtype, year, gender, count)
+        SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
+        FROM {table}
+        WHERE src = ?
+        GROUP BY year, gender
+        HAVING tfreq > 0
+        ORDER BY year, gender
+        ''', (src, ))
+    conn.commit()
+    conn.close()
     

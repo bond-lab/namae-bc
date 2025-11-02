@@ -6,3 +6,5 @@ regex
 numpy
 scipy
 matplotlib
+# to show pronunciation of hiragana
+kanaconv

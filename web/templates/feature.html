@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% from 'macros.html' import add_pron %}
 
 {% block css %}
 <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
@@ -7,23 +8,25 @@
 {% block content %}
 
 <!-- Color and sort according to type   -->
+{% set m = data|length %}
+{% set is_length_feature = feats[0] in ["script", "olength", "mlength", "slength"] %}
 
 <div class="container">
   <h1>{{title}}</h1>
   <div>
-    <p>There are {{data|length}} different features with more than
-      {{threshold}} example(s).
-      This gives {{"{:,d}".format(summ['allm'])}} male names
+    <p>There are {{"{:,d}".format(m)}} different features with more than
+      {{threshold}} example(s) from the {{db_name}} database.
+      These come from {{"{:,d}".format(summ['allm'])}} male names
       and {{"{:,d}".format(summ['allf'])}}
       female names ({{"{:,d}".format(summ['allt'])}} together).
 
-      <p>𝜒² = {{"{:.3f}".format( summ['chi2'])}}
+      <p>χ² = {{"{:.3f}".format( summ['chi2'])}}
 	with pvalue {{"{:.2e}".format(summ['pval'])}}.</p>
-      <p>𝜙 = {{"{:.3f}".format(summ['phi'])}}</p>
+      <p>φ = {{"{:.3f}".format(summ['phi'])}}</p>
 
-      <p>Adjusted significance threshold 𝛼′ =
+      <p>Adjusted significance threshold α′ =
       {{"{:.2e}".format(summ['lvl'])}} for individual significance
-      tests with Bonferonni’s correction.
+      tests with Bonferroni's correction.
 	  
   </div>
   
@@ -43,11 +46,6 @@
       {%- for (feat, male, female, fratio, odds, pvalue, sig, exe) in tests %}
   <tr style="background: linear-gradient(to right, lightblue, {{ (1-fratio)*100 }}%, pink);">
     <td> {{ feat }} </td>
-    <!-- <tr class="{{status}}"> -->
-	<!-- <td style="background: linear-gradient(to right, lightblue {{ (1-fratio)*100 }}%, pink {{ fratio*100 }}%);"> -->
-	<!--   {{ feat }} -->
-	<!-- </td> -->
-
 	<td align='right'>{{male}}</td>
 	<td align='right'>{{female}}</td>
 	<td align='right'>{{female+male}}</td>
@@ -63,9 +61,78 @@
       {% endfor %}
         </tbody>
     </table>
+
+  <hr>
+
+{% macro render_book_table(title_suffix, filter_type, sort_attr=None, sort_reverse=False) %}
+<h2>Table for {{ title }}{% if title_suffix %} ({{ title_suffix }}){% endif %}</h2>
+
+<table id="book-table" style="border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>{{ title }}</th>
+      <th>Boys</th>
+      <th>Girls</th>
+      <th>F Ratio</th>
+      <th>p-adj</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set sorted_tests = tests|sort(attribute=sort_attr, reverse=sort_reverse) if sort_attr is not none else tests %}
+    {% for (feat, male, female, fratio, odds, pvalue, sig, exe) in sorted_tests %}
+      {% set p_adj = m * pvalue %}
+      {% set show_row = (filter_type == "all") or (filter_type == "girls" and fratio > (1 - beta)) or (filter_type == "boys" and fratio < beta) %}
+      {% if show_row %}
+        {% set signif = p_adj < 0.05 %}
+        <tr class="{% if not signif and not is_length_feature %}nonsig{% endif %}">
+          <td>{{ add_pron(feat, feats[0]) }}</td>
+          <td style="text-align:right;">{{ "{:,d}".format(male) }}</td>
+          <td style="text-align:right;">{{ "{:,d}".format(female) }}</td>
+          <td style="text-align:right;">{{ "%.2f"|format(fratio) }}</td>
+          <td style="text-align:right;">
+            {% if signif %}<strong>{% endif %}
+            {% if p_adj < 0.001 %}
+              &lt;0.001
+            {% else %}
+              {{ "%.3f"|format(p_adj) }}
+            {% endif %}
+            {% if signif %}</strong>{% endif %}
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+<p id="sig-note" class="caption-note">
+  Significance uses Bonferroni correction (m = {{ m }}, familywise α = 0.05).
+  {% if not is_length_feature %}
+  <span id="note-hide">Only significant features shown.</span>
+  <span id="note-show" style="display:none;">
+    Rows in <strong>bold</strong> pass the corrected threshold.
+  </span>
+  {% endif %}
+</p>
+{% endmacro %}
+
+{% if is_length_feature %}
+  {{ render_book_table("", "all") }}
+{% else %}
+  {{ render_book_table("Girls: F-ratio > " ~ (1-beta), "girls", 3, True) }}
+  {{ render_book_table("Boys: F-ratio < " ~ beta, "boys", 3, False) }}
+{% endif %}
+
+{% if not is_length_feature %}
+<p><label>
+  <input type="checkbox" id="show-nonsig"
+         data-default='false'>
+  Show non-significant rows
+</label></p>
+{% endif %}
+
   </div>
   </div>
 {% endblock %}
+
 
 {% block scripts %}
   <script>
@@ -124,6 +191,32 @@
     });
 
     });
+
+    {% if not is_length_feature %}
+    /* toggle for the book table */
+   document.addEventListener("DOMContentLoaded", function () {
+    const checkbox = document.getElementById("show-nonsig");
+    const rows = document.querySelectorAll("#book-table tbody tr.nonsig");
+    const noteHide = document.getElementById("note-hide");
+    const noteShow = document.getElementById("note-show");
+
+    // apply initial state from Jinja
+    const defaultState = checkbox.dataset.default === "true";
+    checkbox.checked = defaultState;
+
+    function updateState() {
+      const show = checkbox.checked;
+      // toggle row visibility
+      rows.forEach(r => r.style.display = show ? "" : "none");
+      // toggle which text span is visible
+      noteHide.style.display = show ? "none" : "";
+      noteShow.style.display = show ? "" : "none";
+    }
+
+    checkbox.addEventListener("change", updateState);
+    updateState(); // initialize on load
+  });
+  {% endif %}
     </script>
   <style>
     /* CSS to align elements inline and provide spacing */
@@ -137,6 +230,15 @@
         width: auto; /* Adjust width for dropdowns to be compact */
     } 
 </style>
-    
+ <style>
+  .caption-note {
+    font-size: 90%;
+    font-style: italic;
+    color: #444;
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
+    max-width: 70em;
+  }
+</style>   
 </div>
 {% endblock %}

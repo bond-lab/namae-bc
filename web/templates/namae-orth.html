@@ -1,17 +1,17 @@
 {% extends 'layout.html' %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
 
 <!-- Color and sort according to type   -->
 
 <div class="container">
-  <h1>{{name}}</h1>
-
-
-    
+  <h1>Orthography: {{name}}</h1>
+  <p>Other pronunciations:</p>
+  <ul>
+    {% for orth, pron in kindex[name] %}
+      <li><a href="{{ url_for('namae', orth=name, pron=pron) }}">{{pron}}</a></li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}

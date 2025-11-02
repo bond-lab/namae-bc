@@ -30,3 +30,20 @@ python munge.py
 python meta.py
 cp namae.db ../web/db/namae.db 
 ```
+
+
+
+Note:
+-----
+
+I am not writing everything to the right place for some of the scripts:
+echo "Plot proportions"
+python plot_proportion.py
+
+echo "Plot gender overlap"
+python plot_overlap.py ../web/db/namae.db
+
+echo "calculate grapheme/phoneme mapping"
+python calc_regular.py > poi
+
+I could also do more to make things uniform and share code, .....

@@ -11,7 +11,6 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
 	  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-	    <li class="nav-item">
      <a href="{{ url_for('home') }}"
 		 class="nav-link">Overview</a></li>
 	    <li class="nav-item">
@@ -26,9 +25,14 @@
             Features
           </a>
 	  <ul class="dropdown-menu" aria-labelledby="navbarFeatures">
-	    {% for (feat1, feat2, name) in features %}
-	    <li><a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}"
-		   class="dropdown-item">{{name}}</a></li>
+	    {% for (feat1, feat2, name, possible) in features %}
+	    <li>
+	        {% if db_src in possible %}
+	        <a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}" class="dropdown-item">{{name}}</a>
+	        {% else %}
+	        <span class="dropdown-item text-muted">{{name}}</span>
+	        {% endif %}
+	    </li>
 	    {% endfor %}
 	     </ul></li>
 	      <!-- Overall -->
@@ -37,9 +41,14 @@
             Overall
           </a>
 	  <ul class="dropdown-menu" aria-labelledby="navbarOverall">
-	    {% for (feat1, feat2, name) in overall %}
-	    <li><a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}"
-		   class="dropdown-item">{{name}}</a></li>
+	    {% for (feat1, feat2, name, possible) in overall %}
+	    <li>
+	      {% if db_src in possible %}
+	      <a href="{{ url_for('feature', f1=feat1, f2=feat2, nm = name ) }}"
+		 class="dropdown-item">{{name}}</a></li>
+	      {% else %}
+	      <span class="dropdown-item text-muted">{{name}}</span>
+	      {% endif %}
 	    {% endfor %}
 	     </ul></li>
 	      <!-- Phenomena -->
@@ -48,7 +57,7 @@
             Phenomena
           </a>
 	  <ul class="dropdown-menu" aria-labelledby="navbarPhenomena">
-	    {% for (feat1, feat2, name) in phenomena %}
+	    {% for (feat1, feat2, name) in phenomena + [('diversity', '', 'Diversity Measures')] %}
 	    <li><a href="{{ url_for(feat1) }}"
 		   class="dropdown-item">{{name}}</a></li>
 	    {% endfor %}
@@ -60,7 +69,17 @@
 	    <li class="nav-item">
 	      <a href="{{ url_for('docs') }}"
 		 class="nav-item nav-link">Documentation</a></li>
+	    <li class="nav-item">
+	      <a href="{{ url_for('book') }}"
+		 class="nav-item nav-link">Book</a></li>
 	  </ul>
+	  <form class="d-flex" role="search" action="{{ url_for('namae') }}" method="get">
+	      <input class="form-control me-2" type="search" name="orth" placeholder="書き方" aria-label="書き方"  style="width: 100px;">
+	      <input class="form-control me-2" type="search" name="pron" placeholder="読み方" aria-label="読み方"  style="width: 100px;">
+	      <button class="btn btn-outline-success" type="submit">🔍</button>
+	  </form>
+
+	  
 	  <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 	    <!-- Settings -->
 	    <li class="nav-item">

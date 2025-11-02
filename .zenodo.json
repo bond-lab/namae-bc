@@ -1,0 +1,36 @@
+{
+  "title": "Online Resources for Japanese Names",
+  "description": "This repository contains the datasets, analysis scripts, and interactive website code for 'FIXME'. It includes frequency data downloaded from the web and cleaned, diversity metrics, and an interactive online search interface. The data is archived in Zenodo for reproducibility and citation.",
+  "creators": [
+    {
+      "name": "Bond, Francis",
+      "affiliation": "Palacký University Olomouc",
+      "orcid": "0000-0003-4973-8068"
+    },
+    {
+      "name": "Barešová, Ivona",
+      "affiliation": "Palacký University Olomouc",
+      "orcid": "0000-0002-4664-013X"
+    }
+  ],
+  "keywords": [
+    "Japanese names",
+    "onomastics",
+    "gender",
+    "linguistics",
+    "diversity"
+  ],
+  "license": "CC-BY-4.0",
+  "access_right": "open",
+  "upload_type": "dataset",
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "10.xxxx/book-doi-placeholder",
+      "resource_type": "publication-book"
+    }
+  ],
+  "version": "0.1.0",
+  "language": "eng",
+  "notes": "Some of the datasets included here contain material originally compiled by other authors and remain under their respective copyrights. These are included for research and educational purposes. Please check the source attribution files in the `data/` directory for detailed credits and license terms."
+}

@@ -1,8 +1,5 @@
 {% extends 'layout.html' %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
 
@@ -16,7 +13,7 @@
 
     
   <h1>How many Kanji are available for names</h1>
-    <img src="{{ url_for('static', filename='img/jinmei.svg') }}" class="img-fluid" alt="Kanji per Year">
+    <img src="{{ url_for('static', filename='plot/jinmei.svg') }}" class="img-fluid" alt="Kanji per Year">
 
     <h3>References</h3>
     <ul>

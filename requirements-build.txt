@@ -8,3 +8,6 @@ jamdict-data
 jaconv
 toml
 regex
+tabulate
+pyyaml
+Flask

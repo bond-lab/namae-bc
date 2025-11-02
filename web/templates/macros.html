@@ -1,0 +1,49 @@
+
+{% macro render_table(table_data, table_class="table-md table-hover w-auto", size="") %}
+<div class="table-responsive">
+    <table class="table {{ table_class }} {%- if size %}table-{{ size }}{%- endif %}">
+        <thead{%- if table_data.header_class -%}class='{{ table_data.header_class }}'{%- endif -%}>
+<tr>
+{%- for header in table_data.headers %}
+<th scope="col">{{ header }}</th>
+{%- endfor %}
+</tr>
+</thead>
+<tbody>
+{%- for row in table_data.rows %}
+<tr>
+  {%- for cell in row -%}
+{%- set formatted = cell|format_cell -%}
+<td{%- if formatted.is_number %} class="text-end"{%- endif %}>{{ formatted.value }}</td>
+{%- endfor %}
+</tr>
+{%- endfor %}
+</tbody>
+</table>
+</div>
+{%- endmacro %}
+
+
+<!-- Sample Table -->
+<!-- { -->
+<!--     "headers": ["Product", "Price", "Quantity", "Total"], -->
+<!--     "rows": [ -->
+<!--         ["Widget A", "1250.50", "100", "125050"], -->
+<!--         ["Widget B", "2400", "75", "180000"], -->
+<!--         ["Widget C", "500.25", "200", "100050"] -->
+<!--     ], -->
+<!--     "caption": "Sales Data - Q1 2024" -->
+<!-- } -->
+
+{%- macro show_plot(filename, alt_text) -%}
+<h3>{{ alt_text }}</h3>
+<img class="img-fluid" src="{{ url_for('static', filename='plot/' + filename) }}" alt="{{ alt_text }}">
+{%- endmacro %}
+
+{% macro add_pron(text, feat) -%}
+{% if feat.startswith('mora') or feat.startswith('syll') -%}
+{{ text }} /{{ text|hira2roma }}/
+{%- else -%}
+{{ text }}
+{%- endif %}
+{%- endmacro %}

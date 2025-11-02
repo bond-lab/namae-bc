@@ -22,7 +22,7 @@
         <div class="mb-3">
             <label class="form-label">Select Database:</label>
             <div>
-                {% for src, (table, display_name) in db_options.items() %}
+                {% for src, (table, display_name, dtypes) in db_options.items() %}
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="db_option" id="db_option_{{ src }}" value="{{ src }}" {% if session.get('db_option', DEFAULT_DB_OPTION) == src %}checked{% endif %}>
                     <label class="form-check-label" for="db_option_{{ src }}">

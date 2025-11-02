@@ -45,19 +45,21 @@ def tagName (conn):
         ?, ?, ?,  
         ?, ?)""",    
                   (nid,
-                   len(orth), len(pron), len(mora), len (syll),
-                   orth[0],
-                   orth[-1] if len(orth) > 1 else None,
-                   orth[-2] if len(orth) > 2 else None,
-                   mora[0] if mora else None,
+                   len(orth) if orth else None,
+                   len(pron) if pron else None,
+                   len(mora) if mora else None,
+                   len (syll) if syll else None,
+                   orth[0] if orth and len(orth) > 1 else None,
+                   orth[-1] if orth and len(orth) > 1 else None,
+                   orth[-2] if orth and len(orth) > 2 else None,
+                   mora[0] if mora and len(mora) > 1 else None,
                    mora[-1] if mora and len(mora) > 1 else None,
                    mora[-2] if mora and len(mora) > 2 else None,
-                   syll[0] if syll else None,
+                   syll[0] if syll  and len(syll) > 1 else None,
                    syll[-1] if syll and len(syll) > 1 else None,
                    syll[-2] if syll and len(syll) > 2 else None,
-                   orth[0] if len(orth) == 1 else None, # uni_ch
-                   whichScript(orth)))
-    
+                   orth[0] if orth and len(orth) == 1 else None, # uni_ch
+                   whichScript(orth) if orth else None))
 
 tagName(conn)
         

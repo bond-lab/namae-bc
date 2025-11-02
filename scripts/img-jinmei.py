@@ -70,7 +70,11 @@ def plot_kanji_usage(output_path=None):
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
         # Save as PNG
-        plt.savefig(f'{output_path}.png', dpi=300)
+         # --- Save without title (PNG) ---
+        plt.title("")  # remove title
+        book_name = os.path.join(os.path.dirname(output_path),
+                                 f"book_{os.path.basename(output_path)}")
+        plt.savefig(f"{book_name}.png", dpi=300)
         
         # Save as SVG
         plt.savefig(f'{output_path}.svg')

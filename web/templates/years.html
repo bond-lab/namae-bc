@@ -1,19 +1,20 @@
 {% extends 'layout.html' %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 
 
 
 <div class="container">
+
   <h1>Data by Year</h1>
 
+   <img src="{{ url_for('static', filename='plot/years_' ~ db_src ~ '.png') }}" alt="Names per Year">
 
-   <img src="{{ url_for('years_png') }}" alt="Names per Year">
-
+   {% if db_src == 'meiji' %}
+   <p>The meiji data shows the most common 100 names from their yearly sample.</p>
+   <img src="{{ url_for('static', filename='plot/years_totals.png')}}" alt="Meiji Totals">
+   {% endif %}
+   
    <h2>Table: Number of Names per Year ({{db_name}})</a>
 
 <table class="table table-md table-hover w-auto">
@@ -23,21 +24,36 @@
       <th>M Freq</th>
       <th>Y Freq</th>
       <th>Total</th>
+      <th>M % of births</th>
+      <th>F % of births</th>
+      <th>M births</th>
+      <th>F births</th>
   </tr>
   </thead>
   <tbody>
     {% for year in names %}
     <tr>
       <td>{{year}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['M']|length)}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['F']|length)}}</td>
-      <td align='right'>{{"{:,d}".format(names[year]['M']|length + names[year]['F']|length)}}</td>
-    </tr>
+      <td align='right'>{{"{:,d}".format(names[year]['M'])}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['F'])}}</td>
+      <td align='right'>{{"{:,d}".format(names[year]['M'] + names[year]['F'])}}</td>
+      <td align='right'>{{format_percentage(names[year]['M'], births[year]['M'])}}</td>
+      <td align='right'>{{format_percentage(names[year]['F'], births[year]['F'])}}</td>
+      {% if births[year]['M'] != 0 %} 
+      <td align='right'>{{"{:,d}".format(births[year]['M'])}}</td>
+      <td align='right'>{{"{:,d}".format(births[year]['F'])}}</td>
+      {% else %}
+      <td align='right'>No data</td>
+      <td align='right'>No data</td>
+      {% endif %}
+     </tr>
     {% endfor %}
   </tbody>
   
 </table>
 
+<h2>Table: Number of Births per Year</a>
+<img src="{{ url_for('static', filename='plot/years_births.png')}}" alt="Births per Year">
 
 </div>
 
