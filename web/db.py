@@ -357,13 +357,137 @@ ORDER BY pron, freq DESC, orth""")
 
 def get_mapping(conn, orth, pron):
     """
-    return the mapping between the orthography and the ponunciation
+    return the mapping between the orthography and the pronunciation
     """
     c = conn.cursor()
     c.execute("""SELECT mapping FROM mapp
     WHERE orth = ? and pron = ?""", (orth, pron))
     return c.fetchone()         
+
+def get_irregular(conn, table='namae', src='bc'):
+    """
+    Return the irregularity of the mapping of all names in the corpus,
+    along with linear regression statistics for each gender.
     
+    Returns:
+        tuple: (data, regression_stats)
+        - data: list of tuples (year, gender, names, number, irregular_names, proportion)
+        - regression_stats: dict with keys 'M' and 'F', each containing:
+            - slope: regression slope (change in proportion per year)
+            - intercept: y-intercept
+            - r_value: correlation coefficient
+            - p_value: two-tailed p-value for hypothesis test
+            - std_err: standard error of the estimate
+            - trend: 'increasing', 'decreasing', or 'stable'
+            - significant: boolean indicating if trend is significant (p < 0.05)
+    """
+    from scipy import stats as scipy_stats
+    
+    c = conn.cursor()
+    c.execute(f"""SELECT 
+    n.year,
+    n.gender,
+    COUNT(DISTINCT n.orth || '|' || n.pron) AS names,
+    COUNT(*) AS number,
+    SUM(CASE WHEN m.mapping LIKE '%irregular%' THEN 1 ELSE 0 END) AS irregular_names
+    FROM {table} n
+    LEFT JOIN mapp m ON n.orth = m.orth AND n.pron = m.pron
+    WHERE n.src = ?
+    GROUP BY n.year, n.gender
+    ORDER BY n.year, n.gender;
+    """, (src,))
+    results = c.fetchall()
+    c.close()
+    
+    # Process data and calculate proportions
+    data = []
+    male_data = {'years': [], 'proportions': []}
+    female_data = {'years': [], 'proportions': []}
+    
+    for row in results:
+        year, gender, names, number, irregular_names = row
+        proportion = irregular_names / number if number > 0 else 0
+        data.append((year, gender, names, number, irregular_names, proportion))
+        
+        # Separate by gender for regression
+        if gender == 'M':
+            male_data['years'].append(year)
+            male_data['proportions'].append(proportion)
+        elif gender == 'F':
+            female_data['years'].append(year)
+            female_data['proportions'].append(proportion)
+    
+    # Calculate linear regression for each gender
+    regression_stats = {}
+    
+    for gender, gender_data in [('M', male_data), ('F', female_data)]:
+        if len(gender_data['years']) >= 2:  # Need at least 2 points for regression
+            slope, intercept, r_value, p_value, std_err = scipy_stats.linregress(
+                gender_data['years'], 
+                gender_data['proportions']
+            )
+            
+            # Determine trend
+            if p_value < 0.05:
+                trend = 'increasing' if slope > 0 else 'decreasing'
+            else:
+                trend = 'stable'
+            
+            regression_stats[gender] = {
+                'slope': float(slope),
+                'intercept': float(intercept),
+                'r_value': float(r_value),
+                'r_squared': float(r_value ** 2),
+                'p_value': float(p_value),
+                'std_err': float(std_err),
+                'trend': trend,
+                'significant': bool(p_value < 0.05),
+                'years': list(gender_data['years']),  # Convert to list for JSON serialization
+                'proportions': list(gender_data['proportions'])  # Convert to list for JSON serialization
+                 }
+            
+        else:
+            regression_stats[gender] = None
+       
+    # Compare male vs female proportions using independent samples t-test
+    gender_comparison = None
+    if len(male_data['proportions']) >= 2 and len(female_data['proportions']) >= 2:
+        # Use independent samples t-test
+        t_stat, t_pvalue = scipy_stats.ttest_ind(
+            male_data['proportions'], 
+            female_data['proportions']
+        )
+        
+        # Calculate means
+        male_mean = np.mean(male_data['proportions'])
+        female_mean = np.mean(female_data['proportions'])
+        
+        # Determine which is higher
+        if t_pvalue < 0.05:
+            if male_mean > female_mean:
+                comparison = 'male_higher'
+                direction = 'Male names have significantly MORE irregular mappings than female names'
+            else:
+                comparison = 'female_higher'
+                direction = 'Female names have significantly MORE irregular mappings than male names'
+        else:
+            comparison = 'no_difference'
+            direction = 'No significant difference between male and female irregular mappings'
+        
+        gender_comparison = {
+            't_statistic': float(t_stat),
+            'p_value': float(t_pvalue),
+            'significant': bool(t_pvalue < 0.05),
+            'male_mean': float(male_mean),
+            'female_mean': float(female_mean),
+            'difference': float(male_mean - female_mean),
+            'comparison': comparison,
+            'direction': direction
+        }
+  
+    return data, regression_stats, gender_comparison
+
+
     
 def get_readings(conn, kanjis):
     """

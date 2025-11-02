@@ -11,7 +11,8 @@ from collections import defaultdict as dd
 from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
-                get_mapping,get_kanji_distribution
+                get_mapping, get_kanji_distribution, \
+                get_irregular
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
@@ -55,7 +56,9 @@ overall = [
 
 phenomena = [
     ('redup', '', 'Reduplication'),
-    ('jinmei', '', 'Kanji for names')
+    ('jinmei', '', 'Kanji for names'),
+    ('irregular', '', 'Irregular Readings'),
+    
 ]
 
 def get_db_settings():
@@ -318,6 +321,20 @@ def redup():
         stats=stats
     )
 
+@app.route("/phenomena/proportion.html")
+def proportion():
+    """
+    show examples of reduplication
+    """
+    data ={}
+    return render_template(
+        f"phenomena/proportion.html",
+        data=data,
+        title='Gender Proportion',
+    )
+
+
+    
 @app.route("/book")
 def book():
     """
@@ -377,4 +394,37 @@ def kanji():
         title=f'Information about 「{kanji_char}」',
         data_male=data_male,
         data_female=data_female,
+    )
+
+###
+### Kanji readings
+###
+@app.route("/irregular.html")
+def irregular():
+    """Show irregular names statistics"""
+    conn = get_db(current_directory, "namae.db")
+    db_settings = get_db_settings()
+    results, regression_stats, gender_comparison = get_irregular(conn, table='namae', src='bc')
+    data = []
+    for row in results:
+        # Unpack the tuple: (year, gender, names, number, irregular_names)
+        year, gender, names, number, irregular_names, proportion = row
+        data.append({
+            'year': year,
+            'gender': gender,
+            'names': names,
+            'number': number,
+            'irregular_names': irregular_names,
+            'proportion': proportion
+        })
+     
+    
+    return render_template(
+        "phenomena/irregular.html",
+        data=data,
+        regression_stats=regression_stats,
+        gender_comparison=gender_comparison,
+        title='Irregular Names Statistics',
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
     )

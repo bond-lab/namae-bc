@@ -1,0 +1,263 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!-- D3.js library from allowed CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared D3 utilities -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Irregular names plotting script -->
+<script src="{{ url_for('static', filename='js/plot_irregular.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Irregular Name Mappings</h1>
+  
+  <p class="lead">
+    This page shows the proportion of names with irregular character-to-sound mappings over time,
+    comparing male and female names.
+  </p>
+   
+  <!-- Visualization -->
+  <div class="card mt-4 mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Irregular Proportion Over Time</h5>
+      <button id="download-plot" class="btn btn-sm btn-outline-primary" title="Download as PNG">
+        💾 Save Plot
+      </button>
+    </div>
+    <div class="card-body">
+      <div id="irregular-plot" style="min-height: 550px;"></div>
+    </div>
+  </div>
+
+  <div class="alert alert-info" role="alert">
+    <strong>What is an irregular mapping?</strong>
+    <p class="mb-0">
+      A name mapping is considered "irregular" when the pronunciation of a character doesn't follow
+      standard readings (on, kun, or nanori). These are creative or non-standard pronunciations
+      that parents choose for their children's names.
+    </p>
+  </div>
+   
+  <!-- Data Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Data Table</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Gender</th>
+              <th class="text-end"># Unique Names</th>
+              <th class="text-end"># Total Entries</th>
+              <th class="text-end"># Irregular</th>
+              <th class="text-end">% Irregular</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in data %}
+            <tr>
+              <td>{{ row.year }}</td>
+              <td>{{ row.gender }}</td>
+              <td class="text-end">{{ "{:,}".format(row.names) }}</td>
+              <td class="text-end">{{ "{:,}".format(row.number) }}</td>
+              <td class="text-end">{{ "{:,}".format(row.irregular_names) }}</td>
+              <td class="text-end">{{ "%.1f"|format(row.proportion * 100) }}%</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Summary Statistics -->
+  <div class="card mt-4 mb-5">
+    <div class="card-header">
+      <h5 class="mb-0">Summary</h5>
+    </div>
+    <div class="card-body">
+      {% set male_data = data | selectattr('gender', 'equalto', 'M') | list %}
+      {% set female_data = data | selectattr('gender', 'equalto', 'F') | list %}
+      
+      {% set total_male_irregular = male_data | sum(attribute='irregular_names') %}
+      {% set total_male_number = male_data | sum(attribute='number') %}
+      {% set total_female_irregular = female_data | sum(attribute='irregular_names') %}
+      {% set total_female_number = female_data | sum(attribute='number') %}
+      
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Male Names</h6>
+          <p>
+            <strong>Total entries:</strong> {{ "{:,}".format(total_male_number) }}<br>
+            <strong>Irregular entries:</strong> {{ "{:,}".format(total_male_irregular) }}<br>
+            <strong>Proportion:</strong> {{ "%.2f"|format(total_male_irregular / total_male_number * 100) }}%
+          </p>
+          {% if regression_stats and regression_stats['M'] %}
+          <h6 class="mt-3">Trend Analysis</h6>
+          <p>
+            <strong>Trend:</strong> 
+            {% if regression_stats['M']['trend'] == 'increasing' %}
+              <span class="text-success">📈 Increasing</span>
+            {% elif regression_stats['M']['trend'] == 'decreasing' %}
+              <span class="text-danger">📉 Decreasing</span>
+            {% else %}
+              <span class="text-secondary">➡️ Stable</span>
+            {% endif %}
+            {% if regression_stats['M']['significant'] %}
+              <span class="badge bg-primary">Significant</span>
+            {% else %}
+              <span class="badge bg-secondary">Not Significant</span>
+            {% endif %}
+            <br>
+            <strong>Slope:</strong> {{ "%.2f"|format(regression_stats['M']['slope'] * 100) }}% per year<br>
+            <strong>R²:</strong> {{ "%.2f"|format(regression_stats['M']['r_squared']) }}<br>
+            <strong>p-value:</strong> {{ "%.3f"|format(regression_stats['M']['p_value']) }}
+          </p>
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          <h6>Female Names</h6>
+          <p>
+            <strong>Total entries:</strong> {{ "{:,}".format(total_female_number) }}<br>
+            <strong>Irregular entries:</strong> {{ "{:,}".format(total_female_irregular) }}<br>
+            <strong>Proportion:</strong> {{ "%.2f"|format(total_female_irregular / total_female_number * 100) }}%
+          </p>
+          {% if regression_stats and regression_stats['F'] %}
+          <h6 class="mt-3">Trend Analysis</h6>
+          <p>
+            <strong>Trend:</strong> 
+            {% if regression_stats['F']['trend'] == 'increasing' %}
+              <span class="text-success">📈 Increasing</span>
+            {% elif regression_stats['F']['trend'] == 'decreasing' %}
+              <span class="text-danger">📉 Decreasing</span>
+            {% else %}
+              <span class="text-secondary">➡️ Stable</span>
+            {% endif %}
+            {% if regression_stats['F']['significant'] %}
+              <span class="badge bg-primary">Significant</span>
+            {% else %}
+              <span class="badge bg-secondary">Not Significant</span>
+            {% endif %}
+            <br>
+            <strong>Slope:</strong> {{ "%.2f"|format(regression_stats['F']['slope'] * 100) }}% per year<br>
+            <strong>R²:</strong> {{ "%.2f"|format(regression_stats['F']['r_squared']) }}<br>
+            <strong>p-value:</strong> {{ "%.3f"|format(regression_stats['F']['p_value']) }}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Gender Comparison -->
+  {% if gender_comparison %}
+  <div class="card mt-4 mb-5">
+    <div class="card-header">
+      <h5 class="mb-0">Gender Comparison</h5>
+    </div>
+    <div class="card-body">
+      <div class="alert {% if gender_comparison['significant'] %}alert-primary{% else %}alert-secondary{% endif %}" role="alert">
+        <h6 class="alert-heading">
+          {% if gender_comparison['comparison'] == 'male_higher' %}
+            📊 Male names have MORE irregular mappings
+          {% elif gender_comparison['comparison'] == 'female_higher' %}
+            📊 Female names have MORE irregular mappings
+          {% else %}
+            📊 No significant difference between genders
+          {% endif %}
+        </h6>
+        <p class="mb-0">{{ gender_comparison['direction'] }}</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Statistical Test Results</h6>
+          <p>
+            <strong>Test:</strong> Independent samples t-test<br>
+            <strong>t-statistic:</strong> {{ "%.4f"|format(gender_comparison['t_statistic']) }}<br>
+            <strong>p-value:</strong> {{ "%.4f"|format(gender_comparison['p_value']) }}<br>
+            <strong>Significant:</strong> 
+            {% if gender_comparison['significant'] %}
+              <span class="badge bg-primary">Yes (p < 0.05)</span>
+            {% else %}
+              <span class="badge bg-secondary">No (p ≥ 0.05)</span>
+            {% endif %}
+          </p>
+        </div>
+        <div class="col-md-6">
+          <h6>Mean Proportions</h6>
+          <p>
+            <strong>Male mean:</strong> {{ "%.2f"|format(gender_comparison['male_mean'] * 100) }}%<br>
+            <strong>Female mean:</strong> {{ "%.2f"|format(gender_comparison['female_mean'] * 100) }}%<br>
+            <strong>Difference:</strong> {{ "%.2f"|format(gender_comparison['difference'] * 100) }}% 
+            {% if gender_comparison['difference'] > 0 %}
+              (male higher)
+            {% elif gender_comparison['difference'] < 0 %}
+              (female higher)
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Data from Flask route
+  const data = {{ data | tojson }};
+  const regressionStats = {{ regression_stats | tojson }};
+  const maleColorName = {{ male_color | tojson }};
+  const femaleColorName = {{ female_color | tojson }};
+  
+  // Convert color names to hex using utility function
+  const maleColor = getColorHex(maleColorName);
+  const femaleColor = getColorHex(femaleColorName);
+
+  // Plot when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof plotIrregularNames === 'undefined') {
+      console.error('plotIrregularNames function not found!');
+      document.getElementById('irregular-plot').innerHTML = 
+        '<div class="alert alert-danger">Error: JavaScript file not loaded.</div>';
+      return;
+    }
+
+    // Create the plot
+    plotIrregularNames(data, 'irregular-plot', {
+      width: document.getElementById('irregular-plot').offsetWidth || 800,
+      height: 500,
+      maleColor: maleColor,
+      femaleColor: femaleColor,
+      regressionStats: regressionStats,
+      showTitle: false
+    });
+
+    // Setup download button using shared utility
+    setupDownloadButton('download-plot', 'irregular-plot', 'irregular_names.png');
+  });
+
+  // Redraw on window resize
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (typeof plotIrregularNames !== 'undefined') {
+        plotIrregularNames(data, 'irregular-plot', {
+          width: document.getElementById('irregular-plot').offsetWidth || 800,
+          height: 500,
+          maleColor: maleColor,
+          femaleColor: femaleColor,
+          regressionStats: regressionStats,
+          showTitle: false
+        });
+      }
+    }, 250);
+  });
+</script>
+{% endblock %}

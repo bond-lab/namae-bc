@@ -157,7 +157,7 @@ def tabulate_proportion(stats, total_names, gname):
 
 
         
-def graph_proportion(stats, total_names, gname):
+def graph_proportion(stats, total_names, gname, plot_dir):
     x = list(stats.keys())
     #y = list(stats.values())
     y = list([(x / total_names) for x in stats.values()])
@@ -202,8 +202,8 @@ def graph_proportion(stats, total_names, gname):
 
     # Show the plot
     plt.tight_layout()
-
-    plt.savefig(f'proportion/pron_gender_proportion_histogram_{gname}.png', dpi=300, bbox_inches='tight')
+    out_path = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}.png')
+    plt.savefig(out_path, dpi=300, bbox_inches='tight')
     #plt.show()
 
 def blend_colors(color1, color2, blend_ratio):
@@ -236,7 +236,7 @@ female_color = 'purple'  # or (0.5, 0, 0.5)
 male_color = 'orange'    # or (1, 0.65, 0)
 
 
-def graph_proportion2(data, gname, title=True):
+def graph_proportion2(data, gname, title=True, plot_dir='proportion'):
     xlabel = {0:'0',
                1:'0-10',
                2:'10-20',
@@ -286,10 +286,12 @@ def graph_proportion2(data, gname, title=True):
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{int(y*100)}'))
     
     
-    plt.legend()
+    #plt.legend()
 
-    plt.savefig(f'proportion/gender_proportion_histogram_{gname}.png',
-              dpi=300, bbox_inches='tight')
+    out_path = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}.png')
+  
+    plt.savefig(out_path,
+                dpi=300, bbox_inches='tight')
     
     #plt.show()# Plot
     plt.close()
@@ -378,10 +380,10 @@ for y in list(names.keys()):
 ###
 ### make some special years!
 ###
-names[2015.5]['F'] = names[2015]['F'] + names[2016]['F']
-names[2015.5]['M'] = names[2015]['M'] + names[2016]['M']
-names[2021.5]['F'] = names[2021]['F'] + names[2022]['F']
-names[2021.5]['M'] = names[2021]['M'] + names[2022]['M']
+#names[2015.5]['F'] = names[2015]['F'] + names[2016]['F']
+#names[2015.5]['M'] = names[2015]['M'] + names[2016]['M']
+#names[2021.5]['F'] = names[2021]['F'] + names[2022]['F']
+#names[2021.5]['M'] = names[2021]['M'] + names[2022]['M']
 
 
 
@@ -431,7 +433,7 @@ for year in sorted(names.keys()):
                                   ]:
         gname = f"{group} ({title[year]})"
         stats, total_names = calculate_distribution(male, female, f"{year}")
-        graph_proportion2(stats, gname, title=False)
+        graph_proportion2(stats, gname, title=False, plot_dir=plot_dir)
         tabulate_proportion(stats, total_names,  gname)
         #print(stats)
 

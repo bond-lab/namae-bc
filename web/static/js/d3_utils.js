@@ -186,3 +186,17 @@ function getGenderColor(gender, colorOverrides = {}) {
     
     return '#999'; // Gray for unknown
 }
+/**
+ * Convert color name to hex color code
+ * @param {string} colorName - Color name ('orange', 'purple', 'blue', 'red')
+ * @returns {string} Hex color code
+ */
+function getColorHex(colorName) {
+    const colorMap = {
+        'orange': '#ff7f0e',
+        'purple': '#9467bd',
+        'blue': '#1f77b4',
+        'red': '#d62728'
+    };
+    return colorMap[colorName] || colorName; // Return original if not in map (in case hex is passed)
+}
