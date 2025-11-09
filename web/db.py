@@ -7,16 +7,20 @@ from scipy.stats import chi2_contingency, fisher_exact
 
 
 # Database options
-
+##
+## table, "Table Name", data_types, range
+##
 db_options = {
     'bc': ('namae', 'Baby Calendar',
-           ('orth', 'pron', 'both')),
+           ('orth', 'pron', 'both'), (2008, 2022)),
     'hs': ('namae', 'Heisei',
-           ('orth')),
+           ('orth'), (1989, 2009)),
     'hs+bc': ('combined', 'Combined',
-              ('orth')),
-    'meiji': ('namae', 'Meiji',
-              ('orth'))
+              ('orth'), (1989, 2022)),
+    'meiji': ('namae', 'Meiji (orth)',
+              ('orth'), (2004, 2024)),
+    'meiji_p': ('namae', 'Meiji (phon)',
+                ('pron'), (2004, 2024)),   
 }
 
 dtypes = ('orth', 'pron', 'both')
@@ -302,7 +306,165 @@ def get_feature(conn, feat1, feat2, threshold, table='namae', src='bc', short=Fa
         
     return data, tests, summ
 
+
+def get_name_features(conn, features, src='bc', dtype='orth'):
+    """
+    Extract name data with specified features for classification.
+    
+    Parameters:
+    -----------
+    conn : sqlite3.Connection
+        Database connection
+    features : list of str
+        Feature names to extract. Can include:
+        - Any column from attr table: 'olength', 'char1', 'char_1', 'char_2', 
+          'mora1', 'mora_1', 'syll_1', 'uni_ch', 'script', etc.
+        - 'kanji' : extracts individual kanji as binary features
+        - 'char'  : extracts all characters (kanji, hiragana, katakana) as binary features
+        - 'year'  : include year information
+    table : str
+        Name table to query (default 'namae')
+    src : str or None
+        Source filter (default 'bc'). If None, gets all sources.
+    view : str
+        Attribute table/view name (default 'attr')
+    
+    Returns:
+    --------
+    name_data : list of dict
+        Each dict contains: {
+            'orth': orthography,
+            'pron': pronunciation,
+            'gender': gender label,
+            'year': year,
+            'features': dict of feature_name: feature_value
+        }
+    feature_vocab : dict
+        Vocabulary for each feature type (for encoding)
+    """
+    
+    c = conn.cursor()
+    assert src in db_options, f"Source '{src}' not known (try: {', '.join(db_options.keys())})"
+    yfrom, yto = db_options[src][3]
+    table = db_options[src][0]
+    
+    # Build query dynamically based on requested features
+    attr_cols = [f for f in features if f not in ['kanji', 'char', 'year']]
+    
+    # Construct SELECT clause
+    select_cols = ['n.orth', 'n.pron', 'n.gender', 'n.year']
+    if attr_cols:
+        select_cols.extend([f'a.{col}' for col in attr_cols])
+    
+    # Construct query
+    query = f"""
+        SELECT {', '.join(select_cols)}
+        FROM {table} n
+        LEFT JOIN attr a ON n.nid = a.nid
+    """
+    
+    query += " WHERE n.src = ? and n.year >= ? and n.year <= ?"
+    if dtype == 'orth':
+        query += " AND orth IS NOT NULL"
+    elif dtype == 'pron':
+        query += " AND pron IS NOT NULL"
+
+    c.execute(query, (src, yfrom, yto))
+
+
+
+    
+    # Collect data
+    name_data = []
+    feature_vocab = dd(set)
+    
+    for row in c:
+        orth, pron, gender, year = row[:4]
         
+        # Skip if no gender label
+        if not gender:
+            continue
+            
+        feature_dict = {}
+        
+        # Extract attr features
+        for i, feat in enumerate(attr_cols):
+            value = row[4 + i]
+            if value is not None:  # Only include non-null features
+                feature_dict[feat] = value
+                feature_vocab[feat].add(value)
+        
+        # Extract individual kanji if requested
+        if 'kanji' in features and orth:
+            kanji_list = [ch for ch in orth if is_kanji(ch)]
+            for kanji in kanji_list:
+                feature_key = f'has_{kanji}'
+                feature_dict[feature_key] = 1  # Binary presence
+                feature_vocab['kanji'].add(kanji)
+        
+        # Extract all characters if requested
+        if 'char' in features and orth:
+            for ch in orth:
+                feature_key = f'has_{ch}'
+                feature_dict[feature_key] = 1  # Binary presence
+                feature_vocab['char'].add(ch)
+        
+        # Add year if requested
+        if 'year' in features:
+            feature_dict['year'] = year
+            feature_vocab['year'].add(year)
+        
+        name_data.append({
+            'orth': orth,
+            'pron': pron,
+            'gender': gender,
+            'year': year,
+            'features': feature_dict
+        })
+    
+    return name_data, dict(feature_vocab)
+
+
+def is_kanji(char):
+    """Check if character is kanji (CJK Unified Ideographs)."""
+    code = ord(char)
+    return (0x4E00 <= code <= 0x9FFF or  # CJK Unified Ideographs
+            0x3400 <= code <= 0x4DBF or  # CJK Extension A
+            0x20000 <= code <= 0x2A6DF)  # CJK Extension B
+
+
+# Example usage:
+"""
+# Experiment 1: Just last char and length
+features = ['olength', 'char_1']
+data, vocab = get_name_features(conn, features, src='bc')
+
+# Experiment 2: First, last, and all characters (kanji + kana)
+features = ['olength', 'char1', 'char_1', 'char']
+data, vocab = get_name_features(conn, features, src='bc')
+
+# Experiment 3: Compare kanji-only vs all characters
+features_kanji = ['olength', 'char_1', 'kanji']
+features_all = ['olength', 'char_1', 'char']
+data_kanji, vocab_kanji = get_name_features(conn, features_kanji, src='bc')
+data_all, vocab_all = get_name_features(conn, features_all, src='bc')
+
+# Experiment 4: Kitchen sink - everything
+features = ['olength', 'char1', 'char_1', 'char_2', 'script', 'char', 'year']
+data, vocab = get_name_features(conn, features, src='bc')
+
+# Access the data:
+for name in data[:3]:
+    print(f"{name['orth']} ({name['gender']}): {name['features']}")
+
+# Example output for name "花子":
+# 花子 (F): {'olength': 2, 'char1': '花', 'char_1': '子', 
+#            'has_花': 1, 'has_子': 1, 'year': 2008}
+"""
+
+
+
+
 def get_redup(conn):
     c = conn.cursor()
 

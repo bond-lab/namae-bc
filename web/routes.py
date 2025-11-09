@@ -428,3 +428,96 @@ def irregular():
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple')
     )
+
+
+from flask import render_template, session, request, abort
+import os, json
+
+@app.route("/genderedness.html")
+def genderedness():
+    """
+    Render *all* datasets found in genderedness JSON on a single page.
+    Optional ?path=... to point at a different JSON file.
+    """
+    default_path = os.path.join(current_directory, "static", "data", "genderedness.json")
+    data_path = request.args.get("path", default_path)
+
+    if not os.path.exists(data_path):
+        abort(404, f"Data file not found: {data_path}")
+
+    with open(data_path, "r", encoding="utf-8") as f:
+        blob = json.load(f)
+
+    if not isinstance(blob, dict) or not blob:
+        abort(400, "Malformed or empty genderedness JSON.")
+
+    def parse_dataset(key, ds):
+        # rows like [year, "M"/"F", value]
+        rows = ds.get("rows", [])
+        data = []
+        for row in rows:
+            if not isinstance(row, list) or len(row) < 3:
+                continue
+            try:
+                year, gender, value = int(row[0]), str(row[1]), float(row[2])
+            except Exception:
+                continue
+            if gender not in ("M", "F"):
+                continue
+            data.append({"year": year, "gender": gender, "value": value})
+
+        # trends per gender (if present)
+        trends = ds.get("trends", {})
+        regression_stats = {}
+        for g in ("M", "F"):
+            if g in trends:
+                t = trends[g]
+                years = sorted({d["year"] for d in data if d["gender"] == g})
+                regression_stats[g] = {
+                    "slope": float(t.get("slope", 0.0)),
+                    "intercept": float(t.get("intercept", 0.0)),
+                    "r_squared": float(t.get("r2", t.get("r_squared", 0.0))),
+                    "p_value": float(t.get("pvalue", t.get("p_value", 1.0))),
+                    "years": years
+                }
+        return data, regression_stats
+
+    def summarize(reg):
+        # Human-readable trend: ↑/↓/→ and significance
+        def one(g):
+            rs = reg.get(g)
+            if not rs or not rs.get("years"):
+                return f"{'Male' if g=='M' else 'Female'}: no data."
+            slope = rs["slope"]
+            p = rs["p_value"]
+            r2 = rs["r_squared"]
+            if abs(slope) < 1e-12:
+                arrow, trend = "→", "flat"
+            else:
+                arrow, trend = ("↑", "increasing") if slope > 0 else ("↓", "decreasing")
+            sig = "significant" if p < 0.05 else "not significant"
+            # Show slope per year and R² concisely
+            return (f"{'Male' if g=='M' else 'Female'}: {arrow} {trend} "
+                    f"(slope={slope:.4g}/yr, p={p:.3g}, R²={r2:.2f}), {sig}.")
+        return {"M": one("M"), "F": one("F")}
+
+    datasets = []
+    for key, ds in blob.items():
+        data, regression_stats = parse_dataset(key, ds)
+        caption = ds.get("caption", key)
+        summary = summarize(regression_stats)
+        datasets.append({
+            "key": key,
+            "caption": caption,
+            "data": data,
+            "regression_stats": regression_stats,
+            "summary": summary
+        })
+
+    return render_template(
+        "phenomena/genderedness.html",
+        title="Genderedness Over Time",
+        datasets=datasets,
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
+    )

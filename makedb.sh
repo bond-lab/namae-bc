@@ -96,6 +96,7 @@ python pub-agreement.py
 python plot_meiji.py
 
 echo "Plot proportions"
+mkdir -p proportion
 python plot_proportion.py
 
 echo "Plot gender overlap"
