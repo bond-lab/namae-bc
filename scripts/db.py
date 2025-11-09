@@ -1,1 +1,1 @@
-/home/bond/git/namae-bc/web/db.py
+../web/db.py

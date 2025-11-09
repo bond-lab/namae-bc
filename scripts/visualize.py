@@ -1,1 +1,1 @@
-/home/bond/git/namae-bc/web/visualize.py
+../web/visualize.py
