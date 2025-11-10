@@ -172,10 +172,31 @@ def run_experiment(conn, src, dtype, features, verbose=True):
             
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate or update the genderedness dataset used for visualization.\n"
+            "This script reads from the SQLite name database and writes a JSON summary.\n"
+            "By default, it uses the local development paths under ../web/."
+        ),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
     base = os.path.dirname(__file__)
-    parser.add_argument("db_path", nargs="?", default=os.path.join(base, "../web/db/namae.db"))
-    parser.add_argument("data_path", nargs="?", default=os.path.join(base, "../web/static/data/genderedness.json"))
+    parser.add_argument(
+        "db_path",
+        nargs="?",
+        default=os.path.join(base, "../web/db/namae.db"),
+        metavar="DB_PATH",
+        help="Path to the SQLite database containing name statistics."
+    )
+
+    parser.add_argument(
+        "data_path",
+        nargs="?",
+        default=os.path.join(base, "../web/static/data/genderedness.json"),
+        metavar="JSON_PATH",
+        help="Path to the JSON output file for genderedness data."
+    )
+
     args = parser.parse_args()
 
     db_path = args.db_path

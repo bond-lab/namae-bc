@@ -108,6 +108,10 @@ cp output/heisei_orth_50_* ../web/static/plot/.
 echo "calculate grapheme/phoneme mapping"
 python calc_regular.py ../web/db/namae.db
 
+echo "Calculate genderedness of names"
+
+python calc_gender.py ../web/db/namae.db \
+       ../web/static/data/genderedness.json
 
 popd
 
