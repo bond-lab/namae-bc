@@ -55,10 +55,11 @@ overall = [
 ]
 
 phenomena = [
-    ('redup', '', 'Reduplication'),
     ('jinmei', '', 'Kanji for names'),
+    ('redup', '', 'Reduplication'),
     ('irregular', '', 'Irregular Readings'),
-    
+    ('genderedness', '', 'Genderedness of names'),
+    ('diversity', '', 'Diversity Measures')
 ]
 
 def get_db_settings():
