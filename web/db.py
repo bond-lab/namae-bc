@@ -714,6 +714,7 @@ def cache_years(db_path, src):
         SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
         FROM nrank
         WHERE src = ?
+        AND orth IS NOT NULL
         GROUP BY year, gender
         HAVING tfreq > 0
         ORDER BY year, gender
@@ -725,6 +726,7 @@ def cache_years(db_path, src):
         SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
         FROM {table}
         WHERE src = ?
+        AND orth IS NOT NULL
         GROUP BY year, gender
         HAVING tfreq > 0
         ORDER BY year, gender

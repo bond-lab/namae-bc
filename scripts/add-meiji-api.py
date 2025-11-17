@@ -103,24 +103,17 @@ def update_namae (db_path, src):
     """
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    c.execute("""
-    WITH RECURSIVE freq_generator AS (
-  -- Base case: start with counter = 1 for each record
-  SELECT year, orth, pron, rank, gender, src, 1 as counter, freq
-  FROM nrank 
-  WHERE src = ?
-  
-  UNION ALL
-  
-  -- Recursive case: increment counter until it reaches freq
-  SELECT year, orth, pron, rank, gender, src, counter + 1, freq
-  FROM freq_generator
-  WHERE counter < freq
-)
-INSERT INTO namae (year, orth, pron, loc, gender, explanation, src)
-SELECT year, orth, pron, NULL, gender, NULL, src
-FROM freq_generator
-ORDER BY year, orth, counter""", (src,))
+    c.execute("""SELECT year, orth, pron, gender, freq
+    FROM nrank
+    WHERE src='meiji'
+    AND freq IS NOT NULL""")
+    names = []
+    for (year, orth, pron, gender, freq) in c:
+        names += [[year, orth, pron, gender]] * freq
+    c.executemany("""
+    INSERT INTO namae (year, orth, pron, gender, src)
+    VALUES (?, ?, ?, ?, 'meiji')""",
+                  names)              
     conn.commit()
     conn.close()
 
