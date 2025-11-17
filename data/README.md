@@ -8,6 +8,8 @@ jmena 2008-2022.xlsx
 Hand corrections:
 2016 - 望月蓮(れん) -> 蓮(れん)
 
+
+
 ## Birth data
 
 * `live_births_year.tsv`
@@ -25,6 +27,8 @@ https://www.e-stat.go.jp/en/stat-search/files?page=1&layout=dataset&toukei=00450
 The spread sheet is from pdfs, available on the Meiji Yasuda website from 2006-2022.
 
 The data under meiji_yasuda_data is obtained by querying the API at the meiji yasuda website, using `get_meiji.py`.
+
+The Meiji-yasuda API does not give frequencies for names in 2013.
 
 The website does not show the survey size for any years except the current year, we either take it from the pdfs or from the data set Ogihara (2020)
 
