@@ -62,7 +62,7 @@ def make_overview(c, start=1989, end=2024):
     
 def make_summary(c, src, start=1989, end=2024):
     table = base.copy()
-    
+
     c.execute("""SELECT
     MIN(year),
     MAX(year),
@@ -70,19 +70,54 @@ def make_summary(c, src, start=1989, end=2024):
     SUM(count) FILTER (WHERE gender = 'F') AS girls,
     SUM(count) AS total
     FROM name_year_cache 
-    WHERE src = ? and count > 0
-    AND year >= ? AND year <= ?""", (src, start, end))
+    WHERE src = ? AND count > 0 
+    AND year >= ? AND year <= ?""", (src,  start, end))
     (yfrom, yto, boys, girls, total) = c.fetchone()
-    #print (src, start, end, yfrom, yto, boys, girls, total)
+    print (src, start, end, yfrom, yto, boys, girls, total)
     
     table['caption'] = f"Totals {DBname(src)} ({yfrom}-{yto}): ratio = {boys/girls:.2f}"
-    table['headers'] = ["", "Frequency"]
-    table['rows'] = [ ['Boys', boys],
-                      ['Girls', girls],
-                      ['Total', total]]
+ 
+    if src != 'births':
+        ### add distinct count for orth and pron
+        c.execute("""SELECT
+        COUNT (DISTINCT orth) FILTER (WHERE gender = 'M') AS dboys,
+        COUNT (DISTINCT orth) FILTER  (WHERE gender = 'F') AS dgirls,
+        COUNT (DISTINCT pron) FILTER (WHERE gender = 'M') AS dpboys,
+        COUNT (DISTINCT pron) FILTER  (WHERE gender = 'F') AS dpgirls
+        FROM nrank 
+        WHERE src = ? 
+        AND year >= ? AND year <= ?
+        """, (src, yfrom, yto))
+        (dboys, dgirls,  dpboys, dpgirls) = c.fetchone()
+        table['headers'] = ["",  "Uniq Orth", "Uniq Pron", "Frequency"]
+        table['rows'] = [ ['Boys', dboys, dpboys, boys],
+                          ['Girls', dgirls, dpgirls, girls],
+                          ['Total', '', '',total]]
+       
+    else:
+        table['headers'] = ["",  "Frequency"]
+        table['rows'] = [ ['Boys', boys],
+                          ['Girls', girls],
+                          ['Total', total]]
+
+        
 
     if src == 'meiji':
-        table['headers'] = ["", "Top 100", "Frequency"]
+        table['headers'] = ["",  "Uniq Orth", "Uniq Pron",
+                            "Top 100 Orth", "Top 100 Pron",
+                            "Frequency"]
+        ### add top 100 pronunciations
+        c.execute("""SELECT
+        SUM(freq) FILTER (WHERE gender = 'M' AND pron IS NOT NULL) AS boys,
+        SUM(freq) FILTER (WHERE gender = 'F' AND pron IS NOT NULL) AS girls
+        FROM nrank
+        WHERE src = ? and freq > 0
+        AND year >= ? AND year <= ?""", ('meiji', start, end))
+        (tpboys, tpgirls) = c.fetchone()
+        table['rows'][0].append(tpboys)
+        table['rows'][1].append(tpgirls)
+        table['rows'][2].append(tpboys + tpgirls)
+        ### add totals 
         c.execute("""SELECT
         SUM(count) FILTER (WHERE gender = 'M') AS boys,
         SUM(count) FILTER (WHERE gender = 'F') AS girls,
@@ -94,7 +129,8 @@ def make_summary(c, src, start=1989, end=2024):
         table['rows'][0].append(aboys)
         table['rows'][1].append(agirls)
         table['rows'][2].append(atotal)
-
+        ## use all names for the ratio
+        table['caption'] = f"Totals {DBname(src)} ({yfrom}-{yto}): ratio = {aboys/agirls:.2f}"
     return table
     
 
@@ -114,7 +150,7 @@ if __name__ == "__main__":
 
     for src in target_sources:
         print(f'making tables for {src} ({db_path})')
-        tables['ch0A'][f'data_sum_{src}'] =  make_summary(cursor, src)
+        tables['ch04'][f'data_sum_{src}'] =  make_summary(cursor, src)
 
 
     with open(data_path, 'w') as out:

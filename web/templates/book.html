@@ -33,6 +33,7 @@
   <h2><a name='ch02'>Chapter 02</a> </h2>
   <h2><a name='ch03'>Chapter 03</a> </h2>
   <h2><a name='ch04'>Chapter 04</a> </h2>
+
   {% if 'ch04' in table_data %}
   {% for key, table in table_data['ch04'].items() %}
   <h3 name='{{key}}'>{{ table.caption }}</h3>
@@ -69,11 +70,7 @@
   <h2><a name='ch08'>Chapter 08</a> </h2>
   <h2><a name='ch09'>Chapter 09</a> </h2>
   <h2><a name='ch0A'>Appendix A</a> </h2>
-  {% for key, table in table_data['ch0A'].items() %}
-  <h3 name='{{key}}'>{{ table.caption }}</h3>
-  {{ render_table(table) }}
-  {% endfor %}
-  
+ 
   <!-- Add diagrams and tables here -->
   <img src="{{ url_for('static', filename='plot/years_births.png') }}" alt="Births per Year">
   <img src="{{ url_for('static', filename='plot/years_totals.png') }}" alt="Meiji Totals">
