@@ -30,7 +30,7 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
         Dict: {year: [list of overlap details]}
     """
     conn = sqlite3.connect(db_path)
-    
+    c = conn.cursor()
     if data_type == 'pron':
         field_name = 'pron'
         null_check = 'AND m.pron IS NOT NULL AND f.pron IS NOT NULL'
@@ -82,17 +82,29 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
     ORDER BY m.year, (m.freq + f.freq) DESC;
     """
     
-    cursor = conn.execute(query, (n_top, n_top, src_filter))
-    results = cursor.fetchall()
-    conn.close()
+    c.execute(query, (n_top, n_top, src_filter))
 
     # Group by year
     details_by_year = dd(list)
-    for row in results:
+    for row in c:
         year = row[0]
         details_by_year[year].append(row[1:])  # Exclude year from the tuple
-    
-    return details_by_year
+
+    # add the total number of babies
+    totals_by_year = dd(int)
+    if src_filter == 'meiji':
+        src_filter == 'totals'
+    c.execute(f"""
+    SELECT year, sum(count)
+    FROM name_year_cache
+    WHERE src = ? AND dtype = ?
+    GROUP BY year""", (src_filter, data_type))
+    print("totals for", src_filter, data_type)
+    for row in c:
+        print("totals", row)
+        totals_by_year[row[0]] = row[1]
+    conn.close()        
+    return details_by_year, totals_by_year
 
 def create_json_table(data, src, data_type):
     """Create JSON table format for the overlap data."""
@@ -312,7 +324,7 @@ def main():
     
     # Define sources and data types
     sources = ['bc', 'meiji']  # Add 'hs' if you have that data
-    data_types = ['pron', 'orth']
+    data_types = ['orth']  # no totals for pron in name_year_cache ['pron', 'orth']
     
     # Check if hs data exists
     conn = sqlite3.connect(args.database)
@@ -331,11 +343,13 @@ def main():
             
             # Get overlap data
             data = []
-            details = get_overlap_details(args.database, src, data_type, args.n_top)
+            details, totals = get_overlap_details(args.database, src, data_type, args.n_top)
+            print(details)
+            print(totals)
             for year in details:
                 data.append((year,
                             len(details[year]),
-                            sum(x[3] for x in details[year])))
+                            2 * sum(x[3] for x in details[year]) / totals[year]))
                             
             
             if data:
