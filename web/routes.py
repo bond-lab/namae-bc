@@ -59,7 +59,8 @@ phenomena = [
     ('redup', '', 'Reduplication'),
     ('irregular', '', 'Irregular Readings'),
     ('genderedness', '', 'Genderedness of names'),
-    ('diversity', '', 'Diversity Measures')
+    ('diversity', '', 'Diversity Measures'),
+    ('overlap', '', 'Overlapping Names'),
 ]
 
 def get_db_settings():
@@ -431,9 +432,6 @@ def irregular():
     )
 
 
-from flask import render_template, session, request, abort
-import os, json
-
 @app.route("/genderedness.html")
 def genderedness():
     """
@@ -522,3 +520,15 @@ def genderedness():
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple')
     )
+
+@app.route("/overlap.html")
+def overlap():
+    """
+    """
+    datasets = []
+    return render_template(
+        "phenomena/overlap.html",
+        title="Overlapping Names Over Time",
+        datasets=datasets
+    )
+   
