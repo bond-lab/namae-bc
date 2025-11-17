@@ -14,8 +14,11 @@
 <div class="container">
   <h1>{{title}}</h1>
   <div>
-    <p>There are {{"{:,d}".format(m)}} different features with more than
-      {{threshold}} example(s) from the {{db_name}} database.
+    <p>There are {{"{:,d}".format(m)}} different features 
+      {%- if not is_length_feature -%}
+      with more than {{threshold}} example(s)
+      {% endif %}
+      from the {{db_name}} database.
       These come from {{"{:,d}".format(summ['allm'])}} male names
       and {{"{:,d}".format(summ['allf'])}}
       female names ({{"{:,d}".format(summ['allt'])}} together).
