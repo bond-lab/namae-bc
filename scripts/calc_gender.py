@@ -215,15 +215,19 @@ if __name__ == "__main__":
 
     #features = ['char_1', 'syll_1', 'char', 'olength', 'plength']
     #features = ['char_1', 'char', 'olength', 'script', 'uni_ch']
-    features = ['char_1', 'char',  'script', 'uni_ch']
+    features = {'orth': ['char_1', 'char',  'script', 'uni_ch'],
+                'pron': ['syll_1', 'syll1'],
+                }
 
     tables = {}
 
     for (src, dtype) in [ ('meiji', 'orth'),
                           ('hs', 'orth'),
-                          #('meiji_p', 'pron')
+                          ('meiji', 'pron')
                          ]:
-        table = run_experiment(conn, src, dtype, features, verbose=True)
+
+        feats =features[dtype]
+        table = run_experiment(conn, src, dtype, feats, verbose=True)
 
         key = '_'.join([src, dtype] + features)
 
