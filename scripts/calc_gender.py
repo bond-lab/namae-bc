@@ -229,7 +229,7 @@ if __name__ == "__main__":
         feats =features[dtype]
         table = run_experiment(conn, src, dtype, feats, verbose=True)
 
-        key = '_'.join([src, dtype] + features)
+        key = '_'.join([src, dtype] + feats)
 
         tables[key] = table
 
