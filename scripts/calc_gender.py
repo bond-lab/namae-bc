@@ -108,7 +108,8 @@ def run_experiment(conn, src, dtype, features, verbose=True):
     """
     print(f"⛃ Getting the features for {src} ({dtype}):", features)
 
-    name_data, feature_vocab = get_name_features(conn, features)
+    name_data, feature_vocab = get_name_features(conn, features,
+                                                 src=src, dtype=dtype)
 
     print("🔢 Vectorizing")
 
@@ -153,7 +154,13 @@ def run_experiment(conn, src, dtype, features, verbose=True):
     for gender in label_encoder.classes_:
         col = f'P_{gender}'  # dynamically pick the right probability column
         subset = results[results['actual_gender'] == gender]
-        yearly_means = subset.groupby('year')[col].mean()
+        
+        yearly_means = (
+            subset
+            .assign(P_other=1 - subset[col])
+            .groupby('year')['P_other']
+            .mean()
+        )
         
         for year, value in yearly_means.items():
             table['rows'].append([year, gender, value])
@@ -206,12 +213,15 @@ if __name__ == "__main__":
     cursor = conn.cursor()
 
 
-    features = ['char_1', 'syll_1', 'char', 'olength', 'plength']
-    #features = ['char_1', 'char', 'olength', 'script']
+    #features = ['char_1', 'syll_1', 'char', 'olength', 'plength']
+    #features = ['char_1', 'char', 'olength', 'script', 'uni_ch']
+    features = ['char_1', 'char',  'script', 'uni_ch']
 
     tables = {}
 
-    for (src, dtype) in [ ('meiji', 'orth'), ('hs', 'orth'), ('meiji_p', 'pron')
+    for (src, dtype) in [ ('meiji', 'orth'),
+                          ('hs', 'orth'),
+                          #('meiji_p', 'pron')
                          ]:
         table = run_experiment(conn, src, dtype, features, verbose=True)
 
