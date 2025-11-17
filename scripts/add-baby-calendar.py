@@ -44,8 +44,6 @@ for (sheet, gender) in [(0, 'M'), (1, 'F')]:
                                        'bc'))
 conn.commit()
 
-cache_years(db, 'bc')
-
 ### add bc data to nrank
 c.executescript("""
 -- Insert aggregated data by orth only (pron = NULL)
@@ -79,21 +77,7 @@ GROUP BY year, pron, gender, src
 ORDER BY year, gender, COUNT(*) DESC;
 """)
 
+cache_years(db, 'bc')
+
 conn.commit()
 
-
-# kanji = dd(lambda: dd(lambda: dd(list)))
-
-
-# for index, row in df.iterrows():
-#     kanji[row['kanji']][row['hira']][row['date']].append((row['gender'], row['explanation']))
-
-
-# for nom in kanji:
-#     print(nom)
-#     for hira in kanji[nom]:
-#         print(f"  {hira}")
-#         for year in kanji[nom][hira]:
-#             print(f"     {year}")
-#             for gen, exp in kanji[nom][hira][year]:
-#                 print(f"    {gen} {exp}")

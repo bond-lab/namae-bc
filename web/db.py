@@ -707,19 +707,7 @@ def cache_years(db_path, src):
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
-    
-    if src in ('meiji', 'hs', 'births'):
-        c.execute(f'''
-        INSERT INTO name_year_cache (src, dtype, year, gender, count)
-        SELECT src, 'orth', year, gender, SUM(freq)  AS tfreq
-        FROM nrank
-        WHERE src = ?
-        AND orth IS NOT NULL
-        GROUP BY year, gender
-        HAVING tfreq > 0
-        ORDER BY year, gender
-        ''', (src, ))
-    else: 
+    if src == 'hs+bc':
         table = db_options[src][0]
         c.execute(f'''
         INSERT INTO name_year_cache (src, dtype, year, gender, count)
@@ -731,6 +719,18 @@ def cache_years(db_path, src):
         HAVING tfreq > 0
         ORDER BY year, gender
         ''', (src, ))
+    else:
+        for dtype in  ('orth', 'pron'):
+            c.execute(f'''
+            INSERT INTO name_year_cache (src, dtype, year, gender, count)
+            SELECT src, '{dtype}', year, gender, SUM(freq)  AS tfreq
+            FROM nrank
+            WHERE src = ?
+            AND {dtype} IS NOT NULL
+            GROUP BY year, gender
+            HAVING tfreq > 0
+            ORDER BY year, gender
+            ''', (src, ))  
     conn.commit()
     conn.close()
     
