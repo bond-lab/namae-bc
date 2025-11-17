@@ -1,5 +1,7 @@
 {
-  "title": "Online Resources for Japanese Names",
+    "title": "Online Resources for Japanese Names",
+    # Contemporary Japanese Given Names: Trends, statistics and resources
+    analysis and data
   "description": "This repository contains the datasets, analysis scripts, and interactive website code for 'FIXME'. It includes frequency data downloaded from the web and cleaned, diversity metrics, and an interactive online search interface. The data is archived in Zenodo for reproducibility and citation.",
   "creators": [
     {
