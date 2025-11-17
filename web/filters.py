@@ -36,3 +36,22 @@ def format_cell(value, round_decimals=3):
             pass
     
     return {'value': value, 'is_number': False}
+
+def multisort_filter(items, sort_spec):
+    """Sort items by multiple columns with signed direction.
+    
+    Args:
+        items: List of tuples to sort
+        sort_spec: List of column numbers (1-indexed), negative for reverse
+                   e.g., [3, -2] sorts by col 3 ascending, then col 2 descending
+    """
+    if not sort_spec:
+        return items
+    
+    result = list(items)
+    for col_spec in reversed(sort_spec):
+        reverse = col_spec < 0
+        idx = abs(col_spec) 
+        result = sorted(result, key=lambda x: x[idx], reverse=reverse)
+    
+    return result

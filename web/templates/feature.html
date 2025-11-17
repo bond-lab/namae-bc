@@ -63,10 +63,8 @@
     </table>
 
   <hr>
-
-{% macro render_book_table(title_suffix, filter_type, sort_attr=None, sort_reverse=False) %}
+{% macro render_book_table(title_suffix, filter_type, sort_attr=[]) %}
 <h2>Table for {{ title }}{% if title_suffix %} ({{ title_suffix }}){% endif %}</h2>
-
 <table id="book-table" style="border-collapse:collapse;">
   <thead>
     <tr>
@@ -78,7 +76,7 @@
     </tr>
   </thead>
   <tbody>
-    {% set sorted_tests = tests|sort(attribute=sort_attr, reverse=sort_reverse) if sort_attr is not none else tests %}
+   {% set sorted_tests = tests|multisort(sort_attr) if sort_attr else tests %}
     {% for (feat, male, female, fratio, odds, pvalue, sig, exe) in sorted_tests %}
       {% set p_adj = m * pvalue %}
       {% set show_row = (filter_type == "all") or (filter_type == "girls" and fratio > (1 - beta)) or (filter_type == "boys" and fratio < beta) %}
@@ -114,11 +112,12 @@
 </p>
 {% endmacro %}
 
+
 {% if is_length_feature %}
   {{ render_book_table("", "all") }}
 {% else %}
-  {{ render_book_table("Girls: F-ratio > " ~ (1-beta), "girls", 3, True) }}
-  {{ render_book_table("Boys: F-ratio < " ~ beta, "boys", 3, False) }}
+  {{ render_book_table("Girls: F-ratio > " ~ (1-beta), "girls", [-3, -2, 1]) }}
+  {{ render_book_table("Boys: F-ratio < " ~ beta, "boys", [3, 2, -1]) }}
 {% endif %}
 
 {% if not is_length_feature %}
