@@ -1,7 +1,7 @@
 """Initialize Flask Application."""
 from flask import Flask, session
 
-from web.filters import format_cell
+from web.filters import format_cell, multisort_filter
 from kanaconv  import KanaConv # for pronunciations
 
 conv = KanaConv()
@@ -12,6 +12,7 @@ def create_app():
     app.secret_key = "namae"
 
     app.template_filter('format_cell')(format_cell)
+    app.template_filter('multisort')(multisort_filter)
     # Add the custom filter
     @app.template_filter('hira2roma')
     def hira2roma(text):

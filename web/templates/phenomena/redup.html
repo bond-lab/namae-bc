@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% from 'macros.html' import add_pron %}
 
 {% block content %}
 
@@ -61,7 +62,7 @@
   <tbody>
     {% for (pron, gender) in data['redup'] %}
     <tr>
-      <td>{{pron}}</td>
+      <td>{{add_pron(pron)}}</td>
       <td>{{gender}}</td>
       <td align='right'>{{"{:,d}".format(data['redup'][(pron, gender)]['freq'])}}</td>
       <td>
@@ -100,7 +101,7 @@
   <tbody>
     {% for (pron, gender) in data['redup+'] %}
     <tr>
-      <td>{{pron}}</td>
+      <td>{{add_pron(pron)}}</td>
       <td>{{gender}}</td>
       <td align='right'>{{"{:,d}".format(data['redup+'][(pron, gender)]['freq'])}}</td>
       <td class='smaller'>
