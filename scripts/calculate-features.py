@@ -15,7 +15,7 @@ else:
     db = "namae.db"
 conn = sqlite3.connect(db)
 
-    
+  
 def tagName (conn):
     """
     Read the database, add information to the database
@@ -65,7 +65,7 @@ def tagName (conn):
                    syll[-2] if syll and len(syll) > 2 else None,
                    orth[0] if orth and len(orth) == 1 else None, # uni_ch
                    whichScript(orth) if orth else None))
-        
+
 tagName(conn)
         
 conn.commit()
