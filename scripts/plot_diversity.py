@@ -36,7 +36,7 @@ os.makedirs(plot_dir, exist_ok=True)
 
 
 base_metrics = {
-    'Shannon': [],
+    'Shannon-Wiener': [],
     'Evenness': [],
     'Gini-Simpson': [],
     'TTR': [],
@@ -51,8 +51,8 @@ for n in BERGER_PARKER_TOP_N:
 
 
 def calculate_shannon_diversity(names):
-    """Calculate Shannon's diversity index for a given list of names."""
-    """Calculate Shannon's diversity index for a given list of names."""
+    """Calculate Shannon-Wiener's diversity index for a given list of names."""
+    """Calculate Shannon-Wiener's diversity index for a given list of names."""
     name_counts = dd(int)
     for name in names:
         name_counts[name] += 1
@@ -66,7 +66,7 @@ def calculate_shannon_diversity(names):
 
 
 def calculate_evenness(H, S):
-    """Calculate Pielou's evenness index based on Shannon's diversity and species count."""
+    """Calculate Pielou's evenness index based on Shannon-Wiener's diversity and species count."""
     return H / math.log(S) if S > 1 else 0
 
 def calculate_gini_simpson(names):
@@ -199,7 +199,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
                 year_metrics[f'Berger-Parker ({n})'].append(bp[n])
                 
             # Store metrics for this run
-            year_metrics['Shannon'].append(shannon)
+            year_metrics['Shannon-Wiener'].append(shannon)
             year_metrics['Evenness'].append(evenness)
             year_metrics['Gini-Simpson'].append(gini_simpson)
             year_metrics['Singleton'].append(singleton)
@@ -225,8 +225,8 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
                 year_metrics['Char Newness'].append(char_newness)
             
             if run_count >= min_runs:
-                # Check convergence based on Shannon diversity
-                converged = check_convergence(year_metrics['Shannon'])
+                # Check convergence based on Shannon-Wiener diversity
+                converged = check_convergence(year_metrics['Shannon-Wiener'])
             run_count += 1
             actual_runs[year] = run_count
 
@@ -312,8 +312,8 @@ for src in db_options:
             results, ci_lower, ci_upper, run_counts = analyze_with_sampling(
                 names[gender], sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUNS
             )
-            # Using Shannon as reference since all metrics will have the same years
-            for year in results['Shannon'].keys():
+            # Using Shannon-Wiener as reference since all metrics will have the same years
+            for year in results['Shannon-Wiener'].keys():
                 all_metrics[gender][year] = dict()
                 for metric in base_metrics:
                       if year in results[metric]:
@@ -339,13 +339,13 @@ for src in db_options:
                 #     all_metrics[gender][year][f'Berger-Parker ({i})'] = results[f'Berger-Parker ({i})'][year]
                 
                 # # Add confidence intervals
-                confidence_intervals[gender][year]['Shannon'] = (ci_lower['Shannon'][year], ci_upper['Shannon'][year])
+                confidence_intervals[gender][year]['Shannon-Wiener'] = (ci_lower['Shannon-Wiener'][year], ci_upper['Shannon-Wiener'][year])
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
         # Plot diversity measures and save to JSON
         if all_metrics['M']:  # Check if there are metrics to plot
             plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_Var.png") 
-            plot_multi_panel_trends(all_metrics, ["Shannon", "Evenness",
+            plot_multi_panel_trends(all_metrics, ["Shannon-Wiener", "Evenness",
                                                   "Gini-Simpson", "Berger-Parker (1)"],
                                     "Diversity Measures",
                                     plot_path,
@@ -366,7 +366,7 @@ for src in db_options:
 
         # plot for book
         plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
-        selected_metrics= ["Shannon", "Gini-Simpson", "Singleton", "TTR"]
+        selected_metrics= ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
         trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
         plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
                                            "", # "Diversity Measures",
