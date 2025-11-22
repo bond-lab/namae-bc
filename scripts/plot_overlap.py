@@ -108,7 +108,7 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
 
 def create_json_table(data, src, data_type):
     """Create JSON table format for the overlap data."""
-    headers = ["Year", "Overlap Count", "Weighted Overlap"]
+    headers = ["Year", "Overlap Count", "Proportion Overlap"]
     rows = []
     
     for year, overlap_count, weighted_overlap in data:
@@ -123,9 +123,9 @@ def create_json_table(data, src, data_type):
 def create_details_json(details_data, src, data_type):
     """Create JSON format for detailed overlap data by year."""
     if data_type == 'pron':
-        headers = ["Pronunciation", "Male Freq", "Female Freq", "Weighted"]
+        headers = ["Pronunciation", "Male Freq", "Female Freq", "Proportion"]
     else:
-        headers = ["Spelling", "Male Freq", "Female Freq", "Weighted"]
+        headers = ["Spelling", "Male Freq", "Female Freq", "Proportion"]
     
     tables_by_year = {}
     
@@ -193,7 +193,7 @@ def create_graph(data, src, data_type, output_dir, n_top=50, with_title=True):
     # Weighted overlap graph
     _plot_single_graph(
         years, weighted_overlaps,
-        ylabel="Weighted Overlap Score",
+        ylabel="Proportion of Overlapping Names",
         title=f"{src.upper()} - {data_type.title()} Weighted Overlap Over Time",
         marker="s",
         output_file=output_dir / f"{src}_{data_type}_{n_top}_overlap_weighted.png",
@@ -323,15 +323,8 @@ def main():
     output_dir.mkdir(exist_ok=True)
     
     # Define sources and data types
-    sources = ['bc', 'meiji']  # Add 'hs' if you have that data
-    data_types = ['orth']  # no totals for pron in name_year_cache ['pron', 'orth']
-    
-    # Check if hs data exists
-    conn = sqlite3.connect(args.database)
-    cursor = conn.execute("SELECT DISTINCT src FROM nrank WHERE src = 'hs'")
-    if cursor.fetchone():
-        sources.append('hs')
-    conn.close()
+    sources = ['bc', 'meiji', 'hs']
+    data_types = ['pron', 'orth']
     
     all_tables = {}
     all_details = {}
