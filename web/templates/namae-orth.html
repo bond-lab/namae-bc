@@ -1,17 +1,125 @@
 {% extends 'layout.html' %}
+{% from 'macros.html' import add_pron %}
 
+{% block head %}
+<!-- D3.js library from allowed CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared D3 utilities -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Name frequency plotting script -->
+<script src="{{ url_for('static', filename='js/plot_namae.js') }}"></script>
+{% endblock %}
 
 {% block content %}
 
-<!-- Color and sort according to type   -->
-
 <div class="container">
   <h1>Orthography: {{name}}</h1>
-  <p>Possible pronunciations:</p>
-  <ul>
-    {% for orth, pron in kindex[name] %}
-      <li><a href="{{ url_for('namae', orth=name, pron=pron) }}">{{pron}}</a></li>
+
+  <table class="table w-auto">
+    <tr>
+      <th>length</th>
+      <td class='text-end'>{{name|length}}</td>
+    </tr>
+      <tr>
+      <th>script</th>
+      <td>{{script}}</td>
+    </tr>
+    </table>
+
+  {% set total_freq = data | sum(attribute=2) %}
+  {% set male_freq = data | selectattr('1', 'equalto', 'M') | sum(attribute=2) %}
+  {% set female_freq = data | selectattr('1', 'equalto', 'F') | sum(attribute=2) %}
+
+  <p>Frequency = {{total_freq}}
+    (Male {{male_freq}}, Female {{female_freq}})
+
+  <p>F-Ratio (F/M+F) = {{ "%.2f"|format(female_freq/(total_freq) if total_freq > 0 else 0)}}
+
+  <!-- Frequency Distribution Visualization -->
+  <h5 class="mb-0">Frequency Over Time
+    <button id="download-plot" class="btn btn-sm btn-outline-primary" title="Download as PNG">💾</button>
+  </h5>
+  <div id="name-frequency-plot" style="min-height: 300px;"></div>
+
+  {% if kindex[name]|length > 0 %}
+  <p>Pronunciations:
+    {% for (kk, hh) in kindex[name] %}
+    <a href='{{url_for('namae', orth=kk, pron=hh)}}'>{{add_pron(hh)}}</a>
     {% endfor %}
-  </ul>
+    {% endif %}
+ <p>Characters:
+    {% for c in name %}
+    <a href='{{url_for('kanji', kanji=c)}}'>{{c}}</a>
+    {% endfor %}
+    
+
 </div>
+
+<script>
+  // Data from template - convert from list of tuples to year arrays
+  const rawData = {{ data | tojson }};
+  const name = {{ name | tojson }};
+  const maleColor = {{ male_color | tojson }};
+  const femaleColor = {{ female_color | tojson }};
+
+  // Convert data from [(year, gender, freq), ...] to year lists
+  const yearsMale = [];
+  const yearsFemale = [];
+
+  rawData.forEach(row => {
+    const [year, gender, freq] = row;
+    if (gender === 'M') {
+      yearsMale.push(year);
+      // Add year multiple times based on frequency for the plot
+      for (let i = 1; i < freq; i++) {
+        yearsMale.push(year);
+      }
+    } else if (gender === 'F') {
+      yearsFemale.push(year);
+      // Add year multiple times based on frequency for the plot
+      for (let i = 1; i < freq; i++) {
+        yearsFemale.push(year);
+      }
+    }
+  });
+
+  // Plot when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof plotNameFrequency === 'undefined') {
+      console.error('plotNameFrequency function not found!');
+      document.getElementById('name-frequency-plot').innerHTML = 
+        '<div class="alert alert-danger">Error: JavaScript file not loaded.</div>';
+      return;
+    }
+
+    // Create the plot
+    plotNameFrequency(yearsMale, yearsFemale, name, 'name-frequency-plot', {
+      width: document.getElementById('name-frequency-plot').offsetWidth || 800,
+      height: 400,
+      maleColor: maleColor,
+      femaleColor: femaleColor,
+      showTitle: false
+    });
+
+    // Setup download button
+    setupDownloadButton('download-plot', 'name-frequency-plot', `name_${name}_frequency.png`);
+  });
+
+  // Redraw on window resize
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (typeof plotNameFrequency !== 'undefined') {
+        plotNameFrequency(yearsMale, yearsFemale, name, 'name-frequency-plot', {
+          width: document.getElementById('name-frequency-plot').offsetWidth || 800,
+          height: 400,
+          maleColor: maleColor,
+          femaleColor: femaleColor,
+          showTitle: false
+        });
+      }
+    }, 250);
+  });
+</script>
 {% endblock %}

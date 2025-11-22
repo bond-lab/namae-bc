@@ -9,6 +9,7 @@ import sqlite3, os
 from collections import defaultdict as dd
 
 from web.db import get_db, get_name, get_name_year, get_name_count_year, \
+                get_orth, get_pron, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
@@ -174,16 +175,27 @@ def namae():
             female_color=session.get('female_color', 'purple')
 )
     elif pron:
+        data = get_pron(conn, pron, src=db_settings['db_src'])
         return render_template(
             f"namae-pron.html",
             hira=pron,
-            hindex=hindex
+            mora=mora,
+            syll=syll,
+            hindex=hindex,
+            data=data,
+            male_color=session.get('male_color', 'orange'),
+            female_color=session.get('female_color', 'purple')
         )
     elif orth:
+        data = get_orth(conn, orth, src=db_settings['db_src'])
         return render_template(
             f"namae-orth.html",
             name=orth,
-            kindex=kindex
+            kindex=kindex,
+            data=data,
+            script=whichScript(orth),
+            male_color=session.get('male_color', 'orange'),
+            female_color=session.get('female_color', 'purple')
         )
     else:
         return render_template(

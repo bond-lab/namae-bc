@@ -67,6 +67,25 @@ def get_name(conn, table='namae', src='bc'):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
+def get_orth(conn, orth, src='bc'):
+    c = conn.cursor()
+    c.execute(f"""SELECT year, gender, sum(freq)
+    FROM nrank
+    WHERE src = ? AND orth=? AND orth IS NOT NULL
+    GROUP BY gender, year""", (src, orth))
+    results = c.fetchall()
+    return results
+    
+def get_pron(conn, pron, src='bc'):
+    c = conn.cursor()
+    c.execute(f"""SELECT year, gender, sum(freq)
+    FROM nrank
+    WHERE src = ? AND pron=? AND pron IS NOT NULL
+    GROUP BY gender, year""", (src, pron))
+    results = c.fetchall()
+    return results
+   
+
 def get_name_count_year(conn, src='bc',
                         dtype='orth',
                         start =1989,
