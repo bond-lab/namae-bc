@@ -73,8 +73,8 @@ def calculate_trend_statistics(all_metrics, selected_metrics):
     trend_stats : dict
         Dictionary containing trend statistics for each gender and metric
         Structure: {
-            'M': {metric: {'correlation': r, 'p_value': p, 'annual_change': pct, 'slope': slope}},
-            'F': {metric: {'correlation': r, 'p_value': p, 'annual_change': pct, 'slope': slope}}
+            'M': {metric: {'correlation': r, 'p_value': p, 'annual_change': pct, 'slope': slope, 'mean': mean}},
+            'F': {metric: {'correlation': r, 'p_value': p, 'annual_change': pct, 'slope': slope, 'mean': mean}}
         }
     """
     trend_stats = {'M': {}, 'F': {}}
@@ -93,7 +93,7 @@ def calculate_trend_statistics(all_metrics, selected_metrics):
             if len(years) >= 3:  # Need at least 3 points for meaningful statistics
                 years = np.array(years)
                 values = np.array(values)
-                
+                mean = np.mean(values)
                 # Calculate correlation with year
                 correlation, p_value = pearsonr(years, values)
                 
@@ -122,7 +122,8 @@ def calculate_trend_statistics(all_metrics, selected_metrics):
                     'p_value': p_value,
                     'annual_change': annual_change,
                     'slope': slope,
-                    'n_points': len(years)
+                    'n_points': len(years),
+                    'mean': mean
                 }
             else:
                 # Not enough data points
@@ -131,7 +132,8 @@ def calculate_trend_statistics(all_metrics, selected_metrics):
                     'p_value': np.nan,
                     'annual_change': np.nan,
                     'slope': np.nan,
-                    'n_points': len(years)
+                    'n_points': len(years),
+                    'mean':  np.nan
                 }
     
     return trend_stats
@@ -229,8 +231,10 @@ def format_trend_text(trend_stats, metric, gender, significance_level=0.05):
         change_text = "≈0%/yr"
     else:
         change_text = f"{annual_change:+.3f}%/yr"
-    
-    return f"{r_text}, {change_text}"
+
+    mean_text = f"mean = {stats_data['mean']:.3f}"    
+        
+    return f"{r_text}, {change_text}, {mean_text}"
 
 def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                                       filename, confidence_intervals=None, 
@@ -355,6 +359,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
 both = dict()
 outfile='BP_data.tsv'
 out = open(outfile, 'w')
+all_metrics = {'M': {}, 'F': {}}
 for src in ('meiji', 'hs'):
     for dtype in ('orth', 'pron'):
         if src == 'hs' and dtype == 'pron':
