@@ -163,7 +163,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
     # First, create consistent samples for each year
     for year in years:
         names = data[year]
-        if len(names) > sample_size:
+        if sample_size and len(names) > sample_size:
             # For consistent results, use a fixed seed for the initial sampling
             random.seed(42 + int(year))  # Use year in seed for variety but consistency
             previous_year_samples[year] = set(random.sample(names, sample_size))
@@ -183,7 +183,7 @@ def analyze_with_sampling(data, sample_size, min_runs=MIN_RUNS, max_runs=MAX_RUN
         run_count = 0
         
         while not converged and run_count < max_runs:
-            if len(names) > sample_size:
+            if sample_size and len(names) > sample_size:
                 sample = random.sample(names, sample_size)
             else:
                 sample = names.copy()
@@ -272,10 +272,10 @@ conn = get_db_connection(db_path)
 types = ['orth', 'pron', 'both']
 
 for src in db_options:
-    if src != 'hs': #'hs' not in src:
-        continue
+#    if src != 'hs': #'hs' not in src:
+#        continue
     for data_type in types:
-        if src in ['hs', 'hs+bc', 'meiji'] and data_type != 'orth':
+        if src in ['hs', 'hs+bc'] and data_type != 'orth':
             print(f"Skipping invalid combination: {src} with {data_type}")
             continue
 
@@ -294,11 +294,13 @@ for src in db_options:
             raise ValueError("No data fetched from the database. Please check the database connection and data.")
 
         # Determine the smallest sample size across all years and genders
-        all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
-        min_size = min(all_counts)
-        print(f'Smallest sample is: {min_size}')
-        sample_size = int(0.9 * min_size)  # Use 90% of the smallest sample size
-        print(f'Using sample size: {sample_size}')
+        #all_counts = [len(names[y][g]) for y in names.keys() for g in names[y].keys()]
+        #min_size = min(all_counts)
+        #print(f'Smallest sample is: {min_size}')
+        #sample_size = int(0.9 * min_size)  # Use 90% of the smallest sample size
+        #print(f'Using sample size: {sample_size}')
+        sample_size=None
+
         
         # Initialize structures to store metrics and confidence intervals
         all_metrics = {'M': {}, 'F': {}}
