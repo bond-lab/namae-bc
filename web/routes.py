@@ -13,7 +13,7 @@ from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
-                get_irregular
+                get_irregular, get_androgyny
 import json
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 
@@ -62,6 +62,7 @@ phenomena = [
     ('genderedness', '', 'Genderedness of names'),
     ('diversity', '', 'Diversity Measures'),
     ('overlap', '', 'Overlapping Names'),
+    ('androgyny', '', 'Androgynous Names'),
 ]
 
 def get_db_settings():
@@ -544,3 +545,94 @@ def overlap():
         datasets=datasets
     )
    
+@app.route("/phenomena/androgyny.html")
+def androgyny():
+    """
+    Show androgyny statistics over time.
+    Androgynous names are those where F/M ratio is between tau and (1-tau).
+    Shows multiple datasets for different tau values and type/token analysis.
+    """
+    conn = get_db(current_directory, "namae.db")
+    db_settings = get_db_settings()
+    
+    # Define tau values to test
+    tau_values = [0.0, 0.2]
+    
+    # Define count types
+    count_types = [
+        ('token', 'Babies (Token)', 'babies'),
+        ('type', 'Names (Type)', 'names')
+    ]
+    
+    datasets = []
+    
+    # For each dtype (orth/pron)
+    dtypes_to_process = ['orth']
+    if db_settings['db_src'] in ['bc', 'meiji']:
+        dtypes_to_process.append('pron')
+    
+    for dtype in dtypes_to_process:
+        dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
+        
+        # For each count type
+        for count_type, count_label, unit in count_types:
+            # For each tau value
+            for tau in tau_values:
+                data, regression = get_androgyny(
+                    conn, 
+                    src=db_settings['db_src'], 
+                    dtype=dtype,
+                    tau=tau,
+                    count_type=count_type
+                )
+                
+                if not data:
+                    continue
+                
+                # Create caption
+                if tau == 0.0:
+                    tau_desc = "Any Shared Usage"
+                elif tau == 0.5:
+                    tau_desc = "Perfect Balance Only"
+                else:
+                    tau_desc = f"τ={tau:.1f} (F/M ∈ [{tau:.1f}, {1-tau:.1f}])"
+                
+                caption = f"{dtype_label} - {count_label} - {tau_desc}"
+                
+                # Create summary
+                if regression:
+                    rs = regression
+                    slope = rs['slope']
+                    p = rs['p_value']
+                    r2 = rs['r_squared']
+                    
+                    if abs(slope) < 1e-12:
+                        arrow, trend = "→", "flat"
+                    else:
+                        arrow, trend = ("↑", "increasing") if slope > 0 else ("↓", "decreasing")
+                    
+                    sig = "significant" if p < 0.05 else "not significant"
+                    summary = (f"{arrow} {trend} "
+                             f"(slope={slope:.4g}/yr, p={p:.3g}, R²={r2:.2f}), {sig}.")
+                else:
+                    summary = "Insufficient data for trend analysis."
+                
+                datasets.append({
+                    'key': f'androgyny_{dtype}_{count_type}_tau{int(tau*10)}',
+                    'caption': caption,
+                    'data': data,
+                    'regression_stats': regression,
+                    'summary': summary,
+                    'dtype': dtype,
+                    'tau': tau,
+                    'count_type': count_type,
+                    'unit': unit
+                })
+    
+    return render_template(
+        "phenomena/androgyny.html",
+        title="Androgynous Names Over Time",
+        datasets=datasets,
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
+    )

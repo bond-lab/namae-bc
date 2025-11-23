@@ -3,7 +3,8 @@ from flask import current_app, g
 from collections import defaultdict as dd
 import numpy as np
 import scipy
-from scipy.stats import chi2_contingency, fisher_exact
+
+from scipy.stats import chi2_contingency, fisher_exact, linregress, ttest_ind
 
 
 # Database options
@@ -562,7 +563,6 @@ def get_irregular(conn, table='namae', src='bc'):
             - trend: 'increasing', 'decreasing', or 'stable'
             - significant: boolean indicating if trend is significant (p < 0.05)
     """
-    from scipy import stats as scipy_stats
     
     c = conn.cursor()
     c.execute(f"""SELECT 
@@ -603,7 +603,7 @@ def get_irregular(conn, table='namae', src='bc'):
     
     for gender, gender_data in [('M', male_data), ('F', female_data)]:
         if len(gender_data['years']) >= 2:  # Need at least 2 points for regression
-            slope, intercept, r_value, p_value, std_err = scipy_stats.linregress(
+            slope, intercept, r_value, p_value, std_err = linregress(
                 gender_data['years'], 
                 gender_data['proportions']
             )
@@ -634,7 +634,7 @@ def get_irregular(conn, table='namae', src='bc'):
     gender_comparison = None
     if len(male_data['proportions']) >= 2 and len(female_data['proportions']) >= 2:
         # Use independent samples t-test
-        t_stat, t_pvalue = scipy_stats.ttest_ind(
+        t_stat, t_pvalue = ttest_ind(
             male_data['proportions'], 
             female_data['proportions']
         )
@@ -791,3 +791,150 @@ GROUP BY year""",
     
     return dict(data)
 
+def get_androgyny(conn, src='bc', dtype='orth', tau=0.2, count_type='token'):
+    """
+    Calculate androgyny proportion over time.
+    A name is androgynous if the F/M ratio is between tau and (1-tau).
+    
+    Args:
+        conn: SQLite connection object
+        src: Source identifier ('bc', 'hs', etc.)
+        dtype: 'orth' or 'pron'
+        tau: Threshold parameter (0.0 to 0.5). Name is androgynous if F/M in [tau, 1-tau]
+             tau=0.0 means any shared name (both M and F present)
+             tau=0.5 means perfectly balanced only (F/M = 1.0)
+        count_type: 'token' (weighted by frequency) or 'type' (count distinct names)
+    
+    Returns:
+        tuple: (data, regression_stats)
+        - data: list of dicts with keys: year, total, androgynous, proportion
+        - regression_stats: dict with slope, intercept, r_squared, p_value, years
+    """
+    
+    c = conn.cursor()
+    
+    # Build the query based on dtype
+    name_col = dtype  # 'orth' or 'pron'
+    
+    # Calculate the upper bound (1 - tau)
+    upper_tau = 1.0 - tau
+    
+    if count_type == 'type':
+        # Count distinct names
+        query = f"""
+        WITH gender_counts AS (
+            SELECT 
+                year,
+                {name_col},
+                SUM(CASE WHEN gender = 'F' THEN freq ELSE 0 END) AS f_count,
+                SUM(CASE WHEN gender = 'M' THEN freq ELSE 0 END) AS m_count
+            FROM nrank
+            WHERE src = ?
+            GROUP BY year, {name_col}
+        ),
+        androgynous_names AS (
+            SELECT 
+                year,
+                {name_col}
+            FROM gender_counts
+            WHERE f_count > 0 AND m_count > 0
+              AND (f_count * 1.0 / m_count) BETWEEN ? AND ?
+        )
+        SELECT 
+            gc.year,
+            COUNT(DISTINCT gc.{name_col}) AS total_names,
+            COUNT(DISTINCT an.{name_col}) AS androgynous_names
+        FROM gender_counts gc
+        LEFT JOIN androgynous_names an ON gc.year = an.year AND gc.{name_col} = an.{name_col}
+        WHERE gc.f_count + gc.m_count > 0
+        GROUP BY gc.year
+        ORDER BY gc.year
+        """
+        c.execute(query, (src, tau, upper_tau))
+    else:
+        # Token: weighted by frequency
+        query = f"""
+        WITH gender_counts AS (
+            SELECT 
+                year,
+                {name_col},
+                SUM(CASE WHEN gender = 'F' THEN freq ELSE 0 END) AS f_count,
+                SUM(CASE WHEN gender = 'M' THEN freq ELSE 0 END) AS m_count,
+                SUM(freq) AS total_freq
+            FROM nrank
+            WHERE src = ?
+            GROUP BY year, {name_col}
+        ),
+        androgynous_names AS (
+            SELECT 
+                year,
+                {name_col},
+                total_freq
+            FROM gender_counts
+            WHERE f_count > 0 AND m_count > 0
+              AND (f_count * 1.0 / m_count) BETWEEN ? AND ?
+        )
+        SELECT 
+            gc.year,
+            SUM(gc.total_freq) AS total_babies,
+            SUM(CASE WHEN an.{name_col} IS NOT NULL THEN an.total_freq ELSE 0 END) AS androgynous_babies
+        FROM gender_counts gc
+        LEFT JOIN androgynous_names an ON gc.year = an.year AND gc.{name_col} = an.{name_col}
+        WHERE gc.f_count + gc.m_count > 0
+        GROUP BY gc.year
+        ORDER BY gc.year
+        """
+        c.execute(query, (src, tau, upper_tau))
+    
+    results = c.fetchall()
+    c.close()
+    
+    # Process data
+    data = []
+    years = []
+    proportions = []
+    
+    for row in results:
+        year, total, androgynous = row
+        # Ensure we have integers/floats, not None
+        year = int(year)
+        total = int(total) if total else 0
+        androgynous = int(androgynous) if androgynous else 0
+        
+        # Calculate proportion with float division
+        proportion = float(androgynous) / float(total) if total > 0 else 0.0
+        
+        data.append({
+            'year': year,
+            'total': total,
+            'androgynous': androgynous,
+            'proportion': proportion
+        })
+        
+        years.append(year)
+        proportions.append(proportion)
+    
+    # Calculate linear regression
+    regression_stats = None
+    if len(years) >= 2:
+        slope, intercept, r_value, p_value, std_err = linregress(years, proportions)
+        
+        # Determine trend
+        if p_value < 0.05:
+            trend = 'increasing' if slope > 0 else 'decreasing'
+        else:
+            trend = 'stable'
+        
+        regression_stats = {
+            'slope': float(slope),
+            'intercept': float(intercept),
+            'r_value': float(r_value),
+            'r_squared': float(r_value ** 2),
+            'p_value': float(p_value),
+            'std_err': float(std_err),
+            'trend': trend,
+            'significant': bool(p_value < 0.05),
+            'years': years
+        }
+    
+    return data, regression_stats
