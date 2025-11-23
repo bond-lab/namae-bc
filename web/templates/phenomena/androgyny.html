@@ -1,0 +1,125 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!-- D3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared utils -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Androgyny plotter -->
+<script src="{{ url_for('static', filename='js/plot_androgyny.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-3">{{ title }}</h1>
+  <p class="text-muted">
+    A name is considered androgynous if the ratio of female to male usage (F/M) falls between 0.2 and 0.8.
+    This measures the proportion of babies given androgynous names over time.
+  </p>
+
+  {% for ds in datasets %}
+  <div class="card mb-4">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+      <div class="me-2">
+        <h5 class="mb-1">{{ ds.caption }}</h5>
+        <small class="text-muted">Dataset key: <code>{{ ds.key }}</code></small>
+      </div>
+      <div class="d-flex gap-2">
+        <button id="btn-save-{{ loop.index0 }}" class="btn btn-sm btn-outline-primary" title="Download plot as PNG">
+          💾 Save Plot
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#tbl-{{ loop.index0 }}"
+                aria-expanded="false" aria-controls="tbl-{{ loop.index0 }}">
+          📋 Show table
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Summary -->
+      <div class="row">
+        <div class="col-md-8">
+          <div id="plot-{{ loop.index0 }}" style="min-height: 520px;"></div>
+        </div>
+        <div class="col-md-4">
+          <div class="alert alert-info small">
+            <div class="fw-bold mb-1">Trend summary</div>
+            <p class="mb-0">{{ ds.summary }}</p>
+            <div class="mt-2 text-muted">
+              Significance threshold p &lt; 0.05.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible table (hidden by default) -->
+      <div id="tbl-{{ loop.index0 }}" class="collapse mt-3">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th class="text-end">Total Babies</th>
+                <th class="text-end">Androgynous Babies</th>
+                <th class="text-end">Proportion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in ds.data %}
+              <tr>
+                <td>{{ row.year }}</td>
+               <td class="text-end">{{ row.total_babies }}</td>
+                <td class="text-end">{{row.androgynous_babies }}</td>
+                <td class="text-end">{{ row.proportion }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  // From Flask
+  const datasets = {{ datasets | tojson }};
+  const androgynousColor = '#2ca02c';  // Green for androgynous
+
+  // Render all datasets on load
+  document.addEventListener('DOMContentLoaded', () => {
+    datasets.forEach((ds, i) => {
+      const containerId = `plot-${i}`;
+      plotAndrogyny(ds.data, containerId, {
+        width: document.getElementById(containerId).offsetWidth || 800,
+        height: 500,
+        androgynousColor,
+        regressionStats: ds.regression_stats,
+        yLabel: 'Proportion of Androgynous Names'
+      });
+      setupDownloadButton(`btn-save-${i}`, containerId, `${ds.key}.png`);
+    });
+  });
+
+  // Re-render on resize (throttled)
+  let rz;
+  window.addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = setTimeout(() => {
+      datasets.forEach((ds, i) => {
+        const containerId = `plot-${i}`;
+        plotAndrogyny(ds.data, containerId, {
+          width: document.getElementById(containerId).offsetWidth || 800,
+          height: 500,
+          androgynousColor,
+          regressionStats: ds.regression_stats,
+          yLabel: 'Proportion of Androgynous Names'
+        });
+      });
+    }, 250);
+  });
+</script>
+{% endblock %}
