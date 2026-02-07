@@ -1,5 +1,4 @@
 import sqlite3, os
-from flask import current_app, g
 from collections import defaultdict as dd
 import numpy as np
 import scipy
@@ -34,6 +33,7 @@ sentlim = 8
 
 
 def get_db(root, db):
+    from flask import g
     if 'db' not in g:
         g.db = sqlite3.connect(
             os.path.join(root, f'db/{db}')
@@ -44,6 +44,7 @@ def get_db(root, db):
 
 
 def close_db(e=None):
+    from flask import g
     db = g.pop('db', None)
 
     if db is not None:

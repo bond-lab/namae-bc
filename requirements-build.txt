@@ -10,6 +10,5 @@ toml
 regex
 tabulate
 pyyaml
-Flask
 kanaconv
 scikit-learn
