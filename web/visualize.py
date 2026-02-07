@@ -1,4 +1,3 @@
-from flask import session
 import matplotlib.pyplot as plt
 import matplotlib.style as style
 from cycler import cycler

@@ -8,13 +8,9 @@ from collections import defaultdict as dd, Counter
 import matplotlib.pyplot as plt
 import pandas as pd  # For table generation
 import json
-import sys
 
-# Add the parent directory to the system path for module imports
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from web.db import db_options, get_name_year, get_name_count_year
-from web.visualize import plot_multi_panel_trends
+from db import db_options, get_name_year, get_name_count_year
+from visualize import plot_multi_panel_trends
 from plot_meiji import calculate_trend_statistics, plot_multi_panel_trends_with_stats
 
 # Constants for sampling runs

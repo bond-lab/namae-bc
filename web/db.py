@@ -156,10 +156,19 @@ def get_name_year(conn, table='namae',
     else:
         select_columns = "orth, pron, gender, year"
 
+    # Filter out NULL values for the requested dtype
+    if dtype == 'orth':
+        null_filter = "AND orth IS NOT NULL"
+    elif dtype == 'pron':
+        null_filter = "AND pron IS NOT NULL"
+    else:
+        null_filter = "AND orth IS NOT NULL AND pron IS NOT NULL"
+
     c.execute(f"""SELECT {select_columns}
     FROM {table}
     WHERE src = ?
     AND year >= ? and year <= ?
+    {null_filter}
     ORDER BY year""", (src, start, end))
     byyear =  dd(lambda:  dd(list))
     for row in c:

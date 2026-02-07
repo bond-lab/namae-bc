@@ -1,4 +1,4 @@
-import sys, os
+import os
 from collections import Counter, defaultdict as dd 
 import sqlite3
 import random
@@ -12,9 +12,7 @@ from tabulate import tabulate
 # more discussion here
 # https://www.npr.org/transcripts/92621093?storyId=92621093
 # https://inequalitybyinteriordesign.wordpress.com/2016/02/25/why-popular-boy-names-are-more-popular-than-popular-girl-names/
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from web.db import db_options, get_name_year
+from db import db_options, get_name_year
 
 current_directory = os.path.abspath(os.path.dirname(__file__))
 
