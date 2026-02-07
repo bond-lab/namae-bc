@@ -5,7 +5,7 @@ rsync -avz web wsgi.py requirements.txt compling.upol.cz:/var/www/namae/
 
 got to  compling.upol.cz
 
-### Must use the smae version of python as used by apache
+### Must use the same version of python as used by apache
 ###
 ### sudo grep mod_wsgi /var/log/apache2/error.log
 ###

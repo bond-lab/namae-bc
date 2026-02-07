@@ -283,13 +283,23 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion'):
 
     # Format y-axis as percentages
     ax = plt.gca()
+    ax.set_ylim(0, 0.5)
+   
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{int(y*100)}'))
+    ax.set_yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
     
-    
+    # Remove spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    # Horizontal gridlines every 5%
+    ax.grid(axis='y', color='white', linewidth=1, alpha=0.7)
+
+
     #plt.legend()
 
     out_path = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}.png')
-  
+    print(f"Saving  {out_path}")
     plt.savefig(out_path,
                 dpi=300, bbox_inches='tight')
     

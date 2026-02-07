@@ -260,6 +260,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
         Whether to display trend statistics on the plot
     """
     import matplotlib.pyplot as plt
+    import matplotlib.lines as mlines
     
     # Get all years from both genders
     all_years = sorted(set(list(all_metrics['M'].keys()) + list(all_metrics['F'].keys())))
@@ -269,8 +270,8 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
     for idx, metric in enumerate(selected_metrics):
         ax = axes[idx // 2, idx % 2]
         
-        # Store text for annotations
-        stat_texts = []
+        # Store info for combined legend+stats box
+        legend_stats_info = []
         
         # For each gender, collect valid data points
         for gender, color, marker, label in [
@@ -289,7 +290,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
             # Only plot if we have valid data
             if valid_years and valid_values:
                 ax.plot(valid_years, valid_values, marker=marker, linestyle=':', 
-                        color=color, label=label, linewidth=2, markersize=6)
+                        color=color, linewidth=2, markersize=6)
                 
                 # Add trend line if statistics are significant
                 if trend_stats and show_stats:
@@ -326,31 +327,46 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                         ax.plot(valid_ci_years, valid_ci_upper, linestyle='--', 
                                 color=color, alpha=0.7, linewidth=1)
                 
-                # Prepare statistics text
+                # Collect info for combined legend+stats
                 if trend_stats and show_stats:
                     stat_text = format_trend_text(trend_stats, metric, gender)
-                    stat_texts.append(f"{label}: {stat_text}")
+                    legend_stats_info.append((color, marker, label, stat_text))
+                else:
+                    legend_stats_info.append((color, marker, label, None))
         
         # Force x-axis ticks to be integers only
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         
         ax.set_title(metric, fontsize=12, fontweight='bold')
-        ax.legend(frameon=False)
         ax.grid(False)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['left'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
         
-        # Add statistics text
-        if stat_texts and show_stats:
-            stats_text = '\n'.join(stat_texts)
-            ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, 
-                   verticalalignment='top', fontsize=11, 
-                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
+        # Create combined legend+stats box
+        if legend_stats_info:
+            # Build custom legend handles with stats text
+            handles = []
+            labels = []
+            for color, marker, label, stat_text in legend_stats_info:
+                handle = mlines.Line2D([], [], color=color, marker=marker, 
+                                       linestyle=':', linewidth=2, markersize=6)
+                handles.append(handle)
+                if stat_text and show_stats:
+                    labels.append(f"{label}: {stat_text}")
+                else:
+                    labels.append(label)
+            
+            # Place legend at top left with stats included
+            legend = ax.legend(handles, labels, loc='upper left', frameon=True,
+                              fontsize=10, handlelength=2.5,
+                              fancybox=True, framealpha=0.8, edgecolor='none')
+            legend.get_frame().set_facecolor('white')
     
     plt.tight_layout()
-    plt.suptitle(title, y=0.98, fontsize=14, fontweight='bold')
+    if title:
+        plt.suptitle(title, y=0.98, fontsize=14, fontweight='bold')
     
     # Save plot to a file
     plt.savefig(filename, dpi=300, bbox_inches='tight')

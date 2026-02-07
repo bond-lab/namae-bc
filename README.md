@@ -1,61 +1,68 @@
 # namae-bc
-Name data from the baby calendar and tools to manipulate it.
 
+Japanese Name Database: data and tools for analyzing trends in Japanese given names.
 
+Part of the research project [Names and Gender — The Growing Trend of
+Non-Gender-Specific Names in Contemporary
+Japan](https://japanesenames.upol.cz/research/).
 
+## Data Sources
 
+| Source | Label | Years | Contents |
+|--------|-------|-------|----------|
+| [Baby Calendar](https://baby-calendar.jp/) | bc | 2008-2022 | Individual names with orthography, pronunciation, gender, location |
+| [Heisei Namae Jiten](https://www.namaejiten.com/) | hs | 1989-2009 | Ranked name frequencies (orthography only) |
+| [Meiji Yasuda Life Insurance](https://www.meijiyasuda.co.jp/enjoy/ranking/) | meiji | 1912-2024 | Top-ranked names (orthography + pronunciation from 2004) |
 
+See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for copyright and licensing details
+for each dataset.
 
+## Building the Database
 
-Contingency table for a given feature:
+Rebuild everything from the raw data:
 
-Last		Gender
-Mora		M		F
-お			120		223	
-not-お
-
-
-
-
-Should I look only at names with > 2 characters for?
-
-
-Make the data by:
-```
-cd scripts
-mv namae.db namae.bak.db 
-# make table copy from excel
-python munge.py
-# make the attribute table
-python meta.py
-cp namae.db ../web/db/namae.db 
+```bash
+bash makedb.sh           # build DB + run analysis (default)
+bash makedb.sh db        # build DB only
+bash makedb.sh analysis  # run analysis only (DB must already exist)
 ```
 
+`db` creates `web/db/namae.db` (SQLite) and exports TSV files to
+`data/download/`.  `analysis` generates plots and JSON files under
+`web/static/`.  See [DATABASE.md](DATABASE.md) for the schema and
+pipeline details.
 
+## Exporting Data as TSV
 
-Note:
------
+To export the cleaned ranked data as tab-separated files:
 
-I am not writing everything to the right place for some of the scripts:
-echo "Plot proportions"
-python plot_proportion.py
+```bash
+python scripts/export_tsv.py
+```
 
-echo "Plot gender overlap"
-python plot_overlap.py ../web/db/namae.db
+This writes six files to `data/download/`:
+- `baby_calendar_names.tsv` — Baby Calendar, orth-only & pron-only rankings (2008-2022)
+- `baby_calendar_names_both.tsv` — Baby Calendar, orth+pron pairs (2008-2022)
+- `heisei_names.tsv` — Heisei Namae Jiten ranked names (1989-2009)
+- `meiji_yasuda_names.tsv` — Meiji Yasuda ranked names (1912-2024)
+- `meiji_yasuda_totals.tsv` — Meiji Yasuda survey totals (2004-2024)
+- `live_births.tsv` — Annual live births in Japan (1873-2023)
 
-echo "calculate grapheme/phoneme mapping"
-python calc_regular.py > poi
+See `data/download/README.md` for column descriptions and details of
+the cleaning applied to each source.
 
-I could also do more to make things uniform and share code, .....
+## Running the Website
 
+```bash
+pip install -r requirements.txt
+flask --app web run
+```
 
-## Notes on tables for the book:
- * use boys/girls
- * include only  F-ratio
- * bold signifigant figures, generally only include them,
- * signifigant figures: 2 for f-ratio, 3 for p-adj
- * show adjusted p-value
- * don't include examples?
- * don't label gender bias
- * Sort masculine then feminine
- * Don't use color
+See [Install.md](Install.md) for production deployment notes
+(Apache/WSGI on a specific server).
+
+## Citation
+
+See [CITATION.cff](CITATION.cff) or cite:
+
+> Bond, F., & Barešová, I. (2025). *Online Resources for Japanese Names.* Zenodo.

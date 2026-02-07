@@ -1,0 +1,54 @@
+name: Build data release archive
+
+# Triggered when a GitHub release is published.
+# Packages data/download/ TSV files with documentation into a .tar.gz
+# and attaches it to the release.
+#
+# Prerequisites: the TSV files in data/download/ should already be
+# committed (run `python scripts/export_tsv.py` locally after building
+# the database).  This avoids rebuilding the full database in CI.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-data-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify TSV files exist
+        run: |
+          count=$(ls data/download/*.tsv 2>/dev/null | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "ERROR: No TSV files found in data/download/."
+            echo "Run 'python scripts/export_tsv.py' locally and commit the results."
+            exit 1
+          fi
+          echo "Found $count TSV files"
+
+      - name: Assemble release directory
+        run: |
+          mkdir -p release/namae-data
+          cp data/download/*.tsv release/namae-data/
+          cp data/download/README.md release/namae-data/
+          cp data/README.md release/namae-data/DATA.md
+          cp ATTRIBUTIONS.md release/namae-data/
+
+      - name: Create archive
+        run: |
+          cd release
+          tar czf namae-data-${{ github.event.release.tag_name }}.tar.gz namae-data/
+
+      - name: Upload archive to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            release/namae-data-${{ github.event.release.tag_name }}.tar.gz \
+            --clobber

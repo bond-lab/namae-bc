@@ -1,6 +1,16 @@
+#!/bin/bash
 ###
-###  Run the scripts to make the db and any graphs
+###  Build the database and/or run analysis scripts.
 ###
+###  Usage:
+###    bash makedb.sh           # build DB + run analysis (default)
+###    bash makedb.sh db        # build DB only
+###    bash makedb.sh analysis  # run analysis only (DB must exist)
+###
+
+set -e
+
+STEP="${1:-all}"
 
 ### set up python
 
@@ -18,8 +28,12 @@ fi
 ## location of database
 mkdir -p web/db
 
-### Run scripts
 
+#############################
+###  Phase 1: Build the DB
+#############################
+
+if [ "$STEP" = "all" ] || [ "$STEP" = "db" ]; then
 
 pushd scripts
 
@@ -28,7 +42,7 @@ if [ -f namae.db ]; then
 fi
 
 
-echo "Making Tables and reading names from Baby Calender"
+echo "Making Tables and reading names from Baby Calendar"
 python add-baby-calendar.py "../data/jmena 2008-2022.xlsx"
 
 
@@ -40,7 +54,7 @@ echo "Adding Meiji data"
 python add-meiji-api.py  namae.db  \
        ../data/meiji_yasuda_data/processed/combined_rankings.csv   \
        ../data/meiji_total_year.tsv  \
-       ../data/meiji.xlsx 
+       ../data/meiji.xlsx
 
 # python add-meiji.py "../data/meiji.xlsx"
 
@@ -65,10 +79,32 @@ echo "Copy scripts/namae.db to web/db/namae.db'"
 cp namae.db ../web/db/namae.db
 
 # index the tables
-#echo "Adding indexes"
+echo "Adding indexes"
 
-#sqlite3 ../web/db/namae.db < add_indexes.sql
+sqlite3 ../web/db/namae.db < add_indexes.sql
 
+echo "Export TSV data"
+python export_tsv.py
+
+popd
+
+echo "=== Database build complete ==="
+
+fi
+
+
+#############################
+###  Phase 2: Analysis
+#############################
+
+if [ "$STEP" = "all" ] || [ "$STEP" = "analysis" ]; then
+
+if [ ! -f web/db/namae.db ]; then
+    echo "ERROR: web/db/namae.db not found. Run 'bash makedb.sh db' first." >&2
+    exit 1
+fi
+
+pushd scripts
 
 echo "Make Year graphs"
 
@@ -120,3 +156,6 @@ popd
 ## used in Chapter 6
 # python scripts/img-jinmei.py -o web/static/plot/jinmei
 
+echo "=== Analysis complete ==="
+
+fi

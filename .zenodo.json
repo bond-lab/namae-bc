@@ -1,9 +1,6 @@
 {
-    "title": "Online Resources for Japanese Names",
-    # Contemporary Japanese Given Names: Trends, statistics and resources
-    analysis and data
-  "description": "This repository contains the datasets, analysis scripts, and interactive website code for 'FIXME'. It includes frequency data downloaded from the web and cleaned, diversity metrics, and an interactive online search interface. The data is archived in Zenodo for reproducibility and citation.",
-  "creators": [
+    "title": "Japanese Given Names: Data, Analysis, and Interactive Resources",
+    "description": "This repository provides curated datasets, analysis code, and visualization tools for the empirical study of contemporary Japanese given names. It includes frequency data harvested from public web sources, cleaned and normalized datasets, diversity and distribution metrics, and code for interactive exploration and visualization. Developed in support of the book 'Gender in Japanese Names Today', the  resource is intended as a general platform for computational and quantitative research on Japanese given names.",
     {
       "name": "Bond, Francis",
       "affiliation": "Palacký University Olomouc",
@@ -16,13 +13,14 @@
     }
   ],
   "keywords": [
-    "Japanese names",
-    "onomastics",
-    "gender",
-    "linguistics",
-    "diversity"
+    "Japanese",
+      "onomastics",
+      "names",
+      "gender",
+      "linguistics",
+      "diversity"
   ],
-  "license": "CC-BY-4.0",
+  "license": "MIT",
   "access_right": "open",
   "upload_type": "dataset",
   "related_identifiers": [
