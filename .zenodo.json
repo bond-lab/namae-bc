@@ -1,7 +1,8 @@
 {
     "title": "Japanese Given Names: Data, Analysis, and Interactive Resources",
     "description": "This repository provides curated datasets, analysis code, and visualization tools for the empirical study of contemporary Japanese given names. It includes frequency data harvested from public web sources, cleaned and normalized datasets, diversity and distribution metrics, and code for interactive exploration and visualization. Developed in support of the book 'Gender in Japanese Names Today', the  resource is intended as a general platform for computational and quantitative research on Japanese given names.",
-    {
+    "creators": [
+	{
       "name": "Bond, Francis",
       "affiliation": "Palacký University Olomouc",
       "orcid": "0000-0003-4973-8068"
