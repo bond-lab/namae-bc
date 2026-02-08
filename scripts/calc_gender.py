@@ -61,7 +61,6 @@ def show_row_info(X, y, vec, label_encoder, years, genders, idx, clf=None, max_f
     if len(active_pairs) > max_feats:
         print(f"  ... (+{len(active_pairs)-max_feats} more)")
 
-@profile
 def run_experiment(conn, src, dtype, features, verbose=True, chunk_size=50000):
     """
     Run an experiment, and return the results as a table.
