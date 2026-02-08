@@ -108,8 +108,7 @@ mv web/db/namae.db.tmp web/db/namae.db
 ## 6. Test the website
 
 ```bash
-pip install -r requirements.txt
-flask --app web run
+run.sh
 ```
 
 Then open http://127.0.0.1:5000/ and check:
