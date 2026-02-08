@@ -184,7 +184,7 @@ The complement of this measure is the <b>Berger-Parker Dominance Index</b>, whic
   </button>
   <div class="collapse" id="tables-{{ key }}">
 	   {% for gender, yearly in data.metrics.items() %}
-	  
+	   {% if yearly %}
           <table class="table table-striped">
 	    <caption>{{gender}}</caption>
                 <thead>
@@ -207,6 +207,7 @@ The complement of this measure is the <b>Berger-Parker Dominance Index</b>, whic
                     {% endfor %}
                 </tbody>
           </table>
+	   {% endif %}
 	     {% endfor %}
         </div>
 	</div>

@@ -271,7 +271,7 @@ for src in db_options:
 #    if src != 'hs': #'hs' not in src:
 #        continue
     for data_type in types:
-        if src in ['hs', 'hs+bc'] and data_type != 'orth':
+        if data_type not in db_options[src][2]:
             print(f"Skipping invalid combination: {src} with {data_type}")
             continue
 
@@ -361,22 +361,25 @@ for src in db_options:
                                     plot_path)
 
         # plot for book
-        plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
-        selected_metrics= ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
-        trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
-        plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
-                                           "", # "Diversity Measures",
-                                           plot_path,
-                                           trend_stats=trend_stats,  
-                                           confidence_intervals=None)
-            
-        # Save diversity metrics to JSON
-        diversity_data = {
-            "metrics": all_metrics
-        }
+        if all_metrics['M']:
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
+            selected_metrics= ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
+            trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
+            plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
+                                               "", # "Diversity Measures",
+                                               plot_path,
+                                               trend_stats=trend_stats,
+                                               confidence_intervals=None)
 
-        output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
-        with open(output_path, 'w') as f:
-            json.dump(diversity_data, f)
+            # Save diversity metrics to JSON
+            diversity_data = {
+                "metrics": all_metrics
+            }
 
-        print(f"Diversity data saved to {output_path}")
+            output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
+            with open(output_path, 'w') as f:
+                json.dump(diversity_data, f)
+
+            print(f"Diversity data saved to {output_path}")
+        else:
+            print(f"No data for {src} with {data_type}, skipping")
