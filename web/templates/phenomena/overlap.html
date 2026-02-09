@@ -1,22 +1,207 @@
 {% extends 'layout.html' %}
-{% from 'macros.html' import nav_tabs %}
 
-{% block content %}
-
-
-
-<div class="container">
-  {{ nav_tabs('phenomena', phenomena) }}
-  <h1>Names shared between genders</h1>
-
-
-
-
-
-  
+{% block head %}
+<!-- D3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared utils -->
+<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
+<!-- Overlap plotter -->
+<script src="{{ url_for('static', filename='js/plot_overlap.js') }}"></script>
 {% endblock %}
 
-{% block scripts %}
+{% block content %}
+{% from 'macros.html' import nav_tabs %}
+<div class="container mt-4">
+  {{ nav_tabs('phenomena', phenomena) }}
+  <h1 class="mb-3">{{ title }}</h1>
 
+  <p class="text-muted">
+    This page shows the overlap between male and female names &mdash;
+    names that appear in the top-N for both genders in a given year.
+    Two measures are shown:
+  </p>
+  <ul class="text-muted">
+    <li><b>Overlap Count</b> &mdash; the number of names shared between the
+      top-N male and top-N female names.</li>
+    <li><b>Proportion Overlap</b> &mdash; the proportion of babies with
+      overlapping names, weighted by frequency.</li>
+  </ul>
 
+  <!-- TABLE OF CONTENTS -->
+  {% if datasets %}
+  <div class="toc mb-4">
+    <ul>
+    {% for ds in datasets %}
+      <li><a href="#{{ ds.key }}">{{ ds.caption }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% for ds in datasets %}
+  <div class="card mb-4" id="{{ ds.key }}">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+      <div class="me-2">
+        <h5 class="mb-1">{{ ds.caption }}</h5>
+      </div>
+      <div class="d-flex gap-2">
+        <button id="btn-save-count-{{ loop.index0 }}" class="btn btn-sm btn-outline-primary" title="Download count plot as PNG">
+          Save Count
+        </button>
+        <button id="btn-save-prop-{{ loop.index0 }}" class="btn btn-sm btn-outline-primary" title="Download proportion plot as PNG">
+          Save Proportion
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#tbl-{{ loop.index0 }}"
+                aria-expanded="false" aria-controls="tbl-{{ loop.index0 }}">
+          Show table
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#names-{{ loop.index0 }}"
+                aria-expanded="false" aria-controls="names-{{ loop.index0 }}">
+          Show names
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Two charts side by side -->
+      <div class="row">
+        <div class="col-md-6">
+          <h6 class="text-center">Overlap Count</h6>
+          <div id="plot-count-{{ loop.index0 }}" style="min-height: 420px;"></div>
+          <div class="alert alert-info small mt-2">
+            <div class="fw-bold mb-1">Count trend</div>
+            <p class="mb-0">{{ ds.summary_count }}</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-center">Proportion Overlap</h6>
+          <div id="plot-prop-{{ loop.index0 }}" style="min-height: 420px;"></div>
+          <div class="alert alert-info small mt-2">
+            <div class="fw-bold mb-1">Proportion trend</div>
+            <p class="mb-0">{{ ds.summary_proportion }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible summary table -->
+      <div id="tbl-{{ loop.index0 }}" class="collapse mt-3">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th class="text-end">Overlap Count</th>
+                <th class="text-end">Overlap Babies</th>
+                <th class="text-end">Total Babies</th>
+                <th class="text-end">Proportion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in ds.data %}
+              <tr>
+                <td>{{ row.year }}</td>
+                <td class="text-end">{{ row.overlap_count }}</td>
+                <td class="text-end">{{ row.overlap_freq }}</td>
+                <td class="text-end">{{ row.total_babies }}</td>
+                <td class="text-end">{{ "%.2f%%"|format(row.weighted_proportion * 100) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Collapsible names table -->
+      <div id="names-{{ loop.index0 }}" class="collapse mt-3">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Name</th>
+                <th class="text-end">Male freq</th>
+                <th class="text-end">Female freq</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in ds.data %}
+                {% for n in row.names %}
+              <tr>
+                {% if loop.first %}
+                <td rowspan="{{ row.names|length }}">{{ row.year }}</td>
+                {% endif %}
+                <td>{{ n.name }}</td>
+                <td class="text-end">{{ n.male_freq }}</td>
+                <td class="text-end">{{ n.female_freq }}</td>
+              </tr>
+                {% endfor %}
+                {% if not row.names %}
+              <tr>
+                <td>{{ row.year }}</td>
+                <td colspan="3" class="text-muted">No overlap</td>
+              </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if not datasets %}
+  <div class="alert alert-warning">No overlap data available. Please build the database first.</div>
+  {% endif %}
+</div>
+
+<script>
+  const datasets = {{ datasets | tojson }};
+  const overlapColor = '#1f77b4';
+
+  function renderAll() {
+    datasets.forEach((ds, i) => {
+      const countId = `plot-count-${i}`;
+      const propId = `plot-prop-${i}`;
+      const cw = document.getElementById(countId).offsetWidth || 500;
+      const pw = document.getElementById(propId).offsetWidth || 500;
+
+      plotOverlap(ds.data, countId, {
+        width: cw,
+        height: 400,
+        color: overlapColor,
+        measure: 'count',
+        yLabel: 'Number of Overlapping Names',
+        regressionStats: ds.reg_count
+      });
+
+      plotOverlap(ds.data, propId, {
+        width: pw,
+        height: 400,
+        color: overlapColor,
+        measure: 'proportion',
+        yLabel: 'Proportion of Babies',
+        regressionStats: ds.reg_proportion
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    datasets.forEach((ds, i) => {
+      setupDownloadButton(`btn-save-count-${i}`, `plot-count-${i}`, `${ds.key}_count.png`);
+      setupDownloadButton(`btn-save-prop-${i}`, `plot-prop-${i}`, `${ds.key}_proportion.png`);
+    });
+  });
+
+  // Re-render on resize (throttled)
+  let rz;
+  window.addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = setTimeout(renderAll, 250);
+  });
+</script>
 {% endblock %}

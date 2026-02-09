@@ -814,6 +814,107 @@ GROUP BY year""",
     
     return dict(data)
 
+def get_overlap(conn, src='bc', dtype='orth', n_top=50):
+    """Calculate overlap between male and female names in top-N ranks per year.
+
+    Returns (data_list, regression_count, regression_proportion) where
+    data_list: [{year, overlap_count, weighted_proportion, total_babies}, ...]
+    regression_count / regression_proportion: linregress dict or None.
+    """
+    c = conn.cursor()
+    name_col = dtype  # 'orth' or 'pron'
+
+    # Find overlapping names: same name_col value in both M and F top-N
+    query = f"""
+    SELECT
+      m.year,
+      m.{name_col} AS overlap_name,
+      m.freq AS male_freq,
+      f.freq AS female_freq
+    FROM nrank m
+    INNER JOIN nrank f ON f.src = m.src
+                      AND f.year = m.year
+                      AND f.gender = 'F'
+                      AND m.gender = 'M'
+                      AND f.{name_col} = m.{name_col}
+    WHERE m.rank <= ?
+      AND f.rank <= ?
+      AND m.src = ?
+      AND m.{name_col} IS NOT NULL
+      AND f.{name_col} IS NOT NULL
+    ORDER BY m.year
+    """
+    c.execute(query, (n_top, n_top, src))
+
+    # Group by year
+    year_overlaps = dd(list)
+    for year, name, m_freq, f_freq in c:
+        year_overlaps[year].append((name, m_freq, f_freq))
+
+    # Get total babies per year (sum M+F from name_year_cache)
+    c.execute("""
+    SELECT year, SUM(count)
+    FROM name_year_cache
+    WHERE src = ? AND dtype = ?
+    GROUP BY year
+    """, (src, dtype))
+    totals = dict(c.fetchall())
+
+    data = []
+    years_list = []
+    counts = []
+    proportions = []
+
+    # Iterate all years that have totals so zero-overlap years are included
+    for year in sorted(totals):
+        overlaps = year_overlaps.get(year, [])
+        overlap_count = len(overlaps)
+        overlap_freq = sum(m + f for _, m, f in overlaps)
+        total = totals[year]
+        proportion = (overlap_freq / total) if total > 0 else 0.0
+
+        # Include the actual names sorted by combined frequency
+        names = [{'name': n, 'male_freq': int(m), 'female_freq': int(f)}
+                 for n, m, f in sorted(overlaps, key=lambda x: x[1]+x[2], reverse=True)]
+
+        data.append({
+            'year': year,
+            'overlap_count': overlap_count,
+            'overlap_freq': overlap_freq,
+            'total_babies': total,
+            'weighted_proportion': float(proportion),
+            'names': names,
+        })
+        years_list.append(year)
+        counts.append(overlap_count)
+        proportions.append(proportion)
+
+    def _regress(xs, ys):
+        if len(xs) < 2:
+            return None
+        slope, intercept, r_value, p_value, std_err = linregress(xs, ys)
+        if p_value < 0.05:
+            trend = 'increasing' if slope > 0 else 'decreasing'
+        else:
+            trend = 'stable'
+        return {
+            'slope': float(slope),
+            'intercept': float(intercept),
+            'r_value': float(r_value),
+            'r_squared': float(r_value ** 2),
+            'p_value': float(p_value),
+            'std_err': float(std_err),
+            'trend': trend,
+            'significant': bool(p_value < 0.05),
+            'years': list(xs),
+        }
+
+    reg_count = _regress(years_list, counts)
+    reg_proportion = _regress(years_list, proportions)
+
+    return data, reg_count, reg_proportion
+
+
 def get_androgyny(conn, src='bc', dtype='orth', tau=0.2, count_type='token'):
     """
     Calculate androgyny proportion over time.

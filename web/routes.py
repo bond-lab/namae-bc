@@ -13,7 +13,7 @@ from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
-                get_irregular, get_androgyny, resolve_src
+                get_irregular, get_androgyny, get_overlap, resolve_src
 import json
 import markdown
 from markupsafe import Markup
@@ -631,15 +631,80 @@ def genderedness():
         female_color=session.get('female_color', 'purple')
     )
 
+def _regression_summary(rs):
+    """Human-readable one-line summary of a regression result dict."""
+    if not rs or not rs.get('years'):
+        return "Insufficient data for trend analysis."
+    slope = rs['slope']
+    p = rs['p_value']
+    r2 = rs['r_squared']
+    if abs(slope) < 1e-12:
+        arrow, trend = "\u2192", "flat"
+    else:
+        arrow, trend = ("\u2191", "increasing") if slope > 0 else ("\u2193", "decreasing")
+    sig = "significant" if p < 0.05 else "not significant"
+    return f"{arrow} {trend} (slope={slope:.4g}/yr, p={p:.3g}, R\u00b2={r2:.2f}), {sig}."
+
+
 @app.route("/overlap.html")
 def overlap():
-    """
-    """
+    """Show gender overlap in names — names shared between boys and girls."""
+    conn = get_db(current_directory, "namae.db")
+
+    # Per-source n_top values to show
+    source_n_tops = {
+        'bc':    [50, 100],
+        'hs':    [50, 100, 500],
+        'meiji': [50, 100],
+    }
+
     datasets = []
+    seen = set()
+
+    for src in db_options:
+        qsrc = resolve_src(src)
+        opt_dtypes = db_options[src][2]
+        dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]
+        n_tops = source_n_tops.get(qsrc, [50])
+
+        for dtype in dtype_list:
+            if dtype == 'both':
+                continue
+
+            for n_top in n_tops:
+                key = f"{qsrc}_{dtype}_{n_top}"
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
+                n_label = f" (top {n_top})" if len(n_tops) > 1 else ""
+                caption = f"{db_options[src][1]} \u2014 {dtype_label}{n_label}"
+
+                try:
+                    data, reg_count, reg_proportion = get_overlap(
+                        conn, src=qsrc, dtype=dtype, n_top=n_top)
+                except Exception:
+                    continue
+
+                if not data:
+                    continue
+
+                datasets.append({
+                    'key': f'overlap_{qsrc}_{dtype}_{n_top}',
+                    'caption': caption,
+                    'n_top': n_top,
+                    'data': data,
+                    'reg_count': reg_count,
+                    'reg_proportion': reg_proportion,
+                    'summary_count': _regression_summary(reg_count),
+                    'summary_proportion': _regression_summary(reg_proportion),
+                })
+
     return render_template(
         "phenomena/overlap.html",
-        title="Overlapping Names Over Time",
-        datasets=datasets
+        title="Overlapping Names",
+        datasets=datasets,
     )
    
 @app.route("/phenomena/androgyny.html")
