@@ -353,6 +353,10 @@ def feature():
     name = request.args.get('nm', type=str, default='')
     desc = request.args.get('dc', type=str, default='')
 
+    # Redirect to first available feature if none specified
+    if not feat1:
+        return redirect(url_for('feature', f1=features[0][0], f2=features[0][1], nm=features[0][2]))
+
     db_settings = get_db_settings()
 
     conn = get_db(current_directory, "namae.db")

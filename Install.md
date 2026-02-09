@@ -1,5 +1,5 @@
 cd ~/git/namae-bc
-rsync -avz web wsgi.py requirements.txt compling.upol.cz:/var/www/namae/
+bash deploy.sh
 
 
 
