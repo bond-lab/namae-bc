@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
-
+{% from 'macros.html' import nav_tabs %}
 
 {% block content %}
 
 
 
 <div class="container">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1>Allowable Kanji</h1>
 
   <p>Japanese names can only be written with characters from either the 

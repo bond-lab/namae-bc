@@ -66,12 +66,23 @@
 	    <li class="nav-item">
 	      <a href="{{ url_for('years') }}"
 		 class="nav-item nav-link">By Year</a></li>
-	    <li class="nav-item">
-	      <a href="{{ url_for('docs') }}"
-		 class="nav-item nav-link">Documentation</a></li>
+	      <!-- Documentation -->
+	    <li class="nav-item dropdown">
+               <a class="nav-link dropdown-toggle" href="#" id="navbarDocs" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Documentation
+          </a>
+	  <ul class="dropdown-menu" aria-labelledby="navbarDocs">
+	    <li><a href="{{ url_for('docs_data') }}" class="dropdown-item">Data</a></li>
+	    <li><a href="{{ url_for('docs_download') }}" class="dropdown-item">Download</a></li>
+	    <li><a href="{{ url_for('docs_morae') }}" class="dropdown-item">Morae &amp; Syllables</a></li>
+	    <li><a href="{{ url_for('docs_features') }}" class="dropdown-item">Features</a></li>
+	    <li><a href="{{ url_for('docs_licenses') }}" class="dropdown-item">Licenses</a></li>
+	  </ul></li>
+	    {% if show_book %}
 	    <li class="nav-item">
 	      <a href="{{ url_for('book') }}"
 		 class="nav-item nav-link">Book</a></li>
+	    {% endif %}
 	  </ul>
 	  <!-- Search Forms -->
 	  <form class="d-flex" role="search" action="{{ url_for('namae') }}" method="get">

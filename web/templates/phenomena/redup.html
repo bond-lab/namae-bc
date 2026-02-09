@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
-{% from 'macros.html' import add_pron %}
+{% from 'macros.html' import add_pron, nav_tabs %}
 
 {% block content %}
 
 
 
 <div class="container">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1>Reduplication in Names</h1>
 
   <p>Some Japanese names show reduplication, where part of the name is

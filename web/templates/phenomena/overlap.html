@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
-
+{% from 'macros.html' import nav_tabs %}
 
 {% block content %}
 
 
 
 <div class="container">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1>Names shared between genders</h1>
 
 

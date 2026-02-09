@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block content %}
+{% from 'macros.html' import nav_tabs %}
 <div class="container mt-4">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1 class="mb-3">{{ title }}</h1>
   <p class="text-muted">All available genderedness datasets are shown below. Click “Show table” to view raw rows.</p>
 

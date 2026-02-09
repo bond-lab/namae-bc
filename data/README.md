@@ -11,7 +11,7 @@ licensing, and [data/download/](download/) for ready-to-use TSV exports.
 **Raw file:** `jmena 2008-2022.xlsx`
 
 An Excel workbook with one sheet per gender, cut and pasted from
-https://baby-calendar.jp/ by Ivona Barešová.
+<https://baby-calendar.jp/> by Ivona Barešová.
 
 **Cleaning applied:**
 
@@ -33,7 +33,7 @@ https://baby-calendar.jp/ by Ivona Barešová.
 
 Plain-text files, one per year per gender (h01 = Heisei 1 = 1989),
 with lines of the form `rank\tname\tfrequency`.  Downloaded from
-https://www.namaejiten.com/.
+<https://www.namaejiten.com/>.
 
 **Cleaning applied:**
 
@@ -58,7 +58,7 @@ https://www.namaejiten.com/.
   frequencies)
 - `meiji_total_year.tsv` — annual survey totals
 
-Downloaded from https://www.meijiyasuda.co.jp/enjoy/ranking/.
+Downloaded from <https://www.meijiyasuda.co.jp/enjoy/ranking/>.
 
 **Coverage:**
 
@@ -78,7 +78,7 @@ Downloaded from https://www.meijiyasuda.co.jp/enjoy/ranking/.
 
   > Ogihara, Y. (2020). Baby names in Japan, 2004-2018: Common
   > writings and their readings. *BMC Research Notes*, 13, 553.
-  > https://doi.org/10.1186/s13104-020-05409-3
+  > <https://doi.org/10.1186/s13104-020-05409-3>
 
   See also Ogihara (2025), Baby names in Japan, 2019-2024,
   DOI [10.17605/OSF.IO/BQUJN](https://doi.org/10.17605/OSF.IO/BQUJN)
@@ -92,7 +92,7 @@ Downloaded from https://www.meijiyasuda.co.jp/enjoy/ranking/.
 
 Annual live births by gender from the National Institute of Population
 and Social Security Research (IPSS), table 04-01:
-https://www.ipss.go.jp/p-info/e/psj2023/PSJ2023-04.xls
+<https://www.ipss.go.jp/p-info/e/psj2023/PSJ2023-04.xls>
 
 Updated with 2022-2023 data from e-Stat.
 

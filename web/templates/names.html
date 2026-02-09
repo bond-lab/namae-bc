@@ -19,8 +19,8 @@
     <tbody>
       {%- for (name, hira, freq, fratio) in data %}
       <tr class="{{status}}">
-	<td> <a href='{{url_for('namae', orth=name, pron=hira)}}'>{{name}}</a></td>
-	<td>{{hira}}</td>
+	<td> <a href='{{url_for('namae', orth=name or '', pron=hira or '')}}'>{{name or hira}}</a></td>
+	<td>{{hira or ''}}</td>
 	<td>{{freq}}</td>
 	<td>{{fratio}}</td>
       </tr>

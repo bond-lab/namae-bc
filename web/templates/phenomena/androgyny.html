@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block content %}
+{% from 'macros.html' import nav_tabs %}
 <div class="container mt-4">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1 class="mb-3">{{ title }}</h1>
   <p class="text-muted">
     A name is considered androgynous if the ratio of female to male usage (F/M) falls between 0.2 and 0.8.

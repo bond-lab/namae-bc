@@ -13,9 +13,26 @@ from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
-                get_irregular, get_androgyny
+                get_irregular, get_androgyny, resolve_src
 import json
+import markdown
+from markupsafe import Markup
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
+
+def render_md(filepath, link_map=None):
+    """Read a markdown file and return rendered HTML (as Markup).
+
+    *link_map* is an optional dict mapping markdown href targets to
+    replacement URLs, so that cross-references between repo files
+    resolve to the correct web-app routes.
+    """
+    with open(filepath, encoding='utf-8') as f:
+        text = f.read()
+    if link_map:
+        for old, new in link_map.items():
+            text = text.replace(f']({old})', f']({new})')
+    html = markdown.markdown(text, extensions=['tables'])
+    return Markup(html)
 
 
 def get_db_connection(root, db):
@@ -25,6 +42,8 @@ def get_db_connection(root, db):
     return conn
 
 current_directory = os.path.abspath(os.path.dirname(__file__))
+# Root of the repository (parent of web/)
+repo_root = os.path.dirname(current_directory)
 
 threshold = 2
 
@@ -34,14 +53,14 @@ features = [
     ('char1', '', '1st Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
     ('char_1', '', 'Last Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
     ('char_2', 'char_1', 'Last 2 Chars', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('mora1', '', '1st Mora', ('bc')),
-    ('mora_1', '', 'Last Mora', ('bc')),
-    ('mora_2', 'mora_1', 'Last 2. Moras', ('bc')),
+    ('mora1', '', '1st Mora', ('bc', 'meiji_p')),
+    ('mora_1', '', 'Last Mora', ('bc', 'meiji_p')),
+    ('mora_2', 'mora_1', 'Last 2. Moras', ('bc', 'meiji_p')),
     ('char_1', 'mora_1', 'Last Char. +  Mora', ('bc')),
     ('char1', 'mora1', 'First Char. +  Mora', ('bc')),
-    ('syll1', '', '1st Syllable', ('bc')),
-    ('syll_1', '', 'Last Syllable', ('bc')),
-    ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc')),
+    ('syll1', '', '1st Syllable', ('bc', 'meiji_p')),
+    ('syll_1', '', 'Last Syllable', ('bc', 'meiji_p')),
+    ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc', 'meiji_p')),
     ('char_1', 'syll_1', 'Last Char. +  Syllable', ('bc')),
     ('char1', 'syll1', 'First Char. +  Syllable', ('bc')),
     ('uni_ch', '', '1 Char. Name', ('bc', 'hs', 'hs+bc', 'meiji')),
@@ -51,8 +70,8 @@ features = [
 overall = [
     ('script', '', 'Script', ('bc', 'hs', 'hs+bc', 'meiji')),
     ('olength', '', 'Length Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('mlength', '', 'Length Mora', ('bc')),
-    ('slength', '', 'Length Syllables', ('bc')),
+    ('mlength', '', 'Length Mora', ('bc', 'meiji_p')),
+    ('slength', '', 'Length Syllables', ('bc', 'meiji_p')),
 ]
 
 phenomena = [
@@ -68,21 +87,32 @@ phenomena = [
 def get_db_settings():
     """Get database settings from session."""
     selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
+    opt_dtypes = db_options[selected_db_option][2]
+    # Determine primary dtype: string means single dtype, tuple means pick default
+    if isinstance(opt_dtypes, str):
+        primary_dtype = opt_dtypes
+    else:
+        primary_dtype = 'orth'
     return {
         'db_src': selected_db_option,
+        'db_query_src': resolve_src(selected_db_option),
         'db_table': db_options[selected_db_option][0],
         'db_name': db_options[selected_db_option][1],
+        'db_range': db_options[selected_db_option][3],
+        'db_dtype': primary_dtype,
     }
 
 @app.context_processor
 def inject_common_variables():
     """Inject common variables into all templates."""
+    db_settings = get_db_settings()
     return {
-        **get_db_settings(),
+        **db_settings,
         'features': features,
         'overall': overall,
         'phenomena': phenomena,
-        'page': request.endpoint
+        'page': request.endpoint,
+        'show_book': session.get('show_book', False),
     }
 
 @app.route("/", methods=["GET", "POST"])
@@ -114,13 +144,64 @@ def diversity():
         diversity_data=diversity_data
     )
 
-@app.route("/docs", methods=["GET", "POST"])
+@app.route("/docs")
 def docs():
-    """show documentation"""
-    return render_template(
-        f"docs/overview.html",
-        title='Overview',
-    )
+    """Redirect to docs/data.html"""
+    return redirect(url_for('docs_data'))
+
+@app.route("/docs/data.html")
+def docs_data():
+    """Data sources and cleaning documentation — rendered from data/README.md"""
+    content = render_md(
+        os.path.join(repo_root, 'data', 'README.md'),
+        link_map={
+            '../ATTRIBUTIONS.md': url_for('docs_licenses'),
+            'download/': url_for('docs_download'),
+        })
+    return render_template("docs/markdown.html",
+                           title='Data: Sources and Cleaning',
+                           content=content)
+
+@app.route("/docs/download.html")
+def docs_download():
+    """Download page — rendered from data/download/README.md"""
+    content = render_md(os.path.join(repo_root, 'data', 'download', 'README.md'))
+    # Build list of available TSV files for download buttons
+    download_dir = os.path.join(repo_root, 'data', 'download')
+    tsv_files = sorted(f for f in os.listdir(download_dir) if f.endswith('.tsv'))
+    return render_template("docs/download.html",
+                           title='Download Data',
+                           content=content,
+                           tsv_files=tsv_files)
+
+@app.route("/docs/morae.html")
+def docs_morae():
+    """Morae and syllables documentation"""
+    return render_template("docs/morae.html", title='Morae & Syllables')
+
+@app.route("/docs/features.html")
+def docs_features():
+    """Counting features documentation"""
+    return render_template("docs/features.html", title='Counting Features')
+
+@app.route("/docs/licenses.html")
+def docs_licenses():
+    """Licenses and attributions — rendered from ATTRIBUTIONS.md"""
+    content = render_md(
+        os.path.join(repo_root, 'ATTRIBUTIONS.md'),
+        link_map={
+            'data/README.md': url_for('docs_data'),
+        })
+    return render_template("docs/markdown.html",
+                           title='Licenses & Attributions',
+                           content=content)
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    """Serve TSV files from data/download/"""
+    from flask import send_from_directory
+    download_dir = os.path.join(os.path.dirname(current_directory), 'data', 'download')
+    return send_from_directory(download_dir, filename, as_attachment=True)
 
 @app.route("/settings", methods=["GET", "POST"])
 def settings():
@@ -135,6 +216,7 @@ def settings():
             session['female_color'] = 'purple'
         db_option = request.form.get('db_option', DEFAULT_DB_OPTION)
         session['db_option'] = db_option
+        session['show_book'] = 'show_book' in request.form
         return redirect(url_for('home'))
 
     return render_template(
@@ -154,7 +236,10 @@ def namae():
     pron = request.args.get('pron', type=str, default='')
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'], src=db_settings['db_src'])
+    qsrc = db_settings['db_query_src']
+    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'],
+                                       src=qsrc,
+                                       dtype=db_settings['db_dtype'])
     if pron:
         mora = mora_hiragana(pron)
         syll=syllable_hiragana(mora)
@@ -176,7 +261,7 @@ def namae():
             female_color=session.get('female_color', 'purple')
 )
     elif pron:
-        data = get_pron(conn, pron, src=db_settings['db_src'])
+        data = get_pron(conn, pron, src=qsrc)
         return render_template(
             f"namae-pron.html",
             hira=pron,
@@ -188,7 +273,7 @@ def namae():
             female_color=session.get('female_color', 'purple')
         )
     elif orth:
-        data = get_orth(conn, orth, src=db_settings['db_src'])
+        data = get_orth(conn, orth, src=qsrc)
         return render_template(
             f"namae-orth.html",
             name=orth,
@@ -214,7 +299,9 @@ def names():
     """
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'], src=db_settings['db_src'])
+    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'],
+                                       src=db_settings['db_query_src'],
+                                       dtype=db_settings['db_dtype'])
 
     data = list()
 
@@ -236,16 +323,17 @@ def stats():
     """
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    stats_data = get_stats(conn, table=db_settings['db_table'], 
-                           src=db_settings['db_src'])
-                     
+    qsrc = db_settings['db_query_src']
+    stats_data = get_stats(conn, table=db_settings['db_table'],
+                           src=qsrc)
+
     feat_stats = list()
     for (feat1, feat2, name, possible) in features:
         if db_settings['db_src'] in possible:
             data, tests, summ = get_feature(conn, feat1, feat2, threshold,
                                             short=True,
-                                            table=db_settings['db_table'], 
-                                            src=db_settings['db_src']) 
+                                            table=db_settings['db_table'],
+                                            src=qsrc) 
             feat_stats.append((name, len(data), summ))
                             
     return render_template(
@@ -266,12 +354,16 @@ def feature():
     desc = request.args.get('dc', type=str, default='')
 
     db_settings = get_db_settings()
-    
+
     conn = get_db(current_directory, "namae.db")
     data, tests, summ = get_feature(conn, feat1, feat2, threshold,
-                                    table=db_settings['db_table'], 
-                                    src=db_settings['db_src'])
+                                    table=db_settings['db_table'],
+                                    src=db_settings['db_query_src'])
     
+    # Determine which feature group this belongs to
+    is_overall = any(f[0] == feat1 and f[1] == feat2 for f in overall)
+    feature_group = overall if is_overall else features
+
     return render_template(
         f"feature.html",
         data=data,
@@ -281,6 +373,7 @@ def feature():
         summ=summ,
         threshold=threshold,
         title=name,
+        feature_group=feature_group,
     )
 
 
@@ -291,14 +384,14 @@ def years():
     """
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    
-    dtype='orth'
+
+    dtype = db_settings['db_dtype']
     names = get_name_count_year(conn,
-                                src=db_settings['db_src'],
-                                dtype=dtype) 
+                                src=db_settings['db_query_src'],
+                                dtype=dtype)
     births = get_name_count_year(conn,
                                  src='births',
-                                 dtype=dtype)
+                                 dtype='orth')
 
     def format_percentage(num1, num2):
         try:
@@ -393,9 +486,9 @@ def kanji():
     db_settings = get_db_settings()
     
     data_male = get_kanji_distribution(conn, kanji_char, 'M',
-                                       db_settings['db_src'])
+                                       db_settings['db_query_src'])
     data_female = get_kanji_distribution(conn, kanji_char, 'F',
-                                         db_settings['db_src'])
+                                         db_settings['db_query_src'])
    
     if not kanji_char:
         return render_template(
@@ -567,20 +660,24 @@ def androgyny():
     datasets = []
     
     # For each dtype (orth/pron)
-    dtypes_to_process = ['orth']
-    if db_settings['db_src'] in ['bc', 'meiji']:
-        dtypes_to_process.append('pron')
-    
+    qsrc = db_settings['db_query_src']
+    if db_settings['db_dtype'] == 'pron':
+        dtypes_to_process = ['pron']
+    elif db_settings['db_src'] in ['bc', 'meiji']:
+        dtypes_to_process = ['orth', 'pron']
+    else:
+        dtypes_to_process = ['orth']
+
     for dtype in dtypes_to_process:
         dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
-        
+
         # For each count type
         for count_type, count_label, unit in count_types:
             # For each tau value
             for tau in tau_values:
                 data, regression = get_androgyny(
-                    conn, 
-                    src=db_settings['db_src'], 
+                    conn,
+                    src=qsrc,
                     dtype=dtype,
                     tau=tau,
                     count_type=count_type

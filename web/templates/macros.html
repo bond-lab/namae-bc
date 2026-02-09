@@ -48,3 +48,42 @@
 {{ text }}
 {%- endif %}
 {%- endmacro %}
+
+
+{%- macro nav_tabs(type, items=None, current=None, src=None) -%}
+<nav class="mb-4">
+  <ul class="nav nav-tabs">
+    {%- if type == 'feature' %}
+      {%- for (feat1, feat2, name, possible) in items %}
+      {%- if src in possible %}
+    <li class="nav-item">
+      <a class="nav-link {% if feat1 == current[0] and feat2 == current[1] %}active{% endif %}"
+	 href="{{ url_for('feature', f1=feat1, f2=feat2, nm=name) }}">{{ name }}</a>
+    </li>
+      {%- endif %}
+      {%- endfor %}
+    {%- elif type == 'phenomena' %}
+      {%- for (feat1, feat2, name) in items %}
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == feat1 %}active{% endif %}"
+	 href="{{ url_for(feat1) }}">{{ name }}</a>
+    </li>
+      {%- endfor %}
+    {%- elif type == 'docs' %}
+      {%- set doc_pages = [
+        ('docs_data', 'Data'),
+        ('docs_download', 'Download'),
+        ('docs_morae', 'Morae & Syllables'),
+        ('docs_features', 'Features'),
+        ('docs_licenses', 'Licenses'),
+      ] %}
+      {%- for (endpoint, label) in doc_pages %}
+    <li class="nav-item">
+      <a class="nav-link {% if request.endpoint == endpoint %}active{% endif %}"
+	 href="{{ url_for(endpoint) }}">{{ label }}</a>
+    </li>
+      {%- endfor %}
+    {%- endif %}
+  </ul>
+</nav>
+{%- endmacro %}

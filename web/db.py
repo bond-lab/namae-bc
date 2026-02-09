@@ -25,6 +25,13 @@ db_options = {
 
 dtypes = ('orth', 'pron', 'both')
 
+# Map UI option keys to actual database src values
+_src_alias = {'meiji_p': 'meiji'}
+
+def resolve_src(src):
+    """Map UI option key to actual database src value."""
+    return _src_alias.get(src, src)
+
 ### limit for most queries
 ### not much point showing more examples than this
 ###
@@ -57,9 +64,15 @@ def close_db(e=None):
 def params(lst):
     return ','.join(['?']*len(lst))
 
-def get_name(conn, table='namae', src='bc'):
+def get_name(conn, table='namae', src='bc', dtype=None):
     c = conn.cursor()
-    c.execute(f"""SELECT orth, pron, gender, year FROM {table} WHERE src = ?""", (src,))
+    if dtype == 'orth':
+        null_filter = "AND orth IS NOT NULL"
+    elif dtype == 'pron':
+        null_filter = "AND pron IS NOT NULL"
+    else:
+        null_filter = ""
+    c.execute(f"""SELECT orth, pron, gender, year FROM {table} WHERE src = ? {null_filter}""", (src,))
     mfname = dd(lambda: dd(list))
     kindex = dd(set)
     hindex = dd(set)

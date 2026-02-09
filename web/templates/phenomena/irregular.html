@@ -10,12 +10,14 @@
 {% endblock %}
 
 {% block content %}
+{% from 'macros.html' import nav_tabs %}
 <div class="container mt-4">
+  {{ nav_tabs('phenomena', phenomena) }}
   <h1>Irregular Name Mappings</h1>
   
   <p class="lead">
     This page shows the proportion of names with irregular character-to-sound mappings over time,
-    comparing male and female names.
+    comparing male and female names.  It can only be calculated for the Baby Calendar, which has orthography and pronunciation for each name.
   </p>
    
   <!-- Visualization -->

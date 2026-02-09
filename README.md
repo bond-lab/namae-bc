@@ -65,4 +65,4 @@ See [Install.md](Install.md) for production deployment notes
 
 See [CITATION.cff](CITATION.cff) or cite:
 
-> Bond, F., & Barešová, I. (2025). *Online Resources for Japanese Names.* Zenodo.
+> Bond, Francis, & Barešová, Ivona. (2025). *Japanese Given Names: Data, Analysis, and Interactive Resources* Zenodo.

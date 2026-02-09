@@ -13,7 +13,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 ---
 
 ## 1. Baby Calendar (bc)
-- **Source:** https://baby-calendar.jp/
+- **Source:** <https://baby-calendar.jp/>
 - **Copyright:** © 株式会社ベビーカレンダー [Baby Calendar Co., Ltd.]
 - **License:** Used under fair use for research and illustration; not for commercial redistribution.
 - **Range:** 2008-2022
@@ -21,7 +21,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 ---
 
 ## 2. Meiji Yasuda Life Insurance Company (meiji)
-- **Source:** https://www.meijiyasuda.co.jp/enjoy/ranking/
+- **Source:** <https://www.meijiyasuda.co.jp/enjoy/ranking/>
 - **Copyright:** © Meiji Yasuda Life Insurance Company
 - **License:** Used under fair use for research and illustration; not for commercial redistribution.
 - **Range:** 1912-2024
@@ -29,7 +29,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 ---
 
 ## 3. Heisei Namae Jiten (HS)
-- **Source:** https://www.namaejiten.com/
+- **Source:** <https://www.namaejiten.com/>
 - **Copyright:** © 平成名前辞典 [Heisei Name Dictionary]
 - **License:** Used under fair use for research and illustration; not for commercial redistribution.
 - **Range:** 1989-2009
@@ -37,7 +37,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 ---
 
 ## 4. Japanese Birth Data (BD)
-- **Source:** https://www.ipss.go.jp/p-info/e/psj2023/PSJ2023-04.xls
+- **Source:** <https://www.ipss.go.jp/p-info/e/psj2023/PSJ2023-04.xls>
 - **Copyright:** © National Institute of Population and Social Security Research (IPSS)
 - **License:** Used under fair use for research and illustration; not for commercial redistribution.
 
@@ -45,7 +45,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 
 ## 5. Derived Data and Code
 - **Authors:** Francis Bond & Ivona Barešová
-- **License:** [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **License:** [MIT](https://opensource.org/license/mit)
 - **Includes:** Analysis scripts, derived frequency tables, and visualization outputs.
 
 ---
@@ -54,7 +54,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 
 If you use this data, please cite:
 
-* Bond, Francis & Barešová, Ivona. (2026). *Japanese Given Names: Data, Analysis, and Interactive Resources* Zenodo. https://doi.org/10.xxxx/zenodo.xxxxx
+* Bond, Francis & Barešová, Ivona. (2026). *Japanese Given Names: Data, Analysis, and Interactive Resources* Zenodo. <https://doi.org/10.xxxx/zenodo.xxxxx>
 
 For specific datasets, please also acknowledge the original compilers as indicated above.
 

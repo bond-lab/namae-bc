@@ -8,7 +8,7 @@ import sqlite3
 import os, sys
 import matplotlib.pyplot as plt
 import numpy as np
-from db import db_options, get_name_count_year
+from db import db_options, get_name_count_year, resolve_src
 
 
 def create_gender_plot(src, db_path, plot_dir):
@@ -22,9 +22,15 @@ def create_gender_plot(src, db_path, plot_dir):
 
     # Get data from the database
     conn = sqlite3.connect(db_path)
+    # Determine dtype from db_options (string = single dtype, tuple = default to orth)
+    if src in db_options:
+        opt_dtypes = db_options[src][2]
+        dtype = opt_dtypes if isinstance(opt_dtypes, str) else 'orth'
+    else:
+        dtype = 'orth'
     names = get_name_count_year(conn,
-                                src=src,
-                                dtype='orth')
+                                src=resolve_src(src),
+                                dtype=dtype)
     years = []
     male_counts = []
     female_counts = []

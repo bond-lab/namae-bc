@@ -10,8 +10,9 @@
 
    <img src="{{ url_for('static', filename='plot/years_' ~ db_src ~ '.png') }}" alt="Names per Year">
 
-   {% if db_src == 'meiji' %}
-   <p>The meiji data shows the most common 100 names from their yearly sample.</p>
+   {% if db_src in ('meiji', 'meiji_p') %}
+   <p>The Meiji data shows the most common names from their yearly sample
+     (top 100 written forms, top 50 pronunciations from 2004).</p>
    <img src="{{ url_for('static', filename='plot/years_totals.png')}}" alt="Meiji Totals">
    {% endif %}
    

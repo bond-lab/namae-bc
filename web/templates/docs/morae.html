@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  {% from 'macros.html' import nav_tabs %}
+  {{ nav_tabs('docs') }}
+
+  <h1>Morae &amp; Syllables</h1>
+
+  <h2>Morae</h2>
+
+  <p>If a character is a yo'on ("&#12419;", "&#12421;", "&#12423;", "&#12353;", "&#12355;", "&#12359;", "&#12430;") then attach to the previous character.
+    <ul>
+      <li>&#12365; + &#12419; &#8594; &#12365;&#12419;
+	</ul>
+
+
+  <p>Code is in <code>utils.py</code>
+
+  <h2>Syllables</h2>
+
+  <ul>
+    <li> Any mora followed by "&#12435;" or  "&#12387;" joins to that.
+    <ul>
+      <li>&#12371; + &#12435; &#8594; &#12371;&#12435;
+      <li>&#12365; + &#12387; &#8594; &#12365;&#12387;
+    </ul>
+  <li> A mora ending in /a/ ('&#12354;',  '&#12363;', '&#12364;', '&#12365;&#12419;', '&#12366;&#12419;', ...)
+    followed by a mora "&#12354;", "&#12356;", "&#12358;" or "&#12540;"
+    <ul>
+      <li>&#12363; + &#12356; &#8594; &#12363;&#12356;
+      <li>&#12354; + &#12356;&#12435; &#8594; &#12354; + &#12356;&#12435; (&#12435; joins first)
+    </ul>
+  <li> A mora ending in /i/
+    followed by a mora "&#12356;" or "&#12540;"
+    <ul>
+      <li>&#12365; + &#12356; &#8594; &#12365;&#12356;
+    </ul>
+  <li> A mora ending in /u/
+    followed by a mora '&#12358;'
+    <ul>
+      <li>&#12367; + &#12358; &#8594; &#12367;&#12358;
+    </ul>
+  <li> A mora ending in /e/
+    followed by a mora  "&#12356;", "&#12360;" or "&#12540;"
+    <ul>
+      <li>&#12390; + &#12356; &#8594;&#12390;&#12356;
+      <li>&#12390; + &#12360; &#8594; &#12390;&#12360;
+    </ul>
+  <li> A mora ending in /o/  followed by a mora "&#12362;", "&#12358;" or "&#12540;"
+    <ul>
+      <li>&#12392; + &#12358; &#8594; &#12392;&#12358;
+      <li>&#12362; + &#12362; &#8594; &#12362;&#12362;
+    </ul>
+</ul>
+
+<p>It is not possible to determine syllable boundaries just from a
+kana string.  We will always join when we can, starting from the
+front.  Something like "&#12415;&#12356;" could be "&#12415;" + "&#12356;" or "&#12415;&#12356;", we will always produce "&#12415;&#12356;". Something like "&#12392;&#12362;&#12358;" could be "&#12392;" + "&#12362;&#12358;" or "&#12392;&#12362;" + "&#12358;", will produce the latter.
+
+<p>Normally Japanese syllables only have two mora, but we have names like '&#12429;&#12362;&#12356;', which is probably intended to be pronounced like <i>Roy</i> which would be one syllable.  We currently treat this as two: '&#12429;&#12362;' + '&#12356;'
+
+  <p>Code is in <code>utils.py</code>
+
+</div>
+{% endblock %}

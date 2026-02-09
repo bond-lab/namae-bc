@@ -5,10 +5,7 @@
 * Names shows nothing for Meiji-pron
 ** make it work properly
 * Should add that Meiji is only last N years
-* documentation should either link to data/README.mf and ATRRIBUTION.md or duplicate
-** maybe split into sub entries: Morae/Syllables, Features, Data, Licenses, Download 
-* add a feature Show Book (defaults to false)
-** only show extra tables in features and Book menu if True
+
 
 
 # Issues to Address for Zenodo Archiving

@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  {% from 'macros.html' import nav_tabs %}
+  {{ nav_tabs('docs') }}
+
+  <h1>Counting First and Last Features</h1>
+
+  <p>If we look for a feature in the first or last position, then we only do this if there are two or more. (char1, char_1, mora1, mora_1, syl1, syll_1)
+
+  <p>If the feature is the last two, then we only do this if there are three or more.
+    (char_2, mora_2, syll_2)
+
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% from 'macros.html' import add_pron %}
+{% from 'macros.html' import add_pron, nav_tabs %}
 
 {% block css %}
 <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
@@ -12,6 +12,7 @@
 {% set is_length_feature = feats[0] in ["script", "olength", "mlength", "slength"] %}
 
 <div class="container">
+  {{ nav_tabs('feature', feature_group, feats, db_src) }}
   <h1>{{title}}</h1>
   <div>
     <p>There are {{"{:,d}".format(m)}} different features 
@@ -57,14 +58,15 @@
 	<td align='right'>{{"{:.2e}".format(pvalue)}}</td>
 	<td align='right'>{{sig}}</td>
 	<td>{%- for (o, p) in exe %}
-	  <a href='{{url_for('namae', orth=o, pron=p)}}'>{{o}}</a>{{", " if not loop.last else ""}}
-	{% endfor %} 
+	  <a href='{{url_for('namae', orth=o or '', pron=p or '')}}'>{{o or p}}</a>{{", " if not loop.last else ""}}
+	{% endfor %}
 	</td>
       </tr>
       {% endfor %}
         </tbody>
     </table>
 
+{% if show_book %}
   <hr>
 {% macro render_book_table(title_suffix, filter_type, sort_attr=[]) %}
 <h2>Table for {{ title }}{% if title_suffix %} ({{ title_suffix }}){% endif %}</h2>
@@ -130,6 +132,7 @@
   Show non-significant rows
 </label></p>
 {% endif %}
+{% endif %}{# end show_book #}
 
   </div>
   </div>
@@ -194,7 +197,7 @@
 
     });
 
-    {% if not is_length_feature %}
+    {% if show_book and not is_length_feature %}
     /* toggle for the book table */
    document.addEventListener("DOMContentLoaded", function () {
     const checkbox = document.getElementById("show-nonsig");
