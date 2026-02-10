@@ -24,6 +24,7 @@
   "license": "MIT",
   "access_right": "open",
   "upload_type": "dataset",
+  "doi": "10.5281/zenodo.18591986",
   "related_identifiers": [
     {
       "relation": "isSupplementTo",
@@ -31,7 +32,7 @@
       "resource_type": "publication-book"
     }
   ],
-  "version": "0.1.0",
+  "version": "0.9.0",
   "language": "eng",
   "notes": "Some of the datasets included here contain material originally compiled by other authors and remain under their respective copyrights. These are included for research and educational purposes. Please check the source attribution files in the `data/` directory for detailed credits and license terms."
 }

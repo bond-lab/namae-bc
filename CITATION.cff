@@ -13,6 +13,7 @@ authors:
 version: "0.9.0"
 date-released: "2025-02-10"
 license: MIT
+doi: "10.5281/zenodo.18591986"
 repository-code: "https://github.com/bond-lab/namae-bc"
 abstract: >-
   This repository provides curated datasets, analysis code, and visualization

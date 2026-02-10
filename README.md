@@ -1,5 +1,7 @@
 # namae-bc
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18591986.svg)](https://doi.org/10.5281/zenodo.18591986)
+
 Japanese Name Database: data and tools for analyzing trends in Japanese given names.
 
 Part of the research project [Names and Gender — The Growing Trend of
@@ -65,4 +67,4 @@ See [Install.md](Install.md) for production deployment notes
 
 See [CITATION.cff](CITATION.cff) or cite:
 
-> Bond, Francis, & Barešová, Ivona. (2025). *Japanese Given Names: Data, Analysis, and Interactive Resources* Zenodo.
+> Bond, Francis, & Barešová, Ivona. (2025). *Japanese Given Names: Data, Analysis, and Interactive Resources*. Zenodo. https://doi.org/10.5281/zenodo.18591986
