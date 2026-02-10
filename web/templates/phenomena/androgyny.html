@@ -15,25 +15,35 @@
   {{ nav_tabs('phenomena', phenomena) }}
   <h1 class="mb-3">{{ title }}</h1>
   <p class="text-muted">
-    A name is considered androgynous if the ratio of female to male usage (F/M) falls between 0.2 and 0.8.
-    This measures the proportion of babies given androgynous names over time.
+    A name is considered androgynous if the ratio of female to male usage (F/M) falls within
+    a threshold range. This measures the proportion of babies (or names) with androgynous names over time.
   </p>
 
+  <!-- TABLE OF CONTENTS -->
+  {% if datasets %}
+  <div class="toc mb-4">
+    <ul>
+    {% for ds in datasets %}
+      <li><a href="#{{ ds.key }}">{{ ds.caption }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
   {% for ds in datasets %}
-  <div class="card mb-4">
+  <div class="card mb-4" id="{{ ds.key }}">
     <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
       <div class="me-2">
         <h5 class="mb-1">{{ ds.caption }}</h5>
-        <small class="text-muted">Dataset key: <code>{{ ds.key }}</code></small>
       </div>
       <div class="d-flex gap-2">
         <button id="btn-save-{{ loop.index0 }}" class="btn btn-sm btn-outline-primary" title="Download plot as PNG">
-          💾 Save Plot
+          Save Plot
         </button>
         <button class="btn btn-sm btn-outline-secondary" type="button"
                 data-bs-toggle="collapse" data-bs-target="#tbl-{{ loop.index0 }}"
                 aria-expanded="false" aria-controls="tbl-{{ loop.index0 }}">
-          📋 Show table
+          Show table
         </button>
       </div>
     </div>
@@ -62,8 +72,8 @@
             <thead>
               <tr>
                 <th>Year</th>
-                <th class="text-end">Total Babies</th>
-                <th class="text-end">Androgynous Babies</th>
+                <th class="text-end">Total</th>
+                <th class="text-end">Androgynous</th>
                 <th class="text-end">Proportion</th>
               </tr>
             </thead>
@@ -71,9 +81,9 @@
               {% for row in ds.data %}
               <tr>
                 <td>{{ row.year }}</td>
-               <td class="text-end">{{ row.total_babies }}</td>
-                <td class="text-end">{{row.androgynous_babies }}</td>
-                <td class="text-end">{{ row.proportion }}</td>
+                <td class="text-end">{{ row.total }}</td>
+                <td class="text-end">{{ row.androgynous }}</td>
+                <td class="text-end">{{ "%.2f%%"|format(row.proportion * 100) }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -84,15 +94,17 @@
     </div>
   </div>
   {% endfor %}
+
+  {% if not datasets %}
+  <div class="alert alert-warning">No androgyny data available. Please build the database first.</div>
+  {% endif %}
 </div>
 
 <script>
-  // From Flask
   const datasets = {{ datasets | tojson }};
-  const androgynousColor = '#2ca02c';  // Green for androgynous
+  const androgynousColor = '#2ca02c';
 
-  // Render all datasets on load
-  document.addEventListener('DOMContentLoaded', () => {
+  function renderAll() {
     datasets.forEach((ds, i) => {
       const containerId = `plot-${i}`;
       plotAndrogyny(ds.data, containerId, {
@@ -102,26 +114,20 @@
         regressionStats: ds.regression_stats,
         yLabel: 'Proportion of Androgynous Names'
       });
-      setupDownloadButton(`btn-save-${i}`, containerId, `${ds.key}.png`);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    datasets.forEach((ds, i) => {
+      setupDownloadButton(`btn-save-${i}`, `plot-${i}`, `${ds.key}.png`);
     });
   });
 
-  // Re-render on resize (throttled)
   let rz;
   window.addEventListener('resize', () => {
     clearTimeout(rz);
-    rz = setTimeout(() => {
-      datasets.forEach((ds, i) => {
-        const containerId = `plot-${i}`;
-        plotAndrogyny(ds.data, containerId, {
-          width: document.getElementById(containerId).offsetWidth || 800,
-          height: 500,
-          androgynousColor,
-          regressionStats: ds.regression_stats,
-          yLabel: 'Proportion of Androgynous Names'
-        });
-      });
-    }, 250);
+    rz = setTimeout(renderAll, 250);
   });
 </script>
 {% endblock %}

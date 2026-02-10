@@ -712,89 +712,68 @@ def androgyny():
     """
     Show androgyny statistics over time.
     Androgynous names are those where F/M ratio is between tau and (1-tau).
-    Shows multiple datasets for different tau values and type/token analysis.
+    Shows all sources, each with type/token × tau combinations.
     """
     conn = get_db(current_directory, "namae.db")
-    db_settings = get_db_settings()
-    
-    # Define tau values to test
+
     tau_values = [0.0, 0.2]
-    
-    # Define count types
     count_types = [
         ('token', 'Babies (Token)', 'babies'),
         ('type', 'Names (Type)', 'names')
     ]
-    
+
     datasets = []
-    
-    # For each dtype (orth/pron)
-    qsrc = db_settings['db_query_src']
-    if db_settings['db_dtype'] == 'pron':
-        dtypes_to_process = ['pron']
-    elif db_settings['db_src'] in ['bc', 'meiji']:
-        dtypes_to_process = ['orth', 'pron']
-    else:
-        dtypes_to_process = ['orth']
+    seen = set()
 
-    for dtype in dtypes_to_process:
-        dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
+    for src in db_options:
+        qsrc = resolve_src(src)
+        opt_dtypes = db_options[src][2]
+        dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]
+        src_label = db_options[src][1]
 
-        # For each count type
-        for count_type, count_label, unit in count_types:
-            # For each tau value
-            for tau in tau_values:
-                data, regression = get_androgyny(
-                    conn,
-                    src=qsrc,
-                    dtype=dtype,
-                    tau=tau,
-                    count_type=count_type
-                )
-                
-                if not data:
-                    continue
-                
-                # Create caption
-                if tau == 0.0:
-                    tau_desc = "Any Shared Usage"
-                elif tau == 0.5:
-                    tau_desc = "Perfect Balance Only"
-                else:
-                    tau_desc = f"τ={tau:.1f} (F/M ∈ [{tau:.1f}, {1-tau:.1f}])"
-                
-                caption = f"{dtype_label} - {count_label} - {tau_desc}"
-                
-                # Create summary
-                if regression:
-                    rs = regression
-                    slope = rs['slope']
-                    p = rs['p_value']
-                    r2 = rs['r_squared']
-                    
-                    if abs(slope) < 1e-12:
-                        arrow, trend = "→", "flat"
+        for dtype in dtype_list:
+            if dtype == 'both':
+                continue
+            src_dtype_key = f"{qsrc}_{dtype}"
+            if src_dtype_key in seen:
+                continue
+            seen.add(src_dtype_key)
+
+            dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
+
+            for count_type, count_label, unit in count_types:
+                for tau in tau_values:
+                    try:
+                        data, regression = get_androgyny(
+                            conn, src=qsrc, dtype=dtype,
+                            tau=tau, count_type=count_type)
+                    except Exception:
+                        continue
+
+                    if not data:
+                        continue
+
+                    if tau == 0.0:
+                        tau_desc = "Any Shared Usage"
+                    elif tau == 0.5:
+                        tau_desc = "Perfect Balance Only"
                     else:
-                        arrow, trend = ("↑", "increasing") if slope > 0 else ("↓", "decreasing")
-                    
-                    sig = "significant" if p < 0.05 else "not significant"
-                    summary = (f"{arrow} {trend} "
-                             f"(slope={slope:.4g}/yr, p={p:.3g}, R²={r2:.2f}), {sig}.")
-                else:
-                    summary = "Insufficient data for trend analysis."
-                
-                datasets.append({
-                    'key': f'androgyny_{dtype}_{count_type}_tau{int(tau*10)}',
-                    'caption': caption,
-                    'data': data,
-                    'regression_stats': regression,
-                    'summary': summary,
-                    'dtype': dtype,
-                    'tau': tau,
-                    'count_type': count_type,
-                    'unit': unit
-                })
-    
+                        tau_desc = f"\u03c4={tau:.1f} (F/M \u2208 [{tau:.1f}, {1-tau:.1f}])"
+
+                    caption = f"{src_label} \u2014 {dtype_label} \u2014 {count_label} \u2014 {tau_desc}"
+
+                    datasets.append({
+                        'key': f'androgyny_{qsrc}_{dtype}_{count_type}_tau{int(tau*10)}',
+                        'caption': caption,
+                        'data': data,
+                        'regression_stats': regression,
+                        'summary': _regression_summary(regression),
+                        'dtype': dtype,
+                        'tau': tau,
+                        'count_type': count_type,
+                        'unit': unit
+                    })
+
     return render_template(
         "phenomena/androgyny.html",
         title="Androgynous Names Over Time",
