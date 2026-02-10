@@ -41,7 +41,7 @@ with lines of the form `rank\tname\tfrequency`.  Downloaded from
   - Dash variants (―, －, -, ‐) → ー (katakana prolonged sound mark)
   - 晴→晴, 昻→昂, 煕→熙, 晧→皓, 逹→達, 瑤→瑶, 翆→翠, 桒→桑, 莱→萊
 - Names were validated against the set of kanji permitted in Japanese
-  given names (jōyō kanji + jinmeiyō kanji + iteration mark 々).
+  given names (jōyō kanji + jinmeiyō kanji + iteration mark 々) and hiragana and katakana.
   239 names using non-permissible characters were excluded
   (e.g. 昻樹, Ｊ映美, すた～ら, 花菜＆太一).
 - Names longer than 4 characters consisting entirely of kanji were
