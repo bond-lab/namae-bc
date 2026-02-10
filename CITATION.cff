@@ -1,5 +1,6 @@
 cff-version: 1.2.0
 title: "Japanese Given Names: Data, Analysis, and Interactive Resources"
+type: dataset
 authors:
   - family-names: Bond
     given-names: Francis
@@ -9,7 +10,23 @@ authors:
     given-names: Ivona
     orcid: "https://orcid.org/0000-0002-4664-013X"
     affiliation: "Palacký University Olomouc"
-version: "0.1.0"
-license: "CC-BY-4.0"
+version: "0.9.0"
+date-released: "2025-02-10"
+license: MIT
 repository-code: "https://github.com/bond-lab/namae-bc"
+abstract: >-
+  This repository provides curated datasets, analysis code, and visualization
+  tools for the empirical study of contemporary Japanese given names. It includes
+  frequency data harvested from public web sources, cleaned and normalized
+  datasets, diversity and distribution metrics, and code for interactive
+  exploration and visualization. Developed in support of the book 'Gender in
+  Japanese Names Today', the resource is intended as a general platform for
+  computational and quantitative research on Japanese given names.
+keywords:
+  - Japanese
+  - onomastics
+  - names
+  - gender
+  - linguistics
+  - diversity
 message: "If you use this dataset or website, please cite the Zenodo release."
