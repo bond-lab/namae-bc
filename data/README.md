@@ -97,3 +97,41 @@ and Social Security Research (IPSS), table 04-01:
 Updated with 2022-2023 data from e-Stat.
 
 Used for normalizing name frequencies against total births.
+
+---
+
+## What Counts as a Valid Name
+
+### Allowed characters
+
+A Japanese given name may be written with:
+
+- **Jōyō kanji** (常用漢字) — 2,136 characters
+- **Jinmeiyō kanji** (人名用漢字) — 863 characters
+- **Iteration mark** 々
+- **Hiragana** and **katakana**
+
+The allowed kanji are listed in `scripts/kanji.yaml` (jōyō + jinmeiyō +
+iterator).  This matches the characters permitted by Japanese law for
+registering given names.
+
+### Validation during build
+
+| Source | Script | Rules |
+|--------|--------|-------|
+| Baby Calendar | `scripts/add-baby-calendar.py` | No automated validation; data was manually curated before import. |
+| Heisei | `scripts/add-heisei.py` | Each character must be an allowed kanji, hiragana, or katakana. Names longer than 4 characters consisting entirely of kanji are treated as full names (family + given) and excluded. Variant kanji are mapped to standard forms before validation (e.g. 昻→昂, 逹→達). 239 names were excluded. |
+| Meiji Yasuda | `scripts/add-meiji-api.py` | No character validation (pre-processed API data). Katakana pronunciations are converted to hiragana with `jaconv.kata2hira()`. |
+
+### Validation in the web interface
+
+The web interface validates user search input before querying the database:
+
+| Input | Route | Rule |
+|-------|-------|------|
+| Pronunciation (読み方) | `/namae` | Must be entirely hiragana. |
+| Orthography (書き方) | `/namae` | Must contain at least one Japanese character (kanji, hiragana, or katakana). |
+| Kanji lookup | `/kanji` | Must be exactly one kanji character. |
+
+Invalid input returns the search page with an error message rather than
+a server error.

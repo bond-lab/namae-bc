@@ -33,7 +33,7 @@ Defined in scripts/add_indexes.sql:
 - namae: idx_namae_src, idx_namae_gender, idx_namae_orth, idx_namae_pron
 - attr: idx_attr_nid
 - ntok: idx_ntok_nid, idx_ntok_kid
-Note: Index creation is currently commented out in makedb.sh; enable it for faster interactive queries on large datasets.
+Note: Indexes are created by `makedb.sh` after copying the database to `web/db/`.
 
 How tables are created and populated
 
