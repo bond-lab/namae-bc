@@ -11,6 +11,13 @@ web/db/namae.db
 *.db
 *.db*
 
+# Generated build artifacts
+scripts/output/
+scripts/proportion/
+scripts/profile.txt
+scripts/BP_data.tsv
+web/static/plot/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

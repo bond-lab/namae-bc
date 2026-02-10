@@ -138,6 +138,7 @@ python plot_proportion.py
 echo "Plot gender overlap"
 python plot_overlap.py --n-top 50  ../web/db/namae.db
 python plot_overlap.py --n-top 500 ../web/db/namae.db
+cp output/bc_*_50_* ../web/static/plot/.
 cp output/meiji_*_50_* ../web/static/plot/.
 cp output/hs_orth_50_* ../web/static/plot/.
 

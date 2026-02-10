@@ -2,6 +2,7 @@
 {% from 'macros.html' import nav_tabs %}
 
 {% block content %}
+<div class="container">
 {{ nav_tabs('phenomena', phenomena) }}
 <h1>{{ title }}</h1>
 <!-- TABLE OF CONTENTS -->
@@ -216,5 +217,5 @@ The complement of this measure is the <b>Berger-Parker Dominance Index</b>, whic
 
     </div>
 {% endfor %}
-
+</div>
 {% endblock %}
