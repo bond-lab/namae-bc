@@ -93,7 +93,7 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
     # add the total number of babies
     totals_by_year = dd(int)
     if src_filter == 'meiji':
-        src_filter == 'totals'
+        src_filter = 'totals'
     c.execute(f"""
     SELECT year, sum(count)
     FROM name_year_cache

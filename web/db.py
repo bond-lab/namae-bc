@@ -781,9 +781,12 @@ def get_kanji_distribution(conn, kanji, gender, src):
     Get kanji position distribution data.
     Returns dict where data[year] = [solo, initial, middle, end, count]
     """
+    # Validate: must be exactly one character, no GLOB special chars
+    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']'):
+        return {}
     c = conn.cursor()
     data = dd(lambda: [0, 0, 0, 0, 0])
-    
+
     # Get solo, initial, middle, end for each year
     c.execute(f"""
 SELECT 

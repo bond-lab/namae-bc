@@ -1,7 +1,7 @@
 """Route declaration."""
 from flask import current_app as app
 from web.settings import DEFAULT_DB_OPTION
-from flask import render_template, request, session, make_response, redirect, url_for
+from flask import render_template, request, session, make_response, redirect, url_for, abort
 
 import toml
 import pathlib
@@ -18,6 +18,19 @@ import json
 import markdown
 from markupsafe import Markup
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
+import regex
+
+def _is_hiragana(text):
+    """Check if text is entirely hiragana."""
+    return bool(text) and bool(regex.match(r'^[\p{scx=Hiragana}]+$', text))
+
+def _is_japanese(text):
+    """Check if text contains Japanese characters (kanji, hiragana, or katakana)."""
+    return bool(text) and bool(regex.search(r'[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}]', text))
+
+def _is_kanji_char(text):
+    """Check if text is a single kanji character."""
+    return bool(text) and len(text) == 1 and bool(regex.match(r'^\p{scx=Han}$', text))
 
 def render_md(filepath, link_map=None):
     """Read a markdown file and return rendered HTML (as Markup).
@@ -232,8 +245,17 @@ def namae():
     """
     Show a name
     """
-    orth = request.args.get('orth', type=str, default='')
-    pron = request.args.get('pron', type=str, default='')
+    orth = request.args.get('orth', type=str, default='').strip()
+    pron = request.args.get('pron', type=str, default='').strip()
+
+    # Validate input
+    if pron and not _is_hiragana(pron):
+        return render_template("namae-nasi.html",
+                               error="Pronunciation must be in hiragana (e.g. はなこ).")
+    if orth and not _is_japanese(orth):
+        return render_template("namae-nasi.html",
+                               error="Name must contain Japanese characters (e.g. 花子).")
+
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     qsrc = db_settings['db_query_src']
@@ -485,21 +507,29 @@ def kanji():
     """
     Show information about a single character
     """
-    kanji_char = request.args.get('kanji', type=str, default='')
-    conn = get_db(current_directory, "namae.db")
-    db_settings = get_db_settings()
-    
-    data_male = get_kanji_distribution(conn, kanji_char, 'M',
-                                       db_settings['db_query_src'])
-    data_female = get_kanji_distribution(conn, kanji_char, 'F',
-                                         db_settings['db_query_src'])
-   
+    kanji_char = request.args.get('kanji', type=str, default='').strip()
+
     if not kanji_char:
         return render_template(
             "kanji-search.html",
             title='Kanji Position Search'
         )
-    
+
+    if not _is_kanji_char(kanji_char):
+        return render_template(
+            "kanji-search.html",
+            title='Kanji Position Search',
+            error="Please enter a single kanji character (e.g. 美, 翔, 愛)."
+        )
+
+    conn = get_db(current_directory, "namae.db")
+    db_settings = get_db_settings()
+
+    data_male = get_kanji_distribution(conn, kanji_char, 'M',
+                                       db_settings['db_query_src'])
+    data_female = get_kanji_distribution(conn, kanji_char, 'F',
+                                         db_settings['db_query_src'])
+
     return render_template(
         "kanji.html",
         kanji=kanji_char,
@@ -516,7 +546,8 @@ def irregular():
     """Show irregular names statistics"""
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    results, regression_stats, gender_comparison = get_irregular(conn, table='namae', src='bc')
+    results, regression_stats, gender_comparison = get_irregular(
+        conn, table=db_settings['db_table'], src=db_settings['db_query_src'])
     data = []
     for row in results:
         # Unpack the tuple: (year, gender, names, number, irregular_names)
@@ -546,19 +577,21 @@ def irregular():
 def genderedness():
     """
     Render *all* datasets found in genderedness JSON on a single page.
-    Optional ?path=... to point at a different JSON file.
     """
-    default_path = os.path.join(current_directory, "static", "data", "genderedness.json")
-    data_path = request.args.get("path", default_path)
+    data_path = os.path.join(current_directory, "static", "data", "genderedness.json")
 
     if not os.path.exists(data_path):
-        abort(404, f"Data file not found: {data_path}")
+        return render_template("phenomena/genderedness.html",
+                               title="Genderedness Over Time",
+                               datasets=[],
+                               male_color=session.get('male_color', 'orange'),
+                               female_color=session.get('female_color', 'purple'))
 
     with open(data_path, "r", encoding="utf-8") as f:
         blob = json.load(f)
 
     if not isinstance(blob, dict) or not blob:
-        abort(400, "Malformed or empty genderedness JSON.")
+        blob = {}
 
     def parse_dataset(key, ds):
         # rows like [year, "M"/"F", value]

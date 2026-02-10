@@ -8,6 +8,10 @@
           <p class="lead">
             Search for a kanji to see its position distribution in names over time.
           </p>
+
+          {% if error %}
+          <div class="alert alert-warning">{{ error }}</div>
+          {% endif %}
           
           <form action="{{ url_for('kanji') }}" method="get" class="mb-4">
             <div class="input-group input-group-lg">

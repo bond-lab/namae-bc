@@ -6,9 +6,15 @@
 <!-- Color and sort according to type   -->
 
 <div class="container">
-  <h1>No name or pronunciation given</h1>
+  <h1>Name Lookup</h1>
 
+  {% if error %}
+  <div class="alert alert-warning">{{ error }}</div>
+  {% else %}
+  <p>No name or pronunciation given.</p>
+  {% endif %}
 
-    
+  <p>Search for a name by orthography (書き方, e.g. 花子) or pronunciation (読み方, e.g. はなこ)
+    using the search box above.</p>
 </div>
 {% endblock %}
