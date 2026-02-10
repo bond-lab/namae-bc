@@ -13,7 +13,8 @@ from web.db import get_db, get_name, get_name_year, get_name_count_year, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
-                get_irregular, get_androgyny, get_overlap, resolve_src
+                get_irregular, get_androgyny, get_overlap, \
+                get_top_names, resolve_src
 import json
 import markdown
 from markupsafe import Markup
@@ -95,6 +96,7 @@ phenomena = [
     ('diversity', '', 'Diversity Measures'),
     ('overlap', '', 'Overlapping Names'),
     ('androgyny', '', 'Androgynous Names'),
+    ('topnames', '', 'Top Names'),
 ]
 
 def get_db_settings():
@@ -810,6 +812,64 @@ def androgyny():
     return render_template(
         "phenomena/androgyny.html",
         title="Androgynous Names Over Time",
+        datasets=datasets,
+        male_color=session.get('male_color', 'orange'),
+        female_color=session.get('female_color', 'purple')
+    )
+
+
+@app.route("/phenomena/topnames.html")
+def topnames():
+    """Top N names over time, shown as interactive ranking tables."""
+    conn = get_db(current_directory, "namae.db")
+
+    datasets = []
+    seen = set()
+
+    for src in db_options:
+        if src == 'hs+bc':
+            continue
+        qsrc = resolve_src(src)
+        opt_dtypes = db_options[src][2]
+        dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]
+        src_label = db_options[src][1]
+
+        for dtype in dtype_list:
+            if dtype == 'both':
+                continue
+            src_dtype_key = f"{qsrc}_{dtype}"
+            if src_dtype_key in seen:
+                continue
+            seen.add(src_dtype_key)
+
+            dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
+            caption = f"{src_label} \u2014 {dtype_label}"
+
+            ds = {
+                'key': f'topnames_{qsrc}_{dtype}',
+                'caption': caption,
+            }
+
+            for gender, gkey in [('M', 'male'), ('F', 'female')]:
+                for n_top, suffix in [(10, ''), (50, '_50')]:
+                    try:
+                        result = get_top_names(
+                            conn, src=qsrc, dtype=dtype,
+                            gender=gender, n_top=n_top)
+                    except Exception:
+                        result = {'years': [], 'names_by_year': {}, 'number_ones': []}
+
+                    # Convert int keys to strings for JSON
+                    result['names_by_year'] = {
+                        str(k): v for k, v in result['names_by_year'].items()
+                    }
+                    ds[f'{gkey}{suffix}'] = result
+
+            datasets.append(ds)
+
+    return render_template(
+        "phenomena/rankings.html",
+        title="Top Names Over Time",
         datasets=datasets,
         male_color=session.get('male_color', 'orange'),
         female_color=session.get('female_color', 'purple')

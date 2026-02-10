@@ -1063,5 +1063,45 @@ def get_androgyny(conn, src='bc', dtype='orth', tau=0.2, count_type='token'):
             'significant': bool(p_value < 0.05),
             'years': years
         }
-    
+
     return data, regression_stats
+
+
+def get_top_names(conn, src='bc', dtype='orth', gender='F', n_top=10):
+    """Get top N names per year with ties at boundary included.
+
+    Uses the existing rank column in nrank. Includes all names whose
+    rank <= n_top, so ties at the boundary are naturally included.
+
+    Returns dict with:
+      - years: sorted list of years
+      - names_by_year: {year: [(name, rank, freq), ...]} sorted by rank
+      - number_ones: list of names that were ever rank 1
+    """
+    name_col = dtype  # 'orth' or 'pron'
+    c = conn.cursor()
+
+    query = f"""
+    SELECT year, {name_col}, rank, freq
+    FROM nrank
+    WHERE src = ? AND gender = ? AND {name_col} IS NOT NULL AND rank <= ?
+    ORDER BY year, rank
+    """
+    c.execute(query, (src, gender, n_top))
+    rows = c.fetchall()
+
+    years = sorted(set(r[0] for r in rows))
+    number_ones = sorted(set(r[1] for r in rows if r[2] == 1))
+
+    names_by_year = {}
+    for year in years:
+        names_by_year[year] = [
+            {'name': r[1], 'rank': r[2], 'freq': r[3]}
+            for r in rows if r[0] == year
+        ]
+
+    return {
+        'years': years,
+        'names_by_year': names_by_year,
+        'number_ones': number_ones,
+    }

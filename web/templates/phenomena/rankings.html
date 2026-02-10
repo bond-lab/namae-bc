@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/rankings.js') }}"></script>
+<style>
+  .rankings-table {
+    table-layout: fixed;
+    font-size: 0.82em;
+    border-collapse: collapse;
+  }
+  .rankings-table th.year-col,
+  .rankings-table td.name-cell {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    padding: 2px 4px;
+  }
+  .rankings-table th.rank-col,
+  .rankings-table td.rank-col {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    text-align: right;
+    padding: 2px 4px;
+  }
+  .rankings-table .name-cell[data-name] {
+    cursor: pointer;
+  }
+  .rankings-table .name-cell[data-name]:hover {
+    outline: 2px solid #666;
+  }
+  .rankings-table .name-cell.highlighted {
+    outline: 3px solid #333;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+  }
+  .rankings-table .name-rank1 {
+    font-weight: bold;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{% from 'macros.html' import nav_tabs %}
+<div class="container-fluid mt-4 px-4">
+  {{ nav_tabs('phenomena', phenomena) }}
+  <h1 class="mb-3">{{ title }}</h1>
+  <p class="text-muted">
+    Ranking tables showing the most popular names over time.
+    Names that were ever ranked #1 are highlighted with a unique color.
+    Click on a name to highlight all its occurrences across years.
+  </p>
+
+  <!-- TABLE OF CONTENTS -->
+  {% if datasets %}
+  <div class="toc mb-4">
+    <ul>
+    {% for ds in datasets %}
+      <li><a href="#{{ ds.key }}">{{ ds.caption }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% for ds in datasets %}
+  <div class="card mb-4" id="{{ ds.key }}">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+      <h5 class="mb-0">{{ ds.caption }}</h5>
+      <div class="btn-group btn-group-sm" role="group" aria-label="Top N toggle">
+        <button type="button" class="btn btn-outline-primary active" id="btn-top10-{{ loop.index0 }}">
+          Top 10
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btn-top50-{{ loop.index0 }}">
+          Top 50
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <!-- Male -->
+        <div class="col-xl-6 mb-3">
+          <h6>Male</h6>
+          <div class="table-responsive" id="table-male-{{ loop.index0 }}">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <!-- Female -->
+        <div class="col-xl-6 mb-3">
+          <h6>Female</h6>
+          <div class="table-responsive" id="table-female-{{ loop.index0 }}">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if not datasets %}
+  <div class="alert alert-warning">No ranking data available. Please build the database first.</div>
+  {% endif %}
+</div>
+
+<script>
+  const datasets = {{ datasets | tojson }};
+  document.addEventListener('DOMContentLoaded', () => {
+    initRankings(datasets);
+  });
+</script>
+{% endblock %}
