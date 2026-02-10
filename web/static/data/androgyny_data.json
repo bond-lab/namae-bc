@@ -1,0 +1,3006 @@
+{
+ "bc_orth_token_tau0": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 2308,
+    "androgynous": 34,
+    "proportion": 0.014731369150779897
+   },
+   {
+    "year": 2009,
+    "total": 2164,
+    "androgynous": 22,
+    "proportion": 0.010166358595194085
+   },
+   {
+    "year": 2010,
+    "total": 3200,
+    "androgynous": 29,
+    "proportion": 0.0090625
+   },
+   {
+    "year": 2011,
+    "total": 2252,
+    "androgynous": 20,
+    "proportion": 0.008880994671403197
+   },
+   {
+    "year": 2012,
+    "total": 2608,
+    "androgynous": 14,
+    "proportion": 0.005368098159509203
+   },
+   {
+    "year": 2013,
+    "total": 1868,
+    "androgynous": 22,
+    "proportion": 0.011777301927194861
+   },
+   {
+    "year": 2014,
+    "total": 2370,
+    "androgynous": 34,
+    "proportion": 0.014345991561181435
+   },
+   {
+    "year": 2015,
+    "total": 992,
+    "androgynous": 9,
+    "proportion": 0.009072580645161291
+   },
+   {
+    "year": 2016,
+    "total": 972,
+    "androgynous": 2,
+    "proportion": 0.00205761316872428
+   },
+   {
+    "year": 2017,
+    "total": 1924,
+    "androgynous": 19,
+    "proportion": 0.009875259875259876
+   },
+   {
+    "year": 2018,
+    "total": 2788,
+    "androgynous": 48,
+    "proportion": 0.01721664275466284
+   },
+   {
+    "year": 2019,
+    "total": 3320,
+    "androgynous": 50,
+    "proportion": 0.015060240963855422
+   },
+   {
+    "year": 2020,
+    "total": 1980,
+    "androgynous": 23,
+    "proportion": 0.011616161616161616
+   },
+   {
+    "year": 2021,
+    "total": 880,
+    "androgynous": 9,
+    "proportion": 0.010227272727272727
+   },
+   {
+    "year": 2022,
+    "total": 490,
+    "androgynous": 6,
+    "proportion": 0.012244897959183673
+   }
+  ],
+  "regression": {
+   "slope": 0.00014249518211088946,
+   "intercept": -0.2763475730350727,
+   "r_value": 0.165224878634396,
+   "r_squared": 0.027299260519750887,
+   "p_value": 0.5562192569217057,
+   "std_err": 0.0002359080094084647,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.0
+ },
+ "bc_orth_token_tau2": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 2308,
+    "androgynous": 12,
+    "proportion": 0.005199306759098787
+   },
+   {
+    "year": 2009,
+    "total": 2164,
+    "androgynous": 10,
+    "proportion": 0.0046210720887245845
+   },
+   {
+    "year": 2010,
+    "total": 3200,
+    "androgynous": 11,
+    "proportion": 0.0034375
+   },
+   {
+    "year": 2011,
+    "total": 2252,
+    "androgynous": 12,
+    "proportion": 0.0053285968028419185
+   },
+   {
+    "year": 2012,
+    "total": 2608,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 1868,
+    "androgynous": 6,
+    "proportion": 0.0032119914346895075
+   },
+   {
+    "year": 2014,
+    "total": 2370,
+    "androgynous": 16,
+    "proportion": 0.006751054852320675
+   },
+   {
+    "year": 2015,
+    "total": 992,
+    "androgynous": 5,
+    "proportion": 0.005040322580645161
+   },
+   {
+    "year": 2016,
+    "total": 972,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "total": 1924,
+    "androgynous": 3,
+    "proportion": 0.0015592515592515593
+   },
+   {
+    "year": 2018,
+    "total": 2788,
+    "androgynous": 18,
+    "proportion": 0.006456241032998565
+   },
+   {
+    "year": 2019,
+    "total": 3320,
+    "androgynous": 16,
+    "proportion": 0.004819277108433735
+   },
+   {
+    "year": 2020,
+    "total": 1980,
+    "androgynous": 3,
+    "proportion": 0.0015151515151515152
+   },
+   {
+    "year": 2021,
+    "total": 880,
+    "androgynous": 3,
+    "proportion": 0.003409090909090909
+   },
+   {
+    "year": 2022,
+    "total": 490,
+    "androgynous": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression": {
+   "slope": -0.00016429952534846286,
+   "intercept": 0.33448680068670245,
+   "r_value": -0.316670528832958,
+   "r_squared": 0.10028022383134527,
+   "p_value": 0.2501589612647281,
+   "std_err": 0.00013649307520171387,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.2
+ },
+ "bc_orth_type_tau0": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 978,
+    "androgynous": 14,
+    "proportion": 0.014314928425357873
+   },
+   {
+    "year": 2009,
+    "total": 926,
+    "androgynous": 9,
+    "proportion": 0.009719222462203024
+   },
+   {
+    "year": 2010,
+    "total": 1274,
+    "androgynous": 12,
+    "proportion": 0.009419152276295133
+   },
+   {
+    "year": 2011,
+    "total": 957,
+    "androgynous": 7,
+    "proportion": 0.0073145245559038665
+   },
+   {
+    "year": 2012,
+    "total": 1135,
+    "androgynous": 7,
+    "proportion": 0.006167400881057269
+   },
+   {
+    "year": 2013,
+    "total": 822,
+    "androgynous": 9,
+    "proportion": 0.010948905109489052
+   },
+   {
+    "year": 2014,
+    "total": 1008,
+    "androgynous": 12,
+    "proportion": 0.011904761904761904
+   },
+   {
+    "year": 2015,
+    "total": 450,
+    "androgynous": 3,
+    "proportion": 0.006666666666666667
+   },
+   {
+    "year": 2016,
+    "total": 440,
+    "androgynous": 1,
+    "proportion": 0.0022727272727272726
+   },
+   {
+    "year": 2017,
+    "total": 854,
+    "androgynous": 9,
+    "proportion": 0.01053864168618267
+   },
+   {
+    "year": 2018,
+    "total": 1167,
+    "androgynous": 17,
+    "proportion": 0.01456726649528706
+   },
+   {
+    "year": 2019,
+    "total": 1400,
+    "androgynous": 21,
+    "proportion": 0.015
+   },
+   {
+    "year": 2020,
+    "total": 867,
+    "androgynous": 10,
+    "proportion": 0.011534025374855825
+   },
+   {
+    "year": 2021,
+    "total": 419,
+    "androgynous": 4,
+    "proportion": 0.00954653937947494
+   },
+   {
+    "year": 2022,
+    "total": 235,
+    "androgynous": 3,
+    "proportion": 0.01276595744680851
+   }
+  ],
+  "regression": {
+   "slope": 0.00015780145459648546,
+   "intercept": -0.3077912163494468,
+   "r_value": 0.20124083371422014,
+   "r_squared": 0.0404978731539944,
+   "p_value": 0.4720204254188787,
+   "std_err": 0.00021303265943521142,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.0
+ },
+ "bc_orth_type_tau2": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 978,
+    "androgynous": 3,
+    "proportion": 0.003067484662576687
+   },
+   {
+    "year": 2009,
+    "total": 926,
+    "androgynous": 3,
+    "proportion": 0.0032397408207343412
+   },
+   {
+    "year": 2010,
+    "total": 1274,
+    "androgynous": 3,
+    "proportion": 0.002354788069073783
+   },
+   {
+    "year": 2011,
+    "total": 957,
+    "androgynous": 3,
+    "proportion": 0.003134796238244514
+   },
+   {
+    "year": 2012,
+    "total": 1135,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 822,
+    "androgynous": 2,
+    "proportion": 0.0024330900243309003
+   },
+   {
+    "year": 2014,
+    "total": 1008,
+    "androgynous": 4,
+    "proportion": 0.003968253968253968
+   },
+   {
+    "year": 2015,
+    "total": 450,
+    "androgynous": 1,
+    "proportion": 0.0022222222222222222
+   },
+   {
+    "year": 2016,
+    "total": 440,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "total": 854,
+    "androgynous": 1,
+    "proportion": 0.00117096018735363
+   },
+   {
+    "year": 2018,
+    "total": 1167,
+    "androgynous": 4,
+    "proportion": 0.003427592116538132
+   },
+   {
+    "year": 2019,
+    "total": 1400,
+    "androgynous": 4,
+    "proportion": 0.002857142857142857
+   },
+   {
+    "year": 2020,
+    "total": 867,
+    "androgynous": 1,
+    "proportion": 0.0011534025374855825
+   },
+   {
+    "year": 2021,
+    "total": 419,
+    "androgynous": 1,
+    "proportion": 0.002386634844868735
+   },
+   {
+    "year": 2022,
+    "total": 235,
+    "androgynous": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression": {
+   "slope": -0.00010685109631490067,
+   "intercept": 0.2173993663111132,
+   "r_value": -0.3620093136789058,
+   "r_squared": 0.13105074319027243,
+   "p_value": 0.18486158109542458,
+   "std_err": 7.63105827868243e-05,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.2
+ },
+ "bc_pron_token_tau0": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 2308,
+    "androgynous": 86,
+    "proportion": 0.03726169844020797
+   },
+   {
+    "year": 2009,
+    "total": 2164,
+    "androgynous": 81,
+    "proportion": 0.03743068391866913
+   },
+   {
+    "year": 2010,
+    "total": 3200,
+    "androgynous": 135,
+    "proportion": 0.0421875
+   },
+   {
+    "year": 2011,
+    "total": 2252,
+    "androgynous": 74,
+    "proportion": 0.03285968028419183
+   },
+   {
+    "year": 2012,
+    "total": 2608,
+    "androgynous": 84,
+    "proportion": 0.032208588957055216
+   },
+   {
+    "year": 2013,
+    "total": 1868,
+    "androgynous": 77,
+    "proportion": 0.04122055674518201
+   },
+   {
+    "year": 2014,
+    "total": 2370,
+    "androgynous": 88,
+    "proportion": 0.03713080168776371
+   },
+   {
+    "year": 2015,
+    "total": 992,
+    "androgynous": 26,
+    "proportion": 0.02620967741935484
+   },
+   {
+    "year": 2016,
+    "total": 972,
+    "androgynous": 28,
+    "proportion": 0.02880658436213992
+   },
+   {
+    "year": 2017,
+    "total": 1924,
+    "androgynous": 73,
+    "proportion": 0.037941787941787944
+   },
+   {
+    "year": 2018,
+    "total": 2788,
+    "androgynous": 145,
+    "proportion": 0.05200860832137733
+   },
+   {
+    "year": 2019,
+    "total": 3320,
+    "androgynous": 138,
+    "proportion": 0.04156626506024096
+   },
+   {
+    "year": 2020,
+    "total": 1980,
+    "androgynous": 70,
+    "proportion": 0.03535353535353535
+   },
+   {
+    "year": 2021,
+    "total": 880,
+    "androgynous": 45,
+    "proportion": 0.05113636363636364
+   },
+   {
+    "year": 2022,
+    "total": 490,
+    "androgynous": 20,
+    "proportion": 0.04081632653061224
+   }
+  ],
+  "regression": {
+   "slope": 0.0005438974784693736,
+   "intercept": -1.0576775085385557,
+   "r_value": 0.34195841333465077,
+   "r_squared": 0.11693555645035186,
+   "p_value": 0.21220118292294726,
+   "std_err": 0.00041454174870765446,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "count_type": "token",
+  "tau": 0.0
+ },
+ "bc_pron_token_tau2": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 2308,
+    "androgynous": 45,
+    "proportion": 0.01949740034662045
+   },
+   {
+    "year": 2009,
+    "total": 2164,
+    "androgynous": 30,
+    "proportion": 0.013863216266173753
+   },
+   {
+    "year": 2010,
+    "total": 3200,
+    "androgynous": 84,
+    "proportion": 0.02625
+   },
+   {
+    "year": 2011,
+    "total": 2252,
+    "androgynous": 37,
+    "proportion": 0.016429840142095916
+   },
+   {
+    "year": 2012,
+    "total": 2608,
+    "androgynous": 68,
+    "proportion": 0.02607361963190184
+   },
+   {
+    "year": 2013,
+    "total": 1868,
+    "androgynous": 41,
+    "proportion": 0.021948608137044967
+   },
+   {
+    "year": 2014,
+    "total": 2370,
+    "androgynous": 27,
+    "proportion": 0.01139240506329114
+   },
+   {
+    "year": 2015,
+    "total": 992,
+    "androgynous": 12,
+    "proportion": 0.012096774193548387
+   },
+   {
+    "year": 2016,
+    "total": 972,
+    "androgynous": 8,
+    "proportion": 0.00823045267489712
+   },
+   {
+    "year": 2017,
+    "total": 1924,
+    "androgynous": 36,
+    "proportion": 0.018711018711018712
+   },
+   {
+    "year": 2018,
+    "total": 2788,
+    "androgynous": 82,
+    "proportion": 0.029411764705882353
+   },
+   {
+    "year": 2019,
+    "total": 3320,
+    "androgynous": 109,
+    "proportion": 0.03283132530120482
+   },
+   {
+    "year": 2020,
+    "total": 1980,
+    "androgynous": 52,
+    "proportion": 0.026262626262626262
+   },
+   {
+    "year": 2021,
+    "total": 880,
+    "androgynous": 35,
+    "proportion": 0.03977272727272727
+   },
+   {
+    "year": 2022,
+    "total": 490,
+    "androgynous": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression": {
+   "slope": 0.00030364871265728546,
+   "intercept": -0.5916673707571614,
+   "r_value": 0.13162915741132375,
+   "r_squared": 0.017326235080815044,
+   "p_value": 0.6400605475981478,
+   "std_err": 0.0006342381294024532,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "count_type": "token",
+  "tau": 0.2
+ },
+ "bc_pron_type_tau0": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 572,
+    "androgynous": 25,
+    "proportion": 0.043706293706293704
+   },
+   {
+    "year": 2009,
+    "total": 553,
+    "androgynous": 23,
+    "proportion": 0.04159132007233273
+   },
+   {
+    "year": 2010,
+    "total": 679,
+    "androgynous": 27,
+    "proportion": 0.039764359351988215
+   },
+   {
+    "year": 2011,
+    "total": 584,
+    "androgynous": 20,
+    "proportion": 0.03424657534246575
+   },
+   {
+    "year": 2012,
+    "total": 631,
+    "androgynous": 19,
+    "proportion": 0.030110935023771792
+   },
+   {
+    "year": 2013,
+    "total": 529,
+    "androgynous": 24,
+    "proportion": 0.045368620037807186
+   },
+   {
+    "year": 2014,
+    "total": 618,
+    "androgynous": 15,
+    "proportion": 0.024271844660194174
+   },
+   {
+    "year": 2015,
+    "total": 335,
+    "androgynous": 10,
+    "proportion": 0.029850746268656716
+   },
+   {
+    "year": 2016,
+    "total": 316,
+    "androgynous": 11,
+    "proportion": 0.03481012658227848
+   },
+   {
+    "year": 2017,
+    "total": 532,
+    "androgynous": 19,
+    "proportion": 0.03571428571428571
+   },
+   {
+    "year": 2018,
+    "total": 651,
+    "androgynous": 32,
+    "proportion": 0.04915514592933948
+   },
+   {
+    "year": 2019,
+    "total": 724,
+    "androgynous": 25,
+    "proportion": 0.034530386740331494
+   },
+   {
+    "year": 2020,
+    "total": 502,
+    "androgynous": 20,
+    "proportion": 0.0398406374501992
+   },
+   {
+    "year": 2021,
+    "total": 311,
+    "androgynous": 14,
+    "proportion": 0.04501607717041801
+   },
+   {
+    "year": 2022,
+    "total": 194,
+    "androgynous": 9,
+    "proportion": 0.04639175257731959
+   }
+  ],
+  "regression": {
+   "slope": 0.0003186629884284113,
+   "intercept": -0.60381464790807,
+   "r_value": 0.2004401248927253,
+   "r_squared": 0.04017624366701132,
+   "p_value": 0.47382218156956357,
+   "std_err": 0.00043198735178128764,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "count_type": "type",
+  "tau": 0.0
+ },
+ "bc_pron_type_tau2": {
+  "data": [
+   {
+    "year": 2008,
+    "total": 572,
+    "androgynous": 9,
+    "proportion": 0.015734265734265736
+   },
+   {
+    "year": 2009,
+    "total": 553,
+    "androgynous": 7,
+    "proportion": 0.012658227848101266
+   },
+   {
+    "year": 2010,
+    "total": 679,
+    "androgynous": 13,
+    "proportion": 0.01914580265095729
+   },
+   {
+    "year": 2011,
+    "total": 584,
+    "androgynous": 8,
+    "proportion": 0.0136986301369863
+   },
+   {
+    "year": 2012,
+    "total": 631,
+    "androgynous": 12,
+    "proportion": 0.01901743264659271
+   },
+   {
+    "year": 2013,
+    "total": 529,
+    "androgynous": 9,
+    "proportion": 0.017013232514177693
+   },
+   {
+    "year": 2014,
+    "total": 618,
+    "androgynous": 5,
+    "proportion": 0.008090614886731391
+   },
+   {
+    "year": 2015,
+    "total": 335,
+    "androgynous": 3,
+    "proportion": 0.008955223880597015
+   },
+   {
+    "year": 2016,
+    "total": 316,
+    "androgynous": 2,
+    "proportion": 0.006329113924050633
+   },
+   {
+    "year": 2017,
+    "total": 532,
+    "androgynous": 6,
+    "proportion": 0.011278195488721804
+   },
+   {
+    "year": 2018,
+    "total": 651,
+    "androgynous": 15,
+    "proportion": 0.02304147465437788
+   },
+   {
+    "year": 2019,
+    "total": 724,
+    "androgynous": 16,
+    "proportion": 0.022099447513812154
+   },
+   {
+    "year": 2020,
+    "total": 502,
+    "androgynous": 12,
+    "proportion": 0.02390438247011952
+   },
+   {
+    "year": 2021,
+    "total": 311,
+    "androgynous": 9,
+    "proportion": 0.028938906752411574
+   },
+   {
+    "year": 2022,
+    "total": 194,
+    "androgynous": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression": {
+   "slope": 0.00015636047463885445,
+   "intercept": -0.29973935965716486,
+   "r_value": 0.09079197225664226,
+   "r_squared": 0.008243182226250898,
+   "p_value": 0.7476078632648453,
+   "std_err": 0.0004756751359512097,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "count_type": "type",
+  "tau": 0.2
+ },
+ "hs_orth_token_tau0": {
+  "data": [
+   {
+    "year": 1989,
+    "total": 903005,
+    "androgynous": 156994,
+    "proportion": 0.173857287611918
+   },
+   {
+    "year": 1990,
+    "total": 819081,
+    "androgynous": 85300,
+    "proportion": 0.10414110448173014
+   },
+   {
+    "year": 1991,
+    "total": 619013,
+    "androgynous": 42496,
+    "proportion": 0.06865122380305422
+   },
+   {
+    "year": 1992,
+    "total": 501247,
+    "androgynous": 35582,
+    "proportion": 0.07098695852543756
+   },
+   {
+    "year": 1993,
+    "total": 665973,
+    "androgynous": 75188,
+    "proportion": 0.11289947190051249
+   },
+   {
+    "year": 1994,
+    "total": 686137,
+    "androgynous": 56759,
+    "proportion": 0.08272254666342145
+   },
+   {
+    "year": 1995,
+    "total": 649188,
+    "androgynous": 47317,
+    "proportion": 0.07288643659463823
+   },
+   {
+    "year": 1996,
+    "total": 589252,
+    "androgynous": 53113,
+    "proportion": 0.09013630840455357
+   },
+   {
+    "year": 1997,
+    "total": 1079010,
+    "androgynous": 203496,
+    "proportion": 0.18859510106486502
+   },
+   {
+    "year": 1998,
+    "total": 1114582,
+    "androgynous": 201835,
+    "proportion": 0.18108582410266807
+   },
+   {
+    "year": 1999,
+    "total": 1254507,
+    "androgynous": 231672,
+    "proportion": 0.18467174754704438
+   },
+   {
+    "year": 2000,
+    "total": 1193302,
+    "androgynous": 213681,
+    "proportion": 0.179066992261808
+   },
+   {
+    "year": 2001,
+    "total": 869836,
+    "androgynous": 147626,
+    "proportion": 0.16971705011059557
+   },
+   {
+    "year": 2002,
+    "total": 845216,
+    "androgynous": 172279,
+    "proportion": 0.2038283704993753
+   },
+   {
+    "year": 2003,
+    "total": 761750,
+    "androgynous": 148125,
+    "proportion": 0.19445356087955365
+   },
+   {
+    "year": 2004,
+    "total": 441838,
+    "androgynous": 67376,
+    "proportion": 0.15249027924261835
+   },
+   {
+    "year": 2005,
+    "total": 389252,
+    "androgynous": 57711,
+    "proportion": 0.14826128060999044
+   },
+   {
+    "year": 2006,
+    "total": 366519,
+    "androgynous": 56088,
+    "proportion": 0.15302890163947844
+   },
+   {
+    "year": 2007,
+    "total": 296450,
+    "androgynous": 42307,
+    "proportion": 0.1427120931017035
+   },
+   {
+    "year": 2008,
+    "total": 261968,
+    "androgynous": 36452,
+    "proportion": 0.13914676601722348
+   },
+   {
+    "year": 2009,
+    "total": 226954,
+    "androgynous": 29030,
+    "proportion": 0.12791138292341178
+   }
+  ],
+  "regression": {
+   "slope": 0.003079158088246024,
+   "intercept": -6.0151774618330585,
+   "r_value": 0.4308217438765916,
+   "r_squared": 0.1856073749968675,
+   "p_value": 0.051209070947261064,
+   "std_err": 0.0014797027741074193,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.0
+ },
+ "hs_orth_token_tau2": {
+  "data": [
+   {
+    "year": 1989,
+    "total": 903005,
+    "androgynous": 14716,
+    "proportion": 0.016296698246410595
+   },
+   {
+    "year": 1990,
+    "total": 819081,
+    "androgynous": 15066,
+    "proportion": 0.018393785230032194
+   },
+   {
+    "year": 1991,
+    "total": 619013,
+    "androgynous": 10353,
+    "proportion": 0.016725012237222805
+   },
+   {
+    "year": 1992,
+    "total": 501247,
+    "androgynous": 8696,
+    "proportion": 0.017348732261739223
+   },
+   {
+    "year": 1993,
+    "total": 665973,
+    "androgynous": 11522,
+    "proportion": 0.017301001692260797
+   },
+   {
+    "year": 1994,
+    "total": 686137,
+    "androgynous": 12607,
+    "proportion": 0.018373881600904775
+   },
+   {
+    "year": 1995,
+    "total": 649188,
+    "androgynous": 13318,
+    "proportion": 0.020514858561772552
+   },
+   {
+    "year": 1996,
+    "total": 589252,
+    "androgynous": 13467,
+    "proportion": 0.0228543984577057
+   },
+   {
+    "year": 1997,
+    "total": 1079010,
+    "androgynous": 27429,
+    "proportion": 0.025420524369560986
+   },
+   {
+    "year": 1998,
+    "total": 1114582,
+    "androgynous": 31153,
+    "proportion": 0.027950388576165774
+   },
+   {
+    "year": 1999,
+    "total": 1254507,
+    "androgynous": 36743,
+    "proportion": 0.02928879631600302
+   },
+   {
+    "year": 2000,
+    "total": 1193302,
+    "androgynous": 41973,
+    "proportion": 0.03517382858656065
+   },
+   {
+    "year": 2001,
+    "total": 869836,
+    "androgynous": 28660,
+    "proportion": 0.03294873976243798
+   },
+   {
+    "year": 2002,
+    "total": 845216,
+    "androgynous": 30144,
+    "proportion": 0.03566425623745883
+   },
+   {
+    "year": 2003,
+    "total": 761750,
+    "androgynous": 33125,
+    "proportion": 0.043485395470955035
+   },
+   {
+    "year": 2004,
+    "total": 441838,
+    "androgynous": 18508,
+    "proportion": 0.04188865602324834
+   },
+   {
+    "year": 2005,
+    "total": 389252,
+    "androgynous": 14454,
+    "proportion": 0.03713275718557644
+   },
+   {
+    "year": 2006,
+    "total": 366519,
+    "androgynous": 14697,
+    "proportion": 0.04009887618377219
+   },
+   {
+    "year": 2007,
+    "total": 296450,
+    "androgynous": 10051,
+    "proportion": 0.033904537021420135
+   },
+   {
+    "year": 2008,
+    "total": 261968,
+    "androgynous": 10898,
+    "proportion": 0.04160050082452819
+   },
+   {
+    "year": 2009,
+    "total": 226954,
+    "androgynous": 8676,
+    "proportion": 0.038228010962573916
+   }
+  ],
+  "regression": {
+   "slope": 0.0014467750260826705,
+   "intercept": -2.863027389719815,
+   "r_value": 0.9296002447633736,
+   "r_squared": 0.864156615064124,
+   "p_value": 1.1200125831950604e-09,
+   "std_err": 0.00013159737335130027,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.2
+ },
+ "hs_orth_type_tau0": {
+  "data": [
+   {
+    "year": 1989,
+    "total": 66213,
+    "androgynous": 1773,
+    "proportion": 0.026777218975125732
+   },
+   {
+    "year": 1990,
+    "total": 65776,
+    "androgynous": 1456,
+    "proportion": 0.02213573339819995
+   },
+   {
+    "year": 1991,
+    "total": 58371,
+    "androgynous": 1162,
+    "proportion": 0.01990714567165202
+   },
+   {
+    "year": 1992,
+    "total": 53538,
+    "androgynous": 1013,
+    "proportion": 0.01892114012477119
+   },
+   {
+    "year": 1993,
+    "total": 65697,
+    "androgynous": 1737,
+    "proportion": 0.026439563450385863
+   },
+   {
+    "year": 1994,
+    "total": 66908,
+    "androgynous": 1433,
+    "proportion": 0.02141746876307766
+   },
+   {
+    "year": 1995,
+    "total": 66371,
+    "androgynous": 1455,
+    "proportion": 0.021922225068177367
+   },
+   {
+    "year": 1996,
+    "total": 62686,
+    "androgynous": 1548,
+    "proportion": 0.02469450914079699
+   },
+   {
+    "year": 1997,
+    "total": 79703,
+    "androgynous": 2590,
+    "proportion": 0.03249564006373662
+   },
+   {
+    "year": 1998,
+    "total": 84000,
+    "androgynous": 2747,
+    "proportion": 0.032702380952380955
+   },
+   {
+    "year": 1999,
+    "total": 90622,
+    "androgynous": 3409,
+    "proportion": 0.03761779700293527
+   },
+   {
+    "year": 2000,
+    "total": 90200,
+    "androgynous": 3360,
+    "proportion": 0.03725055432372506
+   },
+   {
+    "year": 2001,
+    "total": 82374,
+    "androgynous": 2986,
+    "proportion": 0.036249301964212007
+   },
+   {
+    "year": 2002,
+    "total": 82172,
+    "androgynous": 3180,
+    "proportion": 0.038699313634814776
+   },
+   {
+    "year": 2003,
+    "total": 79617,
+    "androgynous": 3180,
+    "proportion": 0.03994121858397076
+   },
+   {
+    "year": 2004,
+    "total": 65461,
+    "androgynous": 2325,
+    "proportion": 0.035517330929866635
+   },
+   {
+    "year": 2005,
+    "total": 62238,
+    "androgynous": 2183,
+    "proportion": 0.03507503454481185
+   },
+   {
+    "year": 2006,
+    "total": 60433,
+    "androgynous": 2023,
+    "proportion": 0.03347508811410984
+   },
+   {
+    "year": 2007,
+    "total": 53456,
+    "androgynous": 1823,
+    "proportion": 0.034102813528883565
+   },
+   {
+    "year": 2008,
+    "total": 49328,
+    "androgynous": 1653,
+    "proportion": 0.03351037950048654
+   },
+   {
+    "year": 2009,
+    "total": 44881,
+    "androgynous": 1427,
+    "proportion": 0.031795191729239544
+   }
+  ],
+  "regression": {
+   "slope": 0.0008005877186531986,
+   "intercept": -1.5698678472322507,
+   "r_value": 0.7366275582753234,
+   "r_squared": 0.542620159610665,
+   "p_value": 0.00014001001665675574,
+   "std_err": 0.00016862527463173374,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.0
+ },
+ "hs_orth_type_tau2": {
+  "data": [
+   {
+    "year": 1989,
+    "total": 66213,
+    "androgynous": 523,
+    "proportion": 0.007898751000558802
+   },
+   {
+    "year": 1990,
+    "total": 65776,
+    "androgynous": 494,
+    "proportion": 0.007510338117246412
+   },
+   {
+    "year": 1991,
+    "total": 58371,
+    "androgynous": 415,
+    "proportion": 0.007109694882732864
+   },
+   {
+    "year": 1992,
+    "total": 53538,
+    "androgynous": 359,
+    "proportion": 0.006705517576300945
+   },
+   {
+    "year": 1993,
+    "total": 65697,
+    "androgynous": 584,
+    "proportion": 0.008889294792760705
+   },
+   {
+    "year": 1994,
+    "total": 66908,
+    "androgynous": 513,
+    "proportion": 0.007667244574639804
+   },
+   {
+    "year": 1995,
+    "total": 66371,
+    "androgynous": 536,
+    "proportion": 0.008075816245046783
+   },
+   {
+    "year": 1996,
+    "total": 62686,
+    "androgynous": 571,
+    "proportion": 0.00910889193759372
+   },
+   {
+    "year": 1997,
+    "total": 79703,
+    "androgynous": 989,
+    "proportion": 0.012408566804260819
+   },
+   {
+    "year": 1998,
+    "total": 84000,
+    "androgynous": 1080,
+    "proportion": 0.012857142857142857
+   },
+   {
+    "year": 1999,
+    "total": 90622,
+    "androgynous": 1301,
+    "proportion": 0.014356337313235197
+   },
+   {
+    "year": 2000,
+    "total": 90200,
+    "androgynous": 1374,
+    "proportion": 0.015232815964523281
+   },
+   {
+    "year": 2001,
+    "total": 82374,
+    "androgynous": 1210,
+    "proportion": 0.014689100929905068
+   },
+   {
+    "year": 2002,
+    "total": 82172,
+    "androgynous": 1227,
+    "proportion": 0.014932093657206835
+   },
+   {
+    "year": 2003,
+    "total": 79617,
+    "androgynous": 1236,
+    "proportion": 0.015524322694901843
+   },
+   {
+    "year": 2004,
+    "total": 65461,
+    "androgynous": 872,
+    "proportion": 0.01332090863262095
+   },
+   {
+    "year": 2005,
+    "total": 62238,
+    "androgynous": 844,
+    "proportion": 0.013560847070921303
+   },
+   {
+    "year": 2006,
+    "total": 60433,
+    "androgynous": 774,
+    "proportion": 0.01280757202190856
+   },
+   {
+    "year": 2007,
+    "total": 53456,
+    "androgynous": 666,
+    "proportion": 0.012458844657288238
+   },
+   {
+    "year": 2008,
+    "total": 49328,
+    "androgynous": 675,
+    "proportion": 0.013683911774245864
+   },
+   {
+    "year": 2009,
+    "total": 44881,
+    "androgynous": 544,
+    "proportion": 0.012120942046745839
+   }
+  ],
+  "regression": {
+   "slope": 0.0003815450116446227,
+   "intercept": -0.7512361470608491,
+   "r_value": 0.7714876984118124,
+   "r_squared": 0.5951932688007556,
+   "p_value": 4.219061629775706e-05,
+   "std_err": 7.218780502281179e-05,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.2
+ },
+ "meiji_orth_token_tau0": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 5803,
+    "androgynous": 17,
+    "proportion": 0.002929519214199552
+   },
+   {
+    "year": 2005,
+    "total": 5248,
+    "androgynous": 37,
+    "proportion": 0.007050304878048781
+   },
+   {
+    "year": 2006,
+    "total": 5316,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 5619,
+    "androgynous": 20,
+    "proportion": 0.003559352197899982
+   },
+   {
+    "year": 2008,
+    "total": 5692,
+    "androgynous": 51,
+    "proportion": 0.008959943780744906
+   },
+   {
+    "year": 2009,
+    "total": 5545,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "total": 5249,
+    "androgynous": 14,
+    "proportion": 0.0026671746999428463
+   },
+   {
+    "year": 2011,
+    "total": 4500,
+    "androgynous": 28,
+    "proportion": 0.006222222222222222
+   },
+   {
+    "year": 2012,
+    "total": 4215,
+    "androgynous": 22,
+    "proportion": 0.005219454329774615
+   },
+   {
+    "year": 2013,
+    "total": 6665,
+    "androgynous": 29,
+    "proportion": 0.004351087771942986
+   },
+   {
+    "year": 2014,
+    "total": 4857,
+    "androgynous": 38,
+    "proportion": 0.007823759522338892
+   },
+   {
+    "year": 2015,
+    "total": 5581,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "total": 10827,
+    "androgynous": 70,
+    "proportion": 0.00646531818601644
+   },
+   {
+    "year": 2017,
+    "total": 10107,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "total": 11473,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "total": 10199,
+    "androgynous": 56,
+    "proportion": 0.00549073438572409
+   },
+   {
+    "year": 2020,
+    "total": 10662,
+    "androgynous": 25,
+    "proportion": 0.0023447758394297504
+   },
+   {
+    "year": 2021,
+    "total": 10042,
+    "androgynous": 87,
+    "proportion": 0.008663612826130252
+   },
+   {
+    "year": 2022,
+    "total": 10183,
+    "androgynous": 177,
+    "proportion": 0.01738191102818423
+   },
+   {
+    "year": 2023,
+    "total": 8288,
+    "androgynous": 116,
+    "proportion": 0.013996138996138996
+   },
+   {
+    "year": 2024,
+    "total": 8226,
+    "androgynous": 135,
+    "proportion": 0.016411378555798686
+   }
+  ],
+  "regression": {
+   "slope": 0.0004268625348788586,
+   "intercept": -0.8540089219872338,
+   "r_value": 0.5079017201619782,
+   "r_squared": 0.2579641573434964,
+   "p_value": 0.018743079732554745,
+   "std_err": 0.00016609019564521043,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.0
+ },
+ "meiji_orth_token_tau2": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 5803,
+    "androgynous": 17,
+    "proportion": 0.002929519214199552
+   },
+   {
+    "year": 2005,
+    "total": 5248,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 5316,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 5619,
+    "androgynous": 20,
+    "proportion": 0.003559352197899982
+   },
+   {
+    "year": 2008,
+    "total": 5692,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "total": 5545,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "total": 5249,
+    "androgynous": 14,
+    "proportion": 0.0026671746999428463
+   },
+   {
+    "year": 2011,
+    "total": 4500,
+    "androgynous": 28,
+    "proportion": 0.006222222222222222
+   },
+   {
+    "year": 2012,
+    "total": 4215,
+    "androgynous": 12,
+    "proportion": 0.0028469750889679717
+   },
+   {
+    "year": 2013,
+    "total": 6665,
+    "androgynous": 29,
+    "proportion": 0.004351087771942986
+   },
+   {
+    "year": 2014,
+    "total": 4857,
+    "androgynous": 12,
+    "proportion": 0.0024706609017912293
+   },
+   {
+    "year": 2015,
+    "total": 5581,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "total": 10827,
+    "androgynous": 70,
+    "proportion": 0.00646531818601644
+   },
+   {
+    "year": 2017,
+    "total": 10107,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "total": 11473,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "total": 10199,
+    "androgynous": 56,
+    "proportion": 0.00549073438572409
+   },
+   {
+    "year": 2020,
+    "total": 10662,
+    "androgynous": 25,
+    "proportion": 0.0023447758394297504
+   },
+   {
+    "year": 2021,
+    "total": 10042,
+    "androgynous": 67,
+    "proportion": 0.006671977693686517
+   },
+   {
+    "year": 2022,
+    "total": 10183,
+    "androgynous": 177,
+    "proportion": 0.01738191102818423
+   },
+   {
+    "year": 2023,
+    "total": 8288,
+    "androgynous": 116,
+    "proportion": 0.013996138996138996
+   },
+   {
+    "year": 2024,
+    "total": 8226,
+    "androgynous": 121,
+    "proportion": 0.014709457816678824
+   }
+  ],
+  "regression": {
+   "slope": 0.0005450400826064131,
+   "intercept": -1.0933246641768004,
+   "r_value": 0.6553581129217992,
+   "r_squared": 0.42949425617242176,
+   "p_value": 0.001260406118179843,
+   "std_err": 0.00014411293788873597,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "count_type": "token",
+  "tau": 0.2
+ },
+ "meiji_orth_type_tau0": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 202,
+    "androgynous": 1,
+    "proportion": 0.0049504950495049506
+   },
+   {
+    "year": 2005,
+    "total": 221,
+    "androgynous": 3,
+    "proportion": 0.013574660633484163
+   },
+   {
+    "year": 2006,
+    "total": 216,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 240,
+    "androgynous": 1,
+    "proportion": 0.004166666666666667
+   },
+   {
+    "year": 2008,
+    "total": 235,
+    "androgynous": 2,
+    "proportion": 0.00851063829787234
+   },
+   {
+    "year": 2009,
+    "total": 218,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "total": 265,
+    "androgynous": 1,
+    "proportion": 0.0037735849056603774
+   },
+   {
+    "year": 2011,
+    "total": 265,
+    "androgynous": 2,
+    "proportion": 0.007547169811320755
+   },
+   {
+    "year": 2012,
+    "total": 253,
+    "androgynous": 2,
+    "proportion": 0.007905138339920948
+   },
+   {
+    "year": 2013,
+    "total": 237,
+    "androgynous": 1,
+    "proportion": 0.004219409282700422
+   },
+   {
+    "year": 2014,
+    "total": 290,
+    "androgynous": 2,
+    "proportion": 0.006896551724137931
+   },
+   {
+    "year": 2015,
+    "total": 231,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "total": 225,
+    "androgynous": 2,
+    "proportion": 0.008888888888888889
+   },
+   {
+    "year": 2017,
+    "total": 199,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "total": 218,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "total": 211,
+    "androgynous": 2,
+    "proportion": 0.009478672985781991
+   },
+   {
+    "year": 2020,
+    "total": 213,
+    "androgynous": 1,
+    "proportion": 0.004694835680751174
+   },
+   {
+    "year": 2021,
+    "total": 221,
+    "androgynous": 3,
+    "proportion": 0.013574660633484163
+   },
+   {
+    "year": 2022,
+    "total": 218,
+    "androgynous": 4,
+    "proportion": 0.01834862385321101
+   },
+   {
+    "year": 2023,
+    "total": 235,
+    "androgynous": 3,
+    "proportion": 0.01276595744680851
+   },
+   {
+    "year": 2024,
+    "total": 224,
+    "androgynous": 4,
+    "proportion": 0.017857142857142856
+   }
+  ],
+  "regression": {
+   "slope": 0.00041421284412275754,
+   "intercept": -0.8272173777271701,
+   "r_value": 0.4473424219193792,
+   "r_squared": 0.20011524244869586,
+   "p_value": 0.04201997212535839,
+   "std_err": 0.00018998546971670639,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.0
+ },
+ "meiji_orth_type_tau2": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 202,
+    "androgynous": 1,
+    "proportion": 0.0049504950495049506
+   },
+   {
+    "year": 2005,
+    "total": 221,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 216,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 240,
+    "androgynous": 1,
+    "proportion": 0.004166666666666667
+   },
+   {
+    "year": 2008,
+    "total": 235,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "total": 218,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "total": 265,
+    "androgynous": 1,
+    "proportion": 0.0037735849056603774
+   },
+   {
+    "year": 2011,
+    "total": 265,
+    "androgynous": 2,
+    "proportion": 0.007547169811320755
+   },
+   {
+    "year": 2012,
+    "total": 253,
+    "androgynous": 1,
+    "proportion": 0.003952569169960474
+   },
+   {
+    "year": 2013,
+    "total": 237,
+    "androgynous": 1,
+    "proportion": 0.004219409282700422
+   },
+   {
+    "year": 2014,
+    "total": 290,
+    "androgynous": 1,
+    "proportion": 0.0034482758620689655
+   },
+   {
+    "year": 2015,
+    "total": 231,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "total": 225,
+    "androgynous": 2,
+    "proportion": 0.008888888888888889
+   },
+   {
+    "year": 2017,
+    "total": 199,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "total": 218,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "total": 211,
+    "androgynous": 2,
+    "proportion": 0.009478672985781991
+   },
+   {
+    "year": 2020,
+    "total": 213,
+    "androgynous": 1,
+    "proportion": 0.004694835680751174
+   },
+   {
+    "year": 2021,
+    "total": 221,
+    "androgynous": 2,
+    "proportion": 0.00904977375565611
+   },
+   {
+    "year": 2022,
+    "total": 218,
+    "androgynous": 4,
+    "proportion": 0.01834862385321101
+   },
+   {
+    "year": 2023,
+    "total": 235,
+    "androgynous": 3,
+    "proportion": 0.01276595744680851
+   },
+   {
+    "year": 2024,
+    "total": 224,
+    "androgynous": 3,
+    "proportion": 0.013392857142857142
+   }
+  ],
+  "regression": {
+   "slope": 0.0005503477123576394,
+   "intercept": -1.1032251602834364,
+   "r_value": 0.6525037997197539,
+   "r_squared": 0.42576120864871675,
+   "p_value": 0.0013458011295132215,
+   "std_err": 0.0001466302528605059,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "count_type": "type",
+  "tau": 0.2
+ },
+ "meiji_pron_token_tau0": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 5803,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "total": 5248,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 5316,
+    "androgynous": 42,
+    "proportion": 0.007900677200902935
+   },
+   {
+    "year": 2007,
+    "total": 5619,
+    "androgynous": 70,
+    "proportion": 0.012457732692649938
+   },
+   {
+    "year": 2008,
+    "total": 5692,
+    "androgynous": 72,
+    "proportion": 0.012649332396345749
+   },
+   {
+    "year": 2009,
+    "total": 5545,
+    "androgynous": 71,
+    "proportion": 0.012804328223624888
+   },
+   {
+    "year": 2010,
+    "total": 5249,
+    "androgynous": 51,
+    "proportion": 0.009716136406934655
+   },
+   {
+    "year": 2011,
+    "total": 4500,
+    "androgynous": 45,
+    "proportion": 0.01
+   },
+   {
+    "year": 2012,
+    "total": 4215,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 6665,
+    "androgynous": 94,
+    "proportion": 0.014103525881470368
+   },
+   {
+    "year": 2014,
+    "total": 4857,
+    "androgynous": 125,
+    "proportion": 0.025736051060325303
+   },
+   {
+    "year": 2015,
+    "total": 5581,
+    "androgynous": 81,
+    "proportion": 0.014513528041569612
+   },
+   {
+    "year": 2016,
+    "total": 10827,
+    "androgynous": 246,
+    "proportion": 0.022720975339429204
+   },
+   {
+    "year": 2017,
+    "total": 10107,
+    "androgynous": 138,
+    "proportion": 0.01365390323538142
+   },
+   {
+    "year": 2018,
+    "total": 11473,
+    "androgynous": 256,
+    "proportion": 0.022313257212586073
+   },
+   {
+    "year": 2019,
+    "total": 10199,
+    "androgynous": 130,
+    "proportion": 0.01274634768114521
+   },
+   {
+    "year": 2020,
+    "total": 10662,
+    "androgynous": 468,
+    "proportion": 0.04389420371412493
+   },
+   {
+    "year": 2021,
+    "total": 10042,
+    "androgynous": 432,
+    "proportion": 0.0430193188607847
+   },
+   {
+    "year": 2022,
+    "total": 10183,
+    "androgynous": 672,
+    "proportion": 0.06599234017480114
+   },
+   {
+    "year": 2023,
+    "total": 8288,
+    "androgynous": 436,
+    "proportion": 0.052606177606177605
+   },
+   {
+    "year": 2024,
+    "total": 8226,
+    "androgynous": 509,
+    "proportion": 0.06187697544371505
+   }
+  ],
+  "regression": {
+   "slope": 0.002682170429640081,
+   "intercept": -5.380048159048839,
+   "r_value": 0.8384394848715893,
+   "r_squared": 0.702980769791736,
+   "p_value": 2.072334636271784e-06,
+   "std_err": 0.00039997249887658946,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "count_type": "token",
+  "tau": 0.0
+ },
+ "meiji_pron_token_tau2": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 5803,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "total": 5248,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 5316,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 5619,
+    "androgynous": 70,
+    "proportion": 0.012457732692649938
+   },
+   {
+    "year": 2008,
+    "total": 5692,
+    "androgynous": 72,
+    "proportion": 0.012649332396345749
+   },
+   {
+    "year": 2009,
+    "total": 5545,
+    "androgynous": 71,
+    "proportion": 0.012804328223624888
+   },
+   {
+    "year": 2010,
+    "total": 5249,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "total": 4500,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "total": 4215,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 6665,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "total": 4857,
+    "androgynous": 125,
+    "proportion": 0.025736051060325303
+   },
+   {
+    "year": 2015,
+    "total": 5581,
+    "androgynous": 81,
+    "proportion": 0.014513528041569612
+   },
+   {
+    "year": 2016,
+    "total": 10827,
+    "androgynous": 246,
+    "proportion": 0.022720975339429204
+   },
+   {
+    "year": 2017,
+    "total": 10107,
+    "androgynous": 138,
+    "proportion": 0.01365390323538142
+   },
+   {
+    "year": 2018,
+    "total": 11473,
+    "androgynous": 256,
+    "proportion": 0.022313257212586073
+   },
+   {
+    "year": 2019,
+    "total": 10199,
+    "androgynous": 130,
+    "proportion": 0.01274634768114521
+   },
+   {
+    "year": 2020,
+    "total": 10662,
+    "androgynous": 468,
+    "proportion": 0.04389420371412493
+   },
+   {
+    "year": 2021,
+    "total": 10042,
+    "androgynous": 278,
+    "proportion": 0.027683728340967936
+   },
+   {
+    "year": 2022,
+    "total": 10183,
+    "androgynous": 125,
+    "proportion": 0.012275360895610331
+   },
+   {
+    "year": 2023,
+    "total": 8288,
+    "androgynous": 436,
+    "proportion": 0.052606177606177605
+   },
+   {
+    "year": 2024,
+    "total": 8226,
+    "androgynous": 226,
+    "proportion": 0.027473863360077802
+   }
+  ],
+  "regression": {
+   "slope": 0.0017276995210788032,
+   "intercept": -3.46465689308128,
+   "r_value": 0.7227328178140204,
+   "r_squared": 0.5223427259453941,
+   "p_value": 0.00021485551760174867,
+   "std_err": 0.0003790284720254565,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "count_type": "token",
+  "tau": 0.2
+ },
+ "meiji_pron_type_tau0": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 105,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "total": 104,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 100,
+    "androgynous": 1,
+    "proportion": 0.01
+   },
+   {
+    "year": 2007,
+    "total": 102,
+    "androgynous": 1,
+    "proportion": 0.00980392156862745
+   },
+   {
+    "year": 2008,
+    "total": 108,
+    "androgynous": 1,
+    "proportion": 0.009259259259259259
+   },
+   {
+    "year": 2009,
+    "total": 108,
+    "androgynous": 1,
+    "proportion": 0.009259259259259259
+   },
+   {
+    "year": 2010,
+    "total": 102,
+    "androgynous": 1,
+    "proportion": 0.00980392156862745
+   },
+   {
+    "year": 2011,
+    "total": 101,
+    "androgynous": 1,
+    "proportion": 0.009900990099009901
+   },
+   {
+    "year": 2012,
+    "total": 101,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 103,
+    "androgynous": 1,
+    "proportion": 0.009708737864077669
+   },
+   {
+    "year": 2014,
+    "total": 106,
+    "androgynous": 2,
+    "proportion": 0.018867924528301886
+   },
+   {
+    "year": 2015,
+    "total": 107,
+    "androgynous": 1,
+    "proportion": 0.009345794392523364
+   },
+   {
+    "year": 2016,
+    "total": 99,
+    "androgynous": 2,
+    "proportion": 0.020202020202020204
+   },
+   {
+    "year": 2017,
+    "total": 99,
+    "androgynous": 1,
+    "proportion": 0.010101010101010102
+   },
+   {
+    "year": 2018,
+    "total": 101,
+    "androgynous": 2,
+    "proportion": 0.019801980198019802
+   },
+   {
+    "year": 2019,
+    "total": 102,
+    "androgynous": 1,
+    "proportion": 0.00980392156862745
+   },
+   {
+    "year": 2020,
+    "total": 99,
+    "androgynous": 3,
+    "proportion": 0.030303030303030304
+   },
+   {
+    "year": 2021,
+    "total": 99,
+    "androgynous": 3,
+    "proportion": 0.030303030303030304
+   },
+   {
+    "year": 2022,
+    "total": 96,
+    "androgynous": 5,
+    "proportion": 0.052083333333333336
+   },
+   {
+    "year": 2023,
+    "total": 95,
+    "androgynous": 4,
+    "proportion": 0.042105263157894736
+   },
+   {
+    "year": 2024,
+    "total": 93,
+    "androgynous": 5,
+    "proportion": 0.053763440860215055
+   }
+  ],
+  "regression": {
+   "slope": 0.0020861838105145623,
+   "intercept": -4.18422101158743,
+   "r_value": 0.8197842688568916,
+   "r_squared": 0.6720462474652283,
+   "p_value": 5.41702249529122e-06,
+   "std_err": 0.0003343354997209089,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "count_type": "type",
+  "tau": 0.0
+ },
+ "meiji_pron_type_tau2": {
+  "data": [
+   {
+    "year": 2004,
+    "total": 105,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "total": 104,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "total": 100,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "total": 102,
+    "androgynous": 1,
+    "proportion": 0.00980392156862745
+   },
+   {
+    "year": 2008,
+    "total": 108,
+    "androgynous": 1,
+    "proportion": 0.009259259259259259
+   },
+   {
+    "year": 2009,
+    "total": 108,
+    "androgynous": 1,
+    "proportion": 0.009259259259259259
+   },
+   {
+    "year": 2010,
+    "total": 102,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "total": 101,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "total": 101,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "total": 103,
+    "androgynous": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "total": 106,
+    "androgynous": 2,
+    "proportion": 0.018867924528301886
+   },
+   {
+    "year": 2015,
+    "total": 107,
+    "androgynous": 1,
+    "proportion": 0.009345794392523364
+   },
+   {
+    "year": 2016,
+    "total": 99,
+    "androgynous": 2,
+    "proportion": 0.020202020202020204
+   },
+   {
+    "year": 2017,
+    "total": 99,
+    "androgynous": 1,
+    "proportion": 0.010101010101010102
+   },
+   {
+    "year": 2018,
+    "total": 101,
+    "androgynous": 2,
+    "proportion": 0.019801980198019802
+   },
+   {
+    "year": 2019,
+    "total": 102,
+    "androgynous": 1,
+    "proportion": 0.00980392156862745
+   },
+   {
+    "year": 2020,
+    "total": 99,
+    "androgynous": 3,
+    "proportion": 0.030303030303030304
+   },
+   {
+    "year": 2021,
+    "total": 99,
+    "androgynous": 2,
+    "proportion": 0.020202020202020204
+   },
+   {
+    "year": 2022,
+    "total": 96,
+    "androgynous": 1,
+    "proportion": 0.010416666666666666
+   },
+   {
+    "year": 2023,
+    "total": 95,
+    "androgynous": 4,
+    "proportion": 0.042105263157894736
+   },
+   {
+    "year": 2024,
+    "total": 93,
+    "androgynous": 2,
+    "proportion": 0.021505376344086023
+   }
+  ],
+  "regression": {
+   "slope": 0.0013485297134157611,
+   "intercept": -2.704463726259755,
+   "r_value": 0.7318593287955983,
+   "r_squared": 0.5356180771451438,
+   "p_value": 0.00016264408856738518,
+   "std_err": 0.00028806716552583927,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "count_type": "type",
+  "tau": 0.2
+ }
+}

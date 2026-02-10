@@ -21,5 +21,9 @@ CREATE INDEX IF NOT EXISTS idx_mapp_orth_pron ON mapp(orth, pron);
 -- Indexes for kanji (character lookups)
 CREATE INDEX IF NOT EXISTS idx_kanji_kanji ON kanji(kanji);
 
+-- Covering indexes for androgyny/overlap queries (GROUP BY year, orth/pron)
+CREATE INDEX IF NOT EXISTS idx_nrank_src_gender_year_orth ON nrank(src, gender, year, orth);
+CREATE INDEX IF NOT EXISTS idx_nrank_src_gender_year_pron ON nrank(src, gender, year, pron);
+
 -- name_year_cache already has PRIMARY KEY (src, dtype, year, gender)
 -- which covers all its query patterns

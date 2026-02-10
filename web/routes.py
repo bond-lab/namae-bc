@@ -683,8 +683,7 @@ def _regression_summary(rs):
 
 @app.route("/overlap.html")
 def overlap():
-    """Show gender overlap in names — names shared between boys and girls."""
-    conn = get_db(current_directory, "namae.db")
+    """Show gender overlap in names — reads pre-computed JSON (falls back to live query)."""
 
     # Per-source n_top values to show
     source_n_tops = {
@@ -692,6 +691,13 @@ def overlap():
         'hs':    [50, 100, 500],
         'meiji': [50, 100],
     }
+
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "overlap_data.json")
+    precomputed = None
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
 
     datasets = []
     seen = set()
@@ -716,17 +722,24 @@ def overlap():
                 n_label = f" (top {n_top})" if len(n_tops) > 1 else ""
                 caption = f"{db_options[src][1]} \u2014 {dtype_label}{n_label}"
 
-                try:
-                    data, reg_count, reg_proportion = get_overlap(
-                        conn, src=qsrc, dtype=dtype, n_top=n_top)
-                except Exception:
-                    continue
+                if precomputed and key in precomputed:
+                    entry = precomputed[key]
+                    data = entry['data']
+                    reg_count = entry['reg_count']
+                    reg_proportion = entry['reg_proportion']
+                else:
+                    conn = get_db(current_directory, "namae.db")
+                    try:
+                        data, reg_count, reg_proportion = get_overlap(
+                            conn, src=qsrc, dtype=dtype, n_top=n_top)
+                    except Exception:
+                        continue
 
                 if not data:
                     continue
 
                 datasets.append({
-                    'key': f'overlap_{qsrc}_{dtype}_{n_top}',
+                    'key': f'overlap_{key}',
                     'caption': caption,
                     'n_top': n_top,
                     'data': data,
@@ -746,16 +759,20 @@ def overlap():
 def androgyny():
     """
     Show androgyny statistics over time.
-    Androgynous names are those where F/M ratio is between tau and (1-tau).
-    Shows all sources, each with type/token × tau combinations.
+    Reads pre-computed data from androgyny_data.json (falls back to live query).
     """
-    conn = get_db(current_directory, "namae.db")
-
     tau_values = [0.0, 0.2]
-    count_types = [
-        ('token', 'Babies (Token)', 'babies'),
-        ('type', 'Names (Type)', 'names')
-    ]
+    count_types_map = {
+        'token': ('Babies (Token)', 'babies'),
+        'type':  ('Names (Type)', 'names'),
+    }
+
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "androgyny_data.json")
+    precomputed = None
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
 
     datasets = []
     seen = set()
@@ -776,14 +793,23 @@ def androgyny():
 
             dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
 
-            for count_type, count_label, unit in count_types:
+            for count_type in ['token', 'type']:
+                count_label, unit = count_types_map[count_type]
                 for tau in tau_values:
-                    try:
-                        data, regression = get_androgyny(
-                            conn, src=qsrc, dtype=dtype,
-                            tau=tau, count_type=count_type)
-                    except Exception:
-                        continue
+                    key = f"{qsrc}_{dtype}_{count_type}_tau{int(tau*10)}"
+
+                    if precomputed and key in precomputed:
+                        entry = precomputed[key]
+                        data = entry['data']
+                        regression = entry['regression']
+                    else:
+                        conn = get_db(current_directory, "namae.db")
+                        try:
+                            data, regression = get_androgyny(
+                                conn, src=qsrc, dtype=dtype,
+                                tau=tau, count_type=count_type)
+                        except Exception:
+                            continue
 
                     if not data:
                         continue
@@ -798,7 +824,7 @@ def androgyny():
                     caption = f"{src_label} \u2014 {dtype_label} \u2014 {count_label} \u2014 {tau_desc}"
 
                     datasets.append({
-                        'key': f'androgyny_{qsrc}_{dtype}_{count_type}_tau{int(tau*10)}',
+                        'key': f'androgyny_{key}',
                         'caption': caption,
                         'data': data,
                         'regression_stats': regression,
@@ -820,8 +846,14 @@ def androgyny():
 
 @app.route("/phenomena/topnames.html")
 def topnames():
-    """Top N names over time, shown as interactive ranking tables."""
-    conn = get_db(current_directory, "namae.db")
+    """Top N names over time — reads pre-computed JSON (falls back to live query)."""
+
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "topnames_data.json")
+    precomputed = None
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
 
     datasets = []
     seen = set()
@@ -845,25 +877,28 @@ def topnames():
             dtype_label = 'Orthography' if dtype == 'orth' else 'Pronunciation'
             caption = f"{src_label} \u2014 {dtype_label}"
 
-            ds = {
-                'key': f'topnames_{qsrc}_{dtype}',
-                'caption': caption,
-            }
-
-            for gender, gkey in [('M', 'male'), ('F', 'female')]:
-                for n_top, suffix in [(10, ''), (50, '_50')]:
-                    try:
-                        result = get_top_names(
-                            conn, src=qsrc, dtype=dtype,
-                            gender=gender, n_top=n_top)
-                    except Exception:
-                        result = {'years': [], 'names_by_year': {}, 'number_ones': []}
-
-                    # Convert int keys to strings for JSON
-                    result['names_by_year'] = {
-                        str(k): v for k, v in result['names_by_year'].items()
-                    }
-                    ds[f'{gkey}{suffix}'] = result
+            if precomputed and src_dtype_key in precomputed:
+                ds = precomputed[src_dtype_key]
+                ds['key'] = f'topnames_{src_dtype_key}'
+                ds['caption'] = caption
+            else:
+                conn = get_db(current_directory, "namae.db")
+                ds = {
+                    'key': f'topnames_{src_dtype_key}',
+                    'caption': caption,
+                }
+                for gender, gkey in [('M', 'male'), ('F', 'female')]:
+                    for n_top, suffix in [(10, ''), (50, '_50')]:
+                        try:
+                            result = get_top_names(
+                                conn, src=qsrc, dtype=dtype,
+                                gender=gender, n_top=n_top)
+                        except Exception:
+                            result = {'years': [], 'names_by_year': {}, 'number_ones': []}
+                        result['names_by_year'] = {
+                            str(k): v for k, v in result['names_by_year'].items()
+                        }
+                        ds[f'{gkey}{suffix}'] = result
 
             datasets.append(ds)
 

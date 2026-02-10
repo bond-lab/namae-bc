@@ -1,0 +1,7060 @@
+{
+ "bc_orth_50": {
+  "data": [
+   {
+    "year": 2008,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1154,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2009,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1082,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2010,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1600,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2011,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1126,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 6,
+    "total_babies": 1304,
+    "weighted_proportion": 0.004601226993865031,
+    "names": [
+     {
+      "name": "優月",
+      "male_freq": 2,
+      "female_freq": 4
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 1,
+    "overlap_freq": 4,
+    "total_babies": 934,
+    "weighted_proportion": 0.004282655246252677,
+    "names": [
+     {
+      "name": "陽向",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 2,
+    "overlap_freq": 9,
+    "total_babies": 1185,
+    "weighted_proportion": 0.007594936708860759,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "優",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 1,
+    "overlap_freq": 5,
+    "total_babies": 496,
+    "weighted_proportion": 0.010080645161290322,
+    "names": [
+     {
+      "name": "湊",
+      "male_freq": 3,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 486,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2017,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 962,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2018,
+    "overlap_count": 2,
+    "overlap_freq": 11,
+    "total_babies": 1394,
+    "weighted_proportion": 0.007890961262553802,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 3,
+      "female_freq": 3
+     },
+     {
+      "name": "楓",
+      "male_freq": 2,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1660,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2020,
+    "overlap_count": 1,
+    "overlap_freq": 4,
+    "total_babies": 990,
+    "weighted_proportion": 0.00404040404040404,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 440,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2022,
+    "overlap_count": 2,
+    "overlap_freq": 4,
+    "total_babies": 245,
+    "weighted_proportion": 0.0163265306122449,
+    "names": [
+     {
+      "name": "あおば",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "光",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.06428571428571428,
+   "intercept": -128.86904761904762,
+   "r_value": 0.3521073583961782,
+   "r_squared": 0.12397959183673467,
+   "p_value": 0.19806029411176718,
+   "std_err": 0.04739415760172981,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.0004578453217586953,
+   "intercept": -0.9189038326754062,
+   "r_value": 0.41328562557299287,
+   "r_squared": 0.17080500830526005,
+   "p_value": 0.1257201201724985,
+   "std_err": 0.000279785458954829,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "n_top": 50
+ },
+ "bc_orth_100": {
+  "data": [
+   {
+    "year": 2008,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1154,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 2,
+    "total_babies": 1082,
+    "weighted_proportion": 0.0018484288354898336,
+    "names": [
+     {
+      "name": "レオナ",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 2,
+    "overlap_freq": 10,
+    "total_babies": 1600,
+    "weighted_proportion": 0.00625,
+    "names": [
+     {
+      "name": "瑠海",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "楓",
+      "male_freq": 2,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 2,
+    "overlap_freq": 9,
+    "total_babies": 1126,
+    "weighted_proportion": 0.007992895204262877,
+    "names": [
+     {
+      "name": "蒼空",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "優空",
+      "male_freq": 1,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 6,
+    "total_babies": 1304,
+    "weighted_proportion": 0.004601226993865031,
+    "names": [
+     {
+      "name": "優月",
+      "male_freq": 2,
+      "female_freq": 4
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 2,
+    "overlap_freq": 7,
+    "total_babies": 934,
+    "weighted_proportion": 0.007494646680942184,
+    "names": [
+     {
+      "name": "陽向",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "光希",
+      "male_freq": 2,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 2,
+    "overlap_freq": 9,
+    "total_babies": 1185,
+    "weighted_proportion": 0.007594936708860759,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "優",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 2,
+    "overlap_freq": 7,
+    "total_babies": 496,
+    "weighted_proportion": 0.014112903225806451,
+    "names": [
+     {
+      "name": "湊",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "心晴",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 1,
+    "overlap_freq": 2,
+    "total_babies": 486,
+    "weighted_proportion": 0.00411522633744856,
+    "names": [
+     {
+      "name": "悠月",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 2,
+    "overlap_freq": 6,
+    "total_babies": 962,
+    "weighted_proportion": 0.006237006237006237,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1,
+      "female_freq": 3
+     },
+     {
+      "name": "凜",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 2,
+    "overlap_freq": 11,
+    "total_babies": 1394,
+    "weighted_proportion": 0.007890961262553802,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 3,
+      "female_freq": 3
+     },
+     {
+      "name": "楓",
+      "male_freq": 2,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 3,
+    "overlap_freq": 18,
+    "total_babies": 1660,
+    "weighted_proportion": 0.010843373493975903,
+    "names": [
+     {
+      "name": "結月",
+      "male_freq": 2,
+      "female_freq": 6
+     },
+     {
+      "name": "結心",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "陽",
+      "male_freq": 3,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 4,
+    "overlap_freq": 12,
+    "total_babies": 990,
+    "weighted_proportion": 0.012121212121212121,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "凛",
+      "male_freq": 1,
+      "female_freq": 3
+     },
+     {
+      "name": "佳音",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "光希",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 440,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2022,
+    "overlap_count": 2,
+    "overlap_freq": 4,
+    "total_babies": 245,
+    "weighted_proportion": 0.0163265306122449,
+    "names": [
+     {
+      "name": "あおば",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "光",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.08571428571428572,
+   "intercept": -170.9809523809524,
+   "r_value": 0.3711537444790452,
+   "r_squared": 0.13775510204081637,
+   "p_value": 0.17319276220219595,
+   "std_err": 0.05947617141331807,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.0005279547378016793,
+   "intercept": -1.0566668401561392,
+   "r_value": 0.4936096127391761,
+   "r_squared": 0.24365044978851938,
+   "p_value": 0.06149264977796062,
+   "std_err": 0.00025798988750524315,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "orth",
+  "n_top": 100
+ },
+ "bc_pron_50": {
+  "data": [
+   {
+    "year": 2008,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1154,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 10,
+    "total_babies": 1082,
+    "weighted_proportion": 0.009242144177449169,
+    "names": [
+     {
+      "name": "ゆう",
+      "male_freq": 4,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 2,
+    "overlap_freq": 27,
+    "total_babies": 1600,
+    "weighted_proportion": 0.016875,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 10,
+      "female_freq": 5
+     },
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 3,
+    "overlap_freq": 29,
+    "total_babies": 1126,
+    "weighted_proportion": 0.02575488454706927,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 9,
+      "female_freq": 3
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 6,
+      "female_freq": 5
+     },
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 9,
+    "total_babies": 1304,
+    "weighted_proportion": 0.006901840490797546,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 1,
+    "overlap_freq": 8,
+    "total_babies": 934,
+    "weighted_proportion": 0.008565310492505354,
+    "names": [
+     {
+      "name": "りお",
+      "male_freq": 3,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 2,
+    "overlap_freq": 17,
+    "total_babies": 1185,
+    "weighted_proportion": 0.014345991561181435,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 6
+     },
+     {
+      "name": "みずき",
+      "male_freq": 3,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 1,
+    "overlap_freq": 5,
+    "total_babies": 496,
+    "weighted_proportion": 0.010080645161290322,
+    "names": [
+     {
+      "name": "みなと",
+      "male_freq": 3,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 2,
+    "overlap_freq": 9,
+    "total_babies": 486,
+    "weighted_proportion": 0.018518518518518517,
+    "names": [
+     {
+      "name": "はる",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "あおい",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 3,
+    "overlap_freq": 27,
+    "total_babies": 962,
+    "weighted_proportion": 0.028066528066528068,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 4
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 4,
+      "female_freq": 6
+     },
+     {
+      "name": "ゆずき",
+      "male_freq": 3,
+      "female_freq": 4
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 4,
+    "overlap_freq": 39,
+    "total_babies": 1394,
+    "weighted_proportion": 0.027977044476327116,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 8
+     },
+     {
+      "name": "そら",
+      "male_freq": 8,
+      "female_freq": 3
+     },
+     {
+      "name": "なつき",
+      "male_freq": 4,
+      "female_freq": 4
+     },
+     {
+      "name": "かえで",
+      "male_freq": 3,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 5,
+    "overlap_freq": 66,
+    "total_babies": 1660,
+    "weighted_proportion": 0.03975903614457831,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 8,
+      "female_freq": 9
+     },
+     {
+      "name": "あおい",
+      "male_freq": 9,
+      "female_freq": 7
+     },
+     {
+      "name": "はる",
+      "male_freq": 8,
+      "female_freq": 5
+     },
+     {
+      "name": "そら",
+      "male_freq": 7,
+      "female_freq": 4
+     },
+     {
+      "name": "みつき",
+      "male_freq": 4,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 1,
+    "overlap_freq": 15,
+    "total_babies": 990,
+    "weighted_proportion": 0.015151515151515152,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 4,
+      "female_freq": 11
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 4,
+    "overlap_freq": 18,
+    "total_babies": 440,
+    "weighted_proportion": 0.04090909090909091,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 4,
+      "female_freq": 3
+     },
+     {
+      "name": "いおり",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 1
+     },
+     {
+      "name": "いつき",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 4,
+    "overlap_freq": 10,
+    "total_babies": 245,
+    "weighted_proportion": 0.04081632653061224,
+    "names": [
+     {
+      "name": "いちか",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "あおば",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "あき",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "あさひ",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.22142857142857145,
+   "intercept": -443.9119047619048,
+   "r_value": 0.6661918465087064,
+   "r_squared": 0.4438115763546799,
+   "p_value": 0.0066944643044068025,
+   "std_err": 0.06875014866070221,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.0022482704368347113,
+   "intercept": -4.510067338473446,
+   "r_value": 0.7669661821439694,
+   "r_squared": 0.5882371245524964,
+   "p_value": 0.0008482540372536492,
+   "std_err": 0.0005217041034941969,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "n_top": 50
+ },
+ "bc_pron_100": {
+  "data": [
+   {
+    "year": 2008,
+    "overlap_count": 7,
+    "overlap_freq": 43,
+    "total_babies": 1154,
+    "weighted_proportion": 0.03726169844020797,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 2,
+      "female_freq": 7
+     },
+     {
+      "name": "つばさ",
+      "male_freq": 5,
+      "female_freq": 2
+     },
+     {
+      "name": "ゆう",
+      "male_freq": 2,
+      "female_freq": 5
+     },
+     {
+      "name": "みつき",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "ゆづき",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "あきら",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "はる",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 7,
+    "overlap_freq": 49,
+    "total_babies": 1082,
+    "weighted_proportion": 0.04528650646950092,
+    "names": [
+     {
+      "name": "ゆう",
+      "male_freq": 4,
+      "female_freq": 6
+     },
+     {
+      "name": "りおん",
+      "male_freq": 3,
+      "female_freq": 7
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 6,
+      "female_freq": 2
+     },
+     {
+      "name": "はるか",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "あおい",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "つばき",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "みつき",
+      "male_freq": 2,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 4,
+    "overlap_freq": 42,
+    "total_babies": 1600,
+    "weighted_proportion": 0.02625,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 10,
+      "female_freq": 5
+     },
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 6
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 6,
+      "female_freq": 3
+     },
+     {
+      "name": "かえで",
+      "male_freq": 2,
+      "female_freq": 4
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 6,
+    "overlap_freq": 45,
+    "total_babies": 1126,
+    "weighted_proportion": 0.03996447602131439,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 9,
+      "female_freq": 3
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 6,
+      "female_freq": 5
+     },
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 3
+     },
+     {
+      "name": "なつき",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "しおん",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "ゆう",
+      "male_freq": 2,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 2,
+    "overlap_freq": 26,
+    "total_babies": 1304,
+    "weighted_proportion": 0.019938650306748466,
+    "names": [
+     {
+      "name": "ゆうき",
+      "male_freq": 14,
+      "female_freq": 3
+     },
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 8,
+    "overlap_freq": 45,
+    "total_babies": 934,
+    "weighted_proportion": 0.048179871520342615,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 1,
+      "female_freq": 8
+     },
+     {
+      "name": "りお",
+      "male_freq": 3,
+      "female_freq": 5
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 5,
+      "female_freq": 2
+     },
+     {
+      "name": "そら",
+      "male_freq": 4,
+      "female_freq": 2
+     },
+     {
+      "name": "れい",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "つばさ",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "あおば",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "あき",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 6,
+    "overlap_freq": 39,
+    "total_babies": 1185,
+    "weighted_proportion": 0.03291139240506329,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 6
+     },
+     {
+      "name": "みずき",
+      "male_freq": 3,
+      "female_freq": 5
+     },
+     {
+      "name": "ゆづき",
+      "male_freq": 2,
+      "female_freq": 5
+     },
+     {
+      "name": "いおり",
+      "male_freq": 4,
+      "female_freq": 2
+     },
+     {
+      "name": "なつき",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "せな",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 3,
+    "overlap_freq": 10,
+    "total_babies": 496,
+    "weighted_proportion": 0.020161290322580645,
+    "names": [
+     {
+      "name": "みなと",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "いつき",
+      "male_freq": 2,
+      "female_freq": 1
+     },
+     {
+      "name": "そら",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 9,
+    "overlap_freq": 28,
+    "total_babies": 486,
+    "weighted_proportion": 0.05761316872427984,
+    "names": [
+     {
+      "name": "さくら",
+      "male_freq": 1,
+      "female_freq": 4
+     },
+     {
+      "name": "はる",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "あおい",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "ちひろ",
+      "male_freq": 1,
+      "female_freq": 2
+     },
+     {
+      "name": "とわ",
+      "male_freq": 2,
+      "female_freq": 1
+     },
+     {
+      "name": "あさひ",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "かずき",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "かなで",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "せな",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 9,
+    "overlap_freq": 61,
+    "total_babies": 962,
+    "weighted_proportion": 0.06340956340956341,
+    "names": [
+     {
+      "name": "あかり",
+      "male_freq": 1,
+      "female_freq": 10
+     },
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 4
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 4,
+      "female_freq": 6
+     },
+     {
+      "name": "ゆずき",
+      "male_freq": 3,
+      "female_freq": 4
+     },
+     {
+      "name": "りん",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "ゆう",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "おと",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "とあ",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "なお",
+      "male_freq": 2,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 9,
+    "overlap_freq": 79,
+    "total_babies": 1394,
+    "weighted_proportion": 0.05667144906743185,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 6,
+      "female_freq": 8
+     },
+     {
+      "name": "さくら",
+      "male_freq": 3,
+      "female_freq": 8
+     },
+     {
+      "name": "そら",
+      "male_freq": 8,
+      "female_freq": 3
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 6,
+      "female_freq": 3
+     },
+     {
+      "name": "せな",
+      "male_freq": 3,
+      "female_freq": 5
+     },
+     {
+      "name": "なつき",
+      "male_freq": 4,
+      "female_freq": 4
+     },
+     {
+      "name": "なぎ",
+      "male_freq": 4,
+      "female_freq": 3
+     },
+     {
+      "name": "かえで",
+      "male_freq": 3,
+      "female_freq": 3
+     },
+     {
+      "name": "こはく",
+      "male_freq": 3,
+      "female_freq": 2
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 10,
+    "overlap_freq": 120,
+    "total_babies": 1660,
+    "weighted_proportion": 0.07228915662650602,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 8,
+      "female_freq": 9
+     },
+     {
+      "name": "あおい",
+      "male_freq": 9,
+      "female_freq": 7
+     },
+     {
+      "name": "はるき",
+      "male_freq": 13,
+      "female_freq": 3
+     },
+     {
+      "name": "はる",
+      "male_freq": 8,
+      "female_freq": 5
+     },
+     {
+      "name": "ゆづき",
+      "male_freq": 3,
+      "female_freq": 9
+     },
+     {
+      "name": "いちか",
+      "male_freq": 2,
+      "female_freq": 9
+     },
+     {
+      "name": "そら",
+      "male_freq": 7,
+      "female_freq": 4
+     },
+     {
+      "name": "みつき",
+      "male_freq": 4,
+      "female_freq": 5
+     },
+     {
+      "name": "れい",
+      "male_freq": 3,
+      "female_freq": 5
+     },
+     {
+      "name": "あお",
+      "male_freq": 4,
+      "female_freq": 3
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 10,
+    "overlap_freq": 61,
+    "total_babies": 990,
+    "weighted_proportion": 0.06161616161616162,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 4,
+      "female_freq": 11
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 7,
+      "female_freq": 2
+     },
+     {
+      "name": "りん",
+      "male_freq": 2,
+      "female_freq": 4
+     },
+     {
+      "name": "あお",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "かえで",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "はるか",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "みつき",
+      "male_freq": 2,
+      "female_freq": 3
+     },
+     {
+      "name": "あさひ",
+      "male_freq": 3,
+      "female_freq": 1
+     },
+     {
+      "name": "みこと",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "あおば",
+      "male_freq": 2,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 6,
+    "overlap_freq": 23,
+    "total_babies": 440,
+    "weighted_proportion": 0.05227272727272727,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 4,
+      "female_freq": 3
+     },
+     {
+      "name": "いおり",
+      "male_freq": 3,
+      "female_freq": 2
+     },
+     {
+      "name": "あおい",
+      "male_freq": 3,
+      "female_freq": 1
+     },
+     {
+      "name": "さく",
+      "male_freq": 2,
+      "female_freq": 1
+     },
+     {
+      "name": "いつき",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "おと",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 10,
+    "overlap_freq": 23,
+    "total_babies": 245,
+    "weighted_proportion": 0.09387755102040816,
+    "names": [
+     {
+      "name": "いちか",
+      "male_freq": 2,
+      "female_freq": 2
+     },
+     {
+      "name": "なつき",
+      "male_freq": 1,
+      "female_freq": 2
+     },
+     {
+      "name": "あおば",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "あき",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "あさひ",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "せな",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "なお",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "はる",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "はるひ",
+      "male_freq": 1,
+      "female_freq": 1
+     },
+     {
+      "name": "みこと",
+      "male_freq": 1,
+      "female_freq": 1
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.31071428571428567,
+   "intercept": -619.022619047619,
+   "r_value": 0.5393298772924365,
+   "r_squared": 0.29087671654027464,
+   "p_value": 0.03800283379583141,
+   "std_err": 0.13455379094731623,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.0032489906420072935,
+   "intercept": -6.498202566096507,
+   "r_value": 0.7169632213355901,
+   "r_squared": 0.5140362607479063,
+   "p_value": 0.0026284846047520296,
+   "std_err": 0.0008761568061251536,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "src": "bc",
+  "dtype": "pron",
+  "n_top": 100
+ },
+ "hs_orth_50": {
+  "data": [
+   {
+    "year": 1989,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 903005,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1990,
+    "overlap_count": 1,
+    "overlap_freq": 2283,
+    "total_babies": 819081,
+    "weighted_proportion": 0.0027872701234676425,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1324,
+      "female_freq": 959
+     }
+    ]
+   },
+   {
+    "year": 1991,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 619013,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1992,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 501247,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1993,
+    "overlap_count": 1,
+    "overlap_freq": 1662,
+    "total_babies": 665973,
+    "weighted_proportion": 0.002495596668333401,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 992,
+      "female_freq": 670
+     }
+    ]
+   },
+   {
+    "year": 1994,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 686137,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1995,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 649188,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1996,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 589252,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1997,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1079010,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1998,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 1114582,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 1999,
+    "overlap_count": 1,
+    "overlap_freq": 2432,
+    "total_babies": 1254507,
+    "weighted_proportion": 0.0019386101472530645,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 1179,
+      "female_freq": 1253
+     }
+    ]
+   },
+   {
+    "year": 2000,
+    "overlap_count": 1,
+    "overlap_freq": 2631,
+    "total_babies": 1193302,
+    "weighted_proportion": 0.0022048064949191405,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 1337,
+      "female_freq": 1294
+     }
+    ]
+   },
+   {
+    "year": 2001,
+    "overlap_count": 1,
+    "overlap_freq": 1791,
+    "total_babies": 869836,
+    "weighted_proportion": 0.0020590088246520036,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 882,
+      "female_freq": 909
+     }
+    ]
+   },
+   {
+    "year": 2002,
+    "overlap_count": 1,
+    "overlap_freq": 1800,
+    "total_babies": 845216,
+    "weighted_proportion": 0.0021296331351985764,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 974,
+      "female_freq": 826
+     }
+    ]
+   },
+   {
+    "year": 2003,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 761750,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2004,
+    "overlap_count": 1,
+    "overlap_freq": 845,
+    "total_babies": 441838,
+    "weighted_proportion": 0.0019124656548327667,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 391,
+      "female_freq": 454
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 1,
+    "overlap_freq": 807,
+    "total_babies": 389252,
+    "weighted_proportion": 0.0020732070740805443,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 342,
+      "female_freq": 465
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 1,
+    "overlap_freq": 682,
+    "total_babies": 366519,
+    "weighted_proportion": 0.0018607493745208298,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 293,
+      "female_freq": 389
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 1,
+    "overlap_freq": 545,
+    "total_babies": 296450,
+    "weighted_proportion": 0.0018384213189407994,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 266,
+      "female_freq": 279
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 1,
+    "overlap_freq": 506,
+    "total_babies": 261968,
+    "weighted_proportion": 0.0019315336224271667,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 250,
+      "female_freq": 256
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 226954,
+    "weighted_proportion": 0.0,
+    "names": []
+   }
+  ],
+  "reg_count": {
+   "slope": 0.03376623376623377,
+   "intercept": -66.97489177489179,
+   "r_value": 0.40939382724355283,
+   "r_squared": 0.16760330578512397,
+   "p_value": 0.06533924780063498,
+   "std_err": 0.01726353404339153,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "reg_proportion": {
+   "slope": 5.16502622367188e-05,
+   "intercept": -0.10214262171412346,
+   "r_value": 0.2912255983541553,
+   "r_squared": 0.08481234913673577,
+   "p_value": 0.2002557274521179,
+   "std_err": 3.892434021176104e-05,
+   "trend": "stable",
+   "significant": false,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "n_top": 50
+ },
+ "hs_orth_100": {
+  "data": [
+   {
+    "year": 1989,
+    "overlap_count": 1,
+    "overlap_freq": 2097,
+    "total_babies": 903005,
+    "weighted_proportion": 0.0023222462777061034,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1278,
+      "female_freq": 819
+     }
+    ]
+   },
+   {
+    "year": 1990,
+    "overlap_count": 1,
+    "overlap_freq": 2283,
+    "total_babies": 819081,
+    "weighted_proportion": 0.0027872701234676425,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1324,
+      "female_freq": 959
+     }
+    ]
+   },
+   {
+    "year": 1991,
+    "overlap_count": 1,
+    "overlap_freq": 1601,
+    "total_babies": 619013,
+    "weighted_proportion": 0.0025863754073016236,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1066,
+      "female_freq": 535
+     }
+    ]
+   },
+   {
+    "year": 1992,
+    "overlap_count": 1,
+    "overlap_freq": 1323,
+    "total_babies": 501247,
+    "weighted_proportion": 0.002639417293270583,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 838,
+      "female_freq": 485
+     }
+    ]
+   },
+   {
+    "year": 1993,
+    "overlap_count": 1,
+    "overlap_freq": 1662,
+    "total_babies": 665973,
+    "weighted_proportion": 0.002495596668333401,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 992,
+      "female_freq": 670
+     }
+    ]
+   },
+   {
+    "year": 1994,
+    "overlap_count": 1,
+    "overlap_freq": 1632,
+    "total_babies": 686137,
+    "weighted_proportion": 0.002378533733059141,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 923,
+      "female_freq": 709
+     }
+    ]
+   },
+   {
+    "year": 1995,
+    "overlap_count": 1,
+    "overlap_freq": 1533,
+    "total_babies": 649188,
+    "weighted_proportion": 0.0023614114863491006,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 889,
+      "female_freq": 644
+     }
+    ]
+   },
+   {
+    "year": 1996,
+    "overlap_count": 2,
+    "overlap_freq": 2371,
+    "total_babies": 589252,
+    "weighted_proportion": 0.00402374535852233,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 799,
+      "female_freq": 510
+     },
+     {
+      "name": "優希",
+      "male_freq": 404,
+      "female_freq": 658
+     }
+    ]
+   },
+   {
+    "year": 1997,
+    "overlap_count": 2,
+    "overlap_freq": 3917,
+    "total_babies": 1079010,
+    "weighted_proportion": 0.00363017951640856,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1136,
+      "female_freq": 831
+     },
+     {
+      "name": "優希",
+      "male_freq": 797,
+      "female_freq": 1153
+     }
+    ]
+   },
+   {
+    "year": 1998,
+    "overlap_count": 2,
+    "overlap_freq": 4099,
+    "total_babies": 1114582,
+    "weighted_proportion": 0.0036776118760216835,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 918,
+      "female_freq": 1135
+     },
+     {
+      "name": "優",
+      "male_freq": 1216,
+      "female_freq": 830
+     }
+    ]
+   },
+   {
+    "year": 1999,
+    "overlap_count": 2,
+    "overlap_freq": 4729,
+    "total_babies": 1254507,
+    "weighted_proportion": 0.0037696083003123937,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 1179,
+      "female_freq": 1253
+     },
+     {
+      "name": "優",
+      "male_freq": 1418,
+      "female_freq": 879
+     }
+    ]
+   },
+   {
+    "year": 2000,
+    "overlap_count": 2,
+    "overlap_freq": 4853,
+    "total_babies": 1193302,
+    "weighted_proportion": 0.004066866560183424,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 1337,
+      "female_freq": 1294
+     },
+     {
+      "name": "優",
+      "male_freq": 1313,
+      "female_freq": 909
+     }
+    ]
+   },
+   {
+    "year": 2001,
+    "overlap_count": 2,
+    "overlap_freq": 3387,
+    "total_babies": 869836,
+    "weighted_proportion": 0.0038938374590152627,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 882,
+      "female_freq": 909
+     },
+     {
+      "name": "優",
+      "male_freq": 869,
+      "female_freq": 727
+     }
+    ]
+   },
+   {
+    "year": 2002,
+    "overlap_count": 2,
+    "overlap_freq": 3317,
+    "total_babies": 845216,
+    "weighted_proportion": 0.0039244406163631545,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 974,
+      "female_freq": 826
+     },
+     {
+      "name": "優",
+      "male_freq": 822,
+      "female_freq": 695
+     }
+    ]
+   },
+   {
+    "year": 2003,
+    "overlap_count": 2,
+    "overlap_freq": 2740,
+    "total_babies": 761750,
+    "weighted_proportion": 0.0035969806366918282,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 792,
+      "female_freq": 619
+     },
+     {
+      "name": "優",
+      "male_freq": 740,
+      "female_freq": 589
+     }
+    ]
+   },
+   {
+    "year": 2004,
+    "overlap_count": 2,
+    "overlap_freq": 1609,
+    "total_babies": 441838,
+    "weighted_proportion": 0.0036416061995573038,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 391,
+      "female_freq": 454
+     },
+     {
+      "name": "優希",
+      "male_freq": 440,
+      "female_freq": 324
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 2,
+    "overlap_freq": 1449,
+    "total_babies": 389252,
+    "weighted_proportion": 0.0037225242259513115,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 342,
+      "female_freq": 465
+     },
+     {
+      "name": "優希",
+      "male_freq": 356,
+      "female_freq": 286
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 2,
+    "overlap_freq": 1248,
+    "total_babies": 366519,
+    "weighted_proportion": 0.0034050076530821047,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 293,
+      "female_freq": 389
+     },
+     {
+      "name": "優希",
+      "male_freq": 336,
+      "female_freq": 230
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 5,
+    "overlap_freq": 2787,
+    "total_babies": 296450,
+    "weighted_proportion": 0.009401248102546804,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 150,
+      "female_freq": 875
+     },
+     {
+      "name": "優",
+      "male_freq": 266,
+      "female_freq": 279
+     },
+     {
+      "name": "優希",
+      "male_freq": 248,
+      "female_freq": 203
+     },
+     {
+      "name": "心",
+      "male_freq": 150,
+      "female_freq": 269
+     },
+     {
+      "name": "碧",
+      "male_freq": 162,
+      "female_freq": 185
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 3,
+    "overlap_freq": 1262,
+    "total_babies": 261968,
+    "weighted_proportion": 0.004817382275697796,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 250,
+      "female_freq": 256
+     },
+     {
+      "name": "心",
+      "male_freq": 142,
+      "female_freq": 243
+     },
+     {
+      "name": "優希",
+      "male_freq": 209,
+      "female_freq": 162
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 3,
+    "overlap_freq": 1132,
+    "total_babies": 226954,
+    "weighted_proportion": 0.004987794883544683,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 116,
+      "female_freq": 341
+     },
+     {
+      "name": "優",
+      "male_freq": 175,
+      "female_freq": 175
+     },
+     {
+      "name": "優希",
+      "male_freq": 189,
+      "female_freq": 136
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.11948051948051948,
+   "intercept": -236.93679653679655,
+   "r_value": 0.785626837906824,
+   "r_squared": 0.6172095284394751,
+   "p_value": 2.44174301650755e-05,
+   "std_err": 0.021586615206437863,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.00016109411705398193,
+   "intercept": -0.3183066788169391,
+   "r_value": 0.6596195090782555,
+   "r_squared": 0.4350978967566388,
+   "p_value": 0.0011414668730339418,
+   "std_err": 4.2111041657644725e-05,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "n_top": 100
+ },
+ "hs_orth_500": {
+  "data": [
+   {
+    "year": 1989,
+    "overlap_count": 10,
+    "overlap_freq": 13797,
+    "total_babies": 903005,
+    "weighted_proportion": 0.015278985166195093,
+    "names": [
+     {
+      "name": "千尋",
+      "male_freq": 212,
+      "female_freq": 1943
+     },
+     {
+      "name": "優",
+      "male_freq": 1278,
+      "female_freq": 819
+     },
+     {
+      "name": "未来",
+      "male_freq": 162,
+      "female_freq": 1881
+     },
+     {
+      "name": "光",
+      "male_freq": 1256,
+      "female_freq": 376
+     },
+     {
+      "name": "歩",
+      "male_freq": 363,
+      "female_freq": 930
+     },
+     {
+      "name": "悠",
+      "male_freq": 774,
+      "female_freq": 509
+     },
+     {
+      "name": "望",
+      "male_freq": 217,
+      "female_freq": 864
+     },
+     {
+      "name": "薫",
+      "male_freq": 313,
+      "female_freq": 753
+     },
+     {
+      "name": "優希",
+      "male_freq": 233,
+      "female_freq": 490
+     },
+     {
+      "name": "友貴",
+      "male_freq": 251,
+      "female_freq": 173
+     }
+    ]
+   },
+   {
+    "year": 1990,
+    "overlap_count": 7,
+    "overlap_freq": 8764,
+    "total_babies": 819081,
+    "weighted_proportion": 0.010699796479224888,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1324,
+      "female_freq": 959
+     },
+     {
+      "name": "光",
+      "male_freq": 1070,
+      "female_freq": 434
+     },
+     {
+      "name": "悠",
+      "male_freq": 779,
+      "female_freq": 476
+     },
+     {
+      "name": "歩",
+      "male_freq": 271,
+      "female_freq": 860
+     },
+     {
+      "name": "望",
+      "male_freq": 146,
+      "female_freq": 830
+     },
+     {
+      "name": "薫",
+      "male_freq": 210,
+      "female_freq": 629
+     },
+     {
+      "name": "優希",
+      "male_freq": 222,
+      "female_freq": 554
+     }
+    ]
+   },
+   {
+    "year": 1991,
+    "overlap_count": 7,
+    "overlap_freq": 6150,
+    "total_babies": 619013,
+    "weighted_proportion": 0.009935170989946899,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 1066,
+      "female_freq": 535
+     },
+     {
+      "name": "光",
+      "male_freq": 733,
+      "female_freq": 303
+     },
+     {
+      "name": "悠",
+      "male_freq": 535,
+      "female_freq": 314
+     },
+     {
+      "name": "歩",
+      "male_freq": 216,
+      "female_freq": 564
+     },
+     {
+      "name": "望",
+      "male_freq": 117,
+      "female_freq": 563
+     },
+     {
+      "name": "優希",
+      "male_freq": 200,
+      "female_freq": 455
+     },
+     {
+      "name": "薫",
+      "male_freq": 148,
+      "female_freq": 401
+     }
+    ]
+   },
+   {
+    "year": 1992,
+    "overlap_count": 8,
+    "overlap_freq": 5377,
+    "total_babies": 501247,
+    "weighted_proportion": 0.010727246247857843,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 838,
+      "female_freq": 485
+     },
+     {
+      "name": "光",
+      "male_freq": 569,
+      "female_freq": 226
+     },
+     {
+      "name": "望",
+      "male_freq": 184,
+      "female_freq": 506
+     },
+     {
+      "name": "悠",
+      "male_freq": 370,
+      "female_freq": 239
+     },
+     {
+      "name": "優希",
+      "male_freq": 186,
+      "female_freq": 381
+     },
+     {
+      "name": "歩",
+      "male_freq": 151,
+      "female_freq": 404
+     },
+     {
+      "name": "薫",
+      "male_freq": 122,
+      "female_freq": 329
+     },
+     {
+      "name": "友紀",
+      "male_freq": 86,
+      "female_freq": 301
+     }
+    ]
+   },
+   {
+    "year": 1993,
+    "overlap_count": 11,
+    "overlap_freq": 9585,
+    "total_babies": 665973,
+    "weighted_proportion": 0.014392475370623133,
+    "names": [
+     {
+      "name": "茜",
+      "male_freq": 123,
+      "female_freq": 1574
+     },
+     {
+      "name": "優",
+      "male_freq": 992,
+      "female_freq": 670
+     },
+     {
+      "name": "優希",
+      "male_freq": 335,
+      "female_freq": 688
+     },
+     {
+      "name": "光",
+      "male_freq": 633,
+      "female_freq": 348
+     },
+     {
+      "name": "悠",
+      "male_freq": 512,
+      "female_freq": 435
+     },
+     {
+      "name": "歩",
+      "male_freq": 228,
+      "female_freq": 582
+     },
+     {
+      "name": "望",
+      "male_freq": 216,
+      "female_freq": 490
+     },
+     {
+      "name": "薫",
+      "male_freq": 163,
+      "female_freq": 400
+     },
+     {
+      "name": "悠希",
+      "male_freq": 256,
+      "female_freq": 220
+     },
+     {
+      "name": "祐希",
+      "male_freq": 290,
+      "female_freq": 145
+     },
+     {
+      "name": "雅",
+      "male_freq": 122,
+      "female_freq": 163
+     }
+    ]
+   },
+   {
+    "year": 1994,
+    "overlap_count": 10,
+    "overlap_freq": 8836,
+    "total_babies": 686137,
+    "weighted_proportion": 0.012877894647861871,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 923,
+      "female_freq": 709
+     },
+     {
+      "name": "楓",
+      "male_freq": 115,
+      "female_freq": 1052
+     },
+     {
+      "name": "光",
+      "male_freq": 889,
+      "female_freq": 274
+     },
+     {
+      "name": "優希",
+      "male_freq": 334,
+      "female_freq": 753
+     },
+     {
+      "name": "悠",
+      "male_freq": 581,
+      "female_freq": 399
+     },
+     {
+      "name": "望",
+      "male_freq": 253,
+      "female_freq": 487
+     },
+     {
+      "name": "歩",
+      "male_freq": 206,
+      "female_freq": 498
+     },
+     {
+      "name": "薫",
+      "male_freq": 149,
+      "female_freq": 370
+     },
+     {
+      "name": "祐希",
+      "male_freq": 273,
+      "female_freq": 193
+     },
+     {
+      "name": "悠希",
+      "male_freq": 201,
+      "female_freq": 177
+     }
+    ]
+   },
+   {
+    "year": 1995,
+    "overlap_count": 12,
+    "overlap_freq": 8986,
+    "total_babies": 649188,
+    "weighted_proportion": 0.013841907120895641,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 889,
+      "female_freq": 644
+     },
+     {
+      "name": "楓",
+      "male_freq": 122,
+      "female_freq": 1163
+     },
+     {
+      "name": "優希",
+      "male_freq": 350,
+      "female_freq": 720
+     },
+     {
+      "name": "光",
+      "male_freq": 762,
+      "female_freq": 282
+     },
+     {
+      "name": "悠",
+      "male_freq": 595,
+      "female_freq": 422
+     },
+     {
+      "name": "歩",
+      "male_freq": 250,
+      "female_freq": 467
+     },
+     {
+      "name": "望",
+      "male_freq": 227,
+      "female_freq": 438
+     },
+     {
+      "name": "祐希",
+      "male_freq": 303,
+      "female_freq": 159
+     },
+     {
+      "name": "薫",
+      "male_freq": 136,
+      "female_freq": 296
+     },
+     {
+      "name": "瑞貴",
+      "male_freq": 120,
+      "female_freq": 163
+     },
+     {
+      "name": "瑞生",
+      "male_freq": 115,
+      "female_freq": 125
+     },
+     {
+      "name": "玲",
+      "male_freq": 107,
+      "female_freq": 131
+     }
+    ]
+   },
+   {
+    "year": 1996,
+    "overlap_count": 12,
+    "overlap_freq": 8693,
+    "total_babies": 589252,
+    "weighted_proportion": 0.014752601603388702,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 799,
+      "female_freq": 510
+     },
+     {
+      "name": "楓",
+      "male_freq": 109,
+      "female_freq": 1088
+     },
+     {
+      "name": "優希",
+      "male_freq": 404,
+      "female_freq": 658
+     },
+     {
+      "name": "光",
+      "male_freq": 615,
+      "female_freq": 338
+     },
+     {
+      "name": "樹",
+      "male_freq": 788,
+      "female_freq": 108
+     },
+     {
+      "name": "悠",
+      "male_freq": 378,
+      "female_freq": 346
+     },
+     {
+      "name": "歩",
+      "male_freq": 242,
+      "female_freq": 373
+     },
+     {
+      "name": "望",
+      "male_freq": 160,
+      "female_freq": 406
+     },
+     {
+      "name": "祐希",
+      "male_freq": 306,
+      "female_freq": 189
+     },
+     {
+      "name": "薫",
+      "male_freq": 124,
+      "female_freq": 240
+     },
+     {
+      "name": "悠希",
+      "male_freq": 178,
+      "female_freq": 115
+     },
+     {
+      "name": "玲",
+      "male_freq": 107,
+      "female_freq": 112
+     }
+    ]
+   },
+   {
+    "year": 1997,
+    "overlap_count": 17,
+    "overlap_freq": 23214,
+    "total_babies": 1079010,
+    "weighted_proportion": 0.021514165763060582,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 240,
+      "female_freq": 2353
+     },
+     {
+      "name": "楓",
+      "male_freq": 173,
+      "female_freq": 2084
+     },
+     {
+      "name": "樹",
+      "male_freq": 1740,
+      "female_freq": 262
+     },
+     {
+      "name": "優",
+      "male_freq": 1136,
+      "female_freq": 831
+     },
+     {
+      "name": "優希",
+      "male_freq": 797,
+      "female_freq": 1153
+     },
+     {
+      "name": "涼",
+      "male_freq": 1584,
+      "female_freq": 316
+     },
+     {
+      "name": "光",
+      "male_freq": 1285,
+      "female_freq": 435
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 177,
+      "female_freq": 1296
+     },
+     {
+      "name": "悠",
+      "male_freq": 684,
+      "female_freq": 520
+     },
+     {
+      "name": "歩",
+      "male_freq": 490,
+      "female_freq": 613
+     },
+     {
+      "name": "響",
+      "male_freq": 728,
+      "female_freq": 237
+     },
+     {
+      "name": "望",
+      "male_freq": 323,
+      "female_freq": 600
+     },
+     {
+      "name": "祐希",
+      "male_freq": 527,
+      "female_freq": 348
+     },
+     {
+      "name": "薫",
+      "male_freq": 329,
+      "female_freq": 370
+     },
+     {
+      "name": "伊織",
+      "male_freq": 402,
+      "female_freq": 205
+     },
+     {
+      "name": "瑞貴",
+      "male_freq": 269,
+      "female_freq": 317
+     },
+     {
+      "name": "瑞生",
+      "male_freq": 176,
+      "female_freq": 214
+     }
+    ]
+   },
+   {
+    "year": 1998,
+    "overlap_count": 22,
+    "overlap_freq": 25909,
+    "total_babies": 1114582,
+    "weighted_proportion": 0.023245485751609122,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 310,
+      "female_freq": 2639
+     },
+     {
+      "name": "樹",
+      "male_freq": 1839,
+      "female_freq": 298
+     },
+     {
+      "name": "楓",
+      "male_freq": 280,
+      "female_freq": 1785
+     },
+     {
+      "name": "優希",
+      "male_freq": 918,
+      "female_freq": 1135
+     },
+     {
+      "name": "優",
+      "male_freq": 1216,
+      "female_freq": 830
+     },
+     {
+      "name": "涼",
+      "male_freq": 1303,
+      "female_freq": 309
+     },
+     {
+      "name": "光",
+      "male_freq": 1130,
+      "female_freq": 395
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 210,
+      "female_freq": 1263
+     },
+     {
+      "name": "響",
+      "male_freq": 1077,
+      "female_freq": 361
+     },
+     {
+      "name": "悠",
+      "male_freq": 766,
+      "female_freq": 515
+     },
+     {
+      "name": "歩",
+      "male_freq": 553,
+      "female_freq": 562
+     },
+     {
+      "name": "望",
+      "male_freq": 270,
+      "female_freq": 488
+     },
+     {
+      "name": "祐希",
+      "male_freq": 494,
+      "female_freq": 248
+     },
+     {
+      "name": "真生",
+      "male_freq": 315,
+      "female_freq": 400
+     },
+     {
+      "name": "伊織",
+      "male_freq": 382,
+      "female_freq": 222
+     },
+     {
+      "name": "薫",
+      "male_freq": 229,
+      "female_freq": 333
+     },
+     {
+      "name": "陽",
+      "male_freq": 280,
+      "female_freq": 261
+     },
+     {
+      "name": "玲",
+      "male_freq": 253,
+      "female_freq": 269
+     },
+     {
+      "name": "瑞貴",
+      "male_freq": 237,
+      "female_freq": 284
+     },
+     {
+      "name": "瑞生",
+      "male_freq": 226,
+      "female_freq": 219
+     },
+     {
+      "name": "友希",
+      "male_freq": 193,
+      "female_freq": 225
+     },
+     {
+      "name": "心",
+      "male_freq": 180,
+      "female_freq": 207
+     }
+    ]
+   },
+   {
+    "year": 1999,
+    "overlap_count": 26,
+    "overlap_freq": 39997,
+    "total_babies": 1254507,
+    "weighted_proportion": 0.031882643939013494,
+    "names": [
+     {
+      "name": "未来",
+      "male_freq": 480,
+      "female_freq": 3038
+     },
+     {
+      "name": "葵",
+      "male_freq": 353,
+      "female_freq": 2830
+     },
+     {
+      "name": "七海",
+      "male_freq": 323,
+      "female_freq": 2763
+     },
+     {
+      "name": "楓",
+      "male_freq": 574,
+      "female_freq": 2224
+     },
+     {
+      "name": "樹",
+      "male_freq": 2180,
+      "female_freq": 263
+     },
+     {
+      "name": "優希",
+      "male_freq": 1179,
+      "female_freq": 1253
+     },
+     {
+      "name": "優",
+      "male_freq": 1418,
+      "female_freq": 879
+     },
+     {
+      "name": "光",
+      "male_freq": 1710,
+      "female_freq": 581
+     },
+     {
+      "name": "千尋",
+      "male_freq": 294,
+      "female_freq": 1644
+     },
+     {
+      "name": "涼",
+      "male_freq": 1438,
+      "female_freq": 302
+     },
+     {
+      "name": "響",
+      "male_freq": 1236,
+      "female_freq": 332
+     },
+     {
+      "name": "歩",
+      "male_freq": 779,
+      "female_freq": 693
+     },
+     {
+      "name": "悠",
+      "male_freq": 736,
+      "female_freq": 576
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 294,
+      "female_freq": 1011
+     },
+     {
+      "name": "真央",
+      "male_freq": 254,
+      "female_freq": 806
+     },
+     {
+      "name": "碧",
+      "male_freq": 283,
+      "female_freq": 684
+     },
+     {
+      "name": "凛",
+      "male_freq": 243,
+      "female_freq": 664
+     },
+     {
+      "name": "空",
+      "male_freq": 573,
+      "female_freq": 238
+     },
+     {
+      "name": "真生",
+      "male_freq": 375,
+      "female_freq": 357
+     },
+     {
+      "name": "陽",
+      "male_freq": 371,
+      "female_freq": 308
+     },
+     {
+      "name": "望",
+      "male_freq": 327,
+      "female_freq": 335
+     },
+     {
+      "name": "薫",
+      "male_freq": 322,
+      "female_freq": 323
+     },
+     {
+      "name": "希",
+      "male_freq": 219,
+      "female_freq": 416
+     },
+     {
+      "name": "日向",
+      "male_freq": 324,
+      "female_freq": 237
+     },
+     {
+      "name": "瑞貴",
+      "male_freq": 263,
+      "female_freq": 240
+     },
+     {
+      "name": "玲",
+      "male_freq": 220,
+      "female_freq": 232
+     }
+    ]
+   },
+   {
+    "year": 2000,
+    "overlap_count": 33,
+    "overlap_freq": 45093,
+    "total_babies": 1193302,
+    "weighted_proportion": 0.03778842237757081,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 309,
+      "female_freq": 2920
+     },
+     {
+      "name": "七海",
+      "male_freq": 392,
+      "female_freq": 2531
+     },
+     {
+      "name": "未来",
+      "male_freq": 464,
+      "female_freq": 2348
+     },
+     {
+      "name": "優希",
+      "male_freq": 1337,
+      "female_freq": 1294
+     },
+     {
+      "name": "楓",
+      "male_freq": 442,
+      "female_freq": 2039
+     },
+     {
+      "name": "優",
+      "male_freq": 1313,
+      "female_freq": 909
+     },
+     {
+      "name": "舞",
+      "male_freq": 228,
+      "female_freq": 1953
+     },
+     {
+      "name": "樹",
+      "male_freq": 1807,
+      "female_freq": 225
+     },
+     {
+      "name": "愛",
+      "male_freq": 225,
+      "female_freq": 1471
+     },
+     {
+      "name": "光",
+      "male_freq": 1282,
+      "female_freq": 375
+     },
+     {
+      "name": "響",
+      "male_freq": 1261,
+      "female_freq": 395
+     },
+     {
+      "name": "涼",
+      "male_freq": 1324,
+      "female_freq": 291
+     },
+     {
+      "name": "歩",
+      "male_freq": 939,
+      "female_freq": 551
+     },
+     {
+      "name": "凛",
+      "male_freq": 624,
+      "female_freq": 865
+     },
+     {
+      "name": "千尋",
+      "male_freq": 254,
+      "female_freq": 1145
+     },
+     {
+      "name": "悠",
+      "male_freq": 763,
+      "female_freq": 552
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 345,
+      "female_freq": 880
+     },
+     {
+      "name": "歩夢",
+      "male_freq": 877,
+      "female_freq": 235
+     },
+     {
+      "name": "碧",
+      "male_freq": 342,
+      "female_freq": 715
+     },
+     {
+      "name": "真央",
+      "male_freq": 270,
+      "female_freq": 754
+     },
+     {
+      "name": "空",
+      "male_freq": 688,
+      "female_freq": 226
+     },
+     {
+      "name": "凜",
+      "male_freq": 253,
+      "female_freq": 633
+     },
+     {
+      "name": "陽",
+      "male_freq": 534,
+      "female_freq": 334
+     },
+     {
+      "name": "真生",
+      "male_freq": 290,
+      "female_freq": 342
+     },
+     {
+      "name": "希",
+      "male_freq": 217,
+      "female_freq": 391
+     },
+     {
+      "name": "日向",
+      "male_freq": 297,
+      "female_freq": 237
+     },
+     {
+      "name": "望",
+      "male_freq": 259,
+      "female_freq": 273
+     },
+     {
+      "name": "和",
+      "male_freq": 208,
+      "female_freq": 321
+     },
+     {
+      "name": "薫",
+      "male_freq": 268,
+      "female_freq": 259
+     },
+     {
+      "name": "心",
+      "male_freq": 250,
+      "female_freq": 247
+     },
+     {
+      "name": "玲",
+      "male_freq": 255,
+      "female_freq": 219
+     },
+     {
+      "name": "友紀",
+      "male_freq": 201,
+      "female_freq": 226
+     },
+     {
+      "name": "海音",
+      "male_freq": 197,
+      "female_freq": 222
+     }
+    ]
+   },
+   {
+    "year": 2001,
+    "overlap_count": 24,
+    "overlap_freq": 23295,
+    "total_babies": 869836,
+    "weighted_proportion": 0.026780910424493813,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 277,
+      "female_freq": 1970
+     },
+     {
+      "name": "楓",
+      "male_freq": 387,
+      "female_freq": 1496
+     },
+     {
+      "name": "優希",
+      "male_freq": 882,
+      "female_freq": 909
+     },
+     {
+      "name": "優",
+      "male_freq": 869,
+      "female_freq": 727
+     },
+     {
+      "name": "樹",
+      "male_freq": 1168,
+      "female_freq": 190
+     },
+     {
+      "name": "響",
+      "male_freq": 1013,
+      "female_freq": 343
+     },
+     {
+      "name": "光",
+      "male_freq": 885,
+      "female_freq": 321
+     },
+     {
+      "name": "凜",
+      "male_freq": 354,
+      "female_freq": 770
+     },
+     {
+      "name": "歩",
+      "male_freq": 743,
+      "female_freq": 368
+     },
+     {
+      "name": "涼",
+      "male_freq": 783,
+      "female_freq": 268
+     },
+     {
+      "name": "凛",
+      "male_freq": 315,
+      "female_freq": 729
+     },
+     {
+      "name": "悠",
+      "male_freq": 643,
+      "female_freq": 333
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 153,
+      "female_freq": 672
+     },
+     {
+      "name": "碧",
+      "male_freq": 251,
+      "female_freq": 495
+     },
+     {
+      "name": "空",
+      "male_freq": 529,
+      "female_freq": 179
+     },
+     {
+      "name": "怜",
+      "male_freq": 491,
+      "female_freq": 201
+     },
+     {
+      "name": "陽",
+      "male_freq": 359,
+      "female_freq": 214
+     },
+     {
+      "name": "心",
+      "male_freq": 245,
+      "female_freq": 256
+     },
+     {
+      "name": "海音",
+      "male_freq": 257,
+      "female_freq": 200
+     },
+     {
+      "name": "日向",
+      "male_freq": 238,
+      "female_freq": 215
+     },
+     {
+      "name": "真生",
+      "male_freq": 225,
+      "female_freq": 224
+     },
+     {
+      "name": "玲",
+      "male_freq": 208,
+      "female_freq": 176
+     },
+     {
+      "name": "望",
+      "male_freq": 156,
+      "female_freq": 228
+     },
+     {
+      "name": "薫",
+      "male_freq": 200,
+      "female_freq": 180
+     }
+    ]
+   },
+   {
+    "year": 2002,
+    "overlap_count": 28,
+    "overlap_freq": 26203,
+    "total_babies": 845216,
+    "weighted_proportion": 0.0310015428008935,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 330,
+      "female_freq": 2140
+     },
+     {
+      "name": "楓",
+      "male_freq": 422,
+      "female_freq": 1585
+     },
+     {
+      "name": "凛",
+      "male_freq": 416,
+      "female_freq": 1405
+     },
+     {
+      "name": "優希",
+      "male_freq": 974,
+      "female_freq": 826
+     },
+     {
+      "name": "凜",
+      "male_freq": 394,
+      "female_freq": 1328
+     },
+     {
+      "name": "光",
+      "male_freq": 1122,
+      "female_freq": 526
+     },
+     {
+      "name": "優",
+      "male_freq": 822,
+      "female_freq": 695
+     },
+     {
+      "name": "響",
+      "male_freq": 935,
+      "female_freq": 309
+     },
+     {
+      "name": "悠",
+      "male_freq": 722,
+      "female_freq": 353
+     },
+     {
+      "name": "涼",
+      "male_freq": 868,
+      "female_freq": 195
+     },
+     {
+      "name": "歩",
+      "male_freq": 707,
+      "female_freq": 309
+     },
+     {
+      "name": "碧",
+      "male_freq": 258,
+      "female_freq": 493
+     },
+     {
+      "name": "空",
+      "male_freq": 544,
+      "female_freq": 186
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 152,
+      "female_freq": 569
+     },
+     {
+      "name": "怜",
+      "male_freq": 443,
+      "female_freq": 257
+     },
+     {
+      "name": "心",
+      "male_freq": 328,
+      "female_freq": 364
+     },
+     {
+      "name": "陽",
+      "male_freq": 361,
+      "female_freq": 218
+     },
+     {
+      "name": "陽向",
+      "male_freq": 375,
+      "female_freq": 194
+     },
+     {
+      "name": "日向",
+      "male_freq": 283,
+      "female_freq": 252
+     },
+     {
+      "name": "和",
+      "male_freq": 178,
+      "female_freq": 351
+     },
+     {
+      "name": "伊織",
+      "male_freq": 328,
+      "female_freq": 161
+     },
+     {
+      "name": "聖",
+      "male_freq": 317,
+      "female_freq": 156
+     },
+     {
+      "name": "真生",
+      "male_freq": 169,
+      "female_freq": 235
+     },
+     {
+      "name": "望",
+      "male_freq": 163,
+      "female_freq": 185
+     },
+     {
+      "name": "玲",
+      "male_freq": 181,
+      "female_freq": 158
+     },
+     {
+      "name": "海音",
+      "male_freq": 174,
+      "female_freq": 160
+     },
+     {
+      "name": "薫",
+      "male_freq": 177,
+      "female_freq": 151
+     },
+     {
+      "name": "奏",
+      "male_freq": 132,
+      "female_freq": 167
+     }
+    ]
+   },
+   {
+    "year": 2003,
+    "overlap_count": 32,
+    "overlap_freq": 25950,
+    "total_babies": 761750,
+    "weighted_proportion": 0.034066294716114214,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 289,
+      "female_freq": 1924
+     },
+     {
+      "name": "楓",
+      "male_freq": 360,
+      "female_freq": 1197
+     },
+     {
+      "name": "優希",
+      "male_freq": 792,
+      "female_freq": 619
+     },
+     {
+      "name": "凛",
+      "male_freq": 292,
+      "female_freq": 1049
+     },
+     {
+      "name": "凜",
+      "male_freq": 284,
+      "female_freq": 1051
+     },
+     {
+      "name": "優",
+      "male_freq": 740,
+      "female_freq": 589
+     },
+     {
+      "name": "響",
+      "male_freq": 901,
+      "female_freq": 236
+     },
+     {
+      "name": "光",
+      "male_freq": 752,
+      "female_freq": 324
+     },
+     {
+      "name": "樹",
+      "male_freq": 936,
+      "female_freq": 134
+     },
+     {
+      "name": "悠",
+      "male_freq": 732,
+      "female_freq": 317
+     },
+     {
+      "name": "空",
+      "male_freq": 663,
+      "female_freq": 321
+     },
+     {
+      "name": "碧",
+      "male_freq": 350,
+      "female_freq": 538
+     },
+     {
+      "name": "光希",
+      "male_freq": 594,
+      "female_freq": 240
+     },
+     {
+      "name": "心",
+      "male_freq": 324,
+      "female_freq": 457
+     },
+     {
+      "name": "真央",
+      "male_freq": 115,
+      "female_freq": 666
+     },
+     {
+      "name": "陽",
+      "male_freq": 523,
+      "female_freq": 248
+     },
+     {
+      "name": "涼",
+      "male_freq": 564,
+      "female_freq": 194
+     },
+     {
+      "name": "陽向",
+      "male_freq": 435,
+      "female_freq": 249
+     },
+     {
+      "name": "歩",
+      "male_freq": 464,
+      "female_freq": 206
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 119,
+      "female_freq": 480
+     },
+     {
+      "name": "怜",
+      "male_freq": 356,
+      "female_freq": 223
+     },
+     {
+      "name": "日向",
+      "male_freq": 327,
+      "female_freq": 242
+     },
+     {
+      "name": "伊織",
+      "male_freq": 289,
+      "female_freq": 159
+     },
+     {
+      "name": "和",
+      "male_freq": 148,
+      "female_freq": 293
+     },
+     {
+      "name": "海音",
+      "male_freq": 200,
+      "female_freq": 190
+     },
+     {
+      "name": "希",
+      "male_freq": 125,
+      "female_freq": 257
+     },
+     {
+      "name": "青空",
+      "male_freq": 187,
+      "female_freq": 159
+     },
+     {
+      "name": "真生",
+      "male_freq": 159,
+      "female_freq": 173
+     },
+     {
+      "name": "奏",
+      "male_freq": 132,
+      "female_freq": 179
+     },
+     {
+      "name": "夢叶",
+      "male_freq": 138,
+      "female_freq": 170
+     },
+     {
+      "name": "望",
+      "male_freq": 169,
+      "female_freq": 137
+     },
+     {
+      "name": "凪",
+      "male_freq": 140,
+      "female_freq": 130
+     }
+    ]
+   },
+   {
+    "year": 2004,
+    "overlap_count": 28,
+    "overlap_freq": 13811,
+    "total_babies": 441838,
+    "weighted_proportion": 0.03125806290993532,
+    "names": [
+     {
+      "name": "凜",
+      "male_freq": 164,
+      "female_freq": 1136
+     },
+     {
+      "name": "葵",
+      "male_freq": 144,
+      "female_freq": 989
+     },
+     {
+      "name": "優",
+      "male_freq": 391,
+      "female_freq": 454
+     },
+     {
+      "name": "楓",
+      "male_freq": 215,
+      "female_freq": 600
+     },
+     {
+      "name": "優希",
+      "male_freq": 440,
+      "female_freq": 324
+     },
+     {
+      "name": "凛",
+      "male_freq": 76,
+      "female_freq": 550
+     },
+     {
+      "name": "遥",
+      "male_freq": 78,
+      "female_freq": 538
+     },
+     {
+      "name": "陽",
+      "male_freq": 456,
+      "female_freq": 151
+     },
+     {
+      "name": "光",
+      "male_freq": 415,
+      "female_freq": 167
+     },
+     {
+      "name": "悠",
+      "male_freq": 402,
+      "female_freq": 149
+     },
+     {
+      "name": "空",
+      "male_freq": 377,
+      "female_freq": 149
+     },
+     {
+      "name": "響",
+      "male_freq": 380,
+      "female_freq": 115
+     },
+     {
+      "name": "光希",
+      "male_freq": 340,
+      "female_freq": 118
+     },
+     {
+      "name": "碧",
+      "male_freq": 181,
+      "female_freq": 276
+     },
+     {
+      "name": "心",
+      "male_freq": 150,
+      "female_freq": 304
+     },
+     {
+      "name": "陽向",
+      "male_freq": 289,
+      "female_freq": 153
+     },
+     {
+      "name": "涼",
+      "male_freq": 263,
+      "female_freq": 122
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 74,
+      "female_freq": 278
+     },
+     {
+      "name": "歩",
+      "male_freq": 219,
+      "female_freq": 107
+     },
+     {
+      "name": "和",
+      "male_freq": 77,
+      "female_freq": 205
+     },
+     {
+      "name": "日向",
+      "male_freq": 133,
+      "female_freq": 146
+     },
+     {
+      "name": "青空",
+      "male_freq": 148,
+      "female_freq": 101
+     },
+     {
+      "name": "伊織",
+      "male_freq": 171,
+      "female_freq": 76
+     },
+     {
+      "name": "奏",
+      "male_freq": 101,
+      "female_freq": 142
+     },
+     {
+      "name": "怜",
+      "male_freq": 150,
+      "female_freq": 81
+     },
+     {
+      "name": "真生",
+      "male_freq": 82,
+      "female_freq": 124
+     },
+     {
+      "name": "海音",
+      "male_freq": 102,
+      "female_freq": 84
+     },
+     {
+      "name": "凪",
+      "male_freq": 71,
+      "female_freq": 83
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 28,
+    "overlap_freq": 12047,
+    "total_babies": 389252,
+    "weighted_proportion": 0.030949102380976846,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 143,
+      "female_freq": 1023
+     },
+     {
+      "name": "優",
+      "male_freq": 342,
+      "female_freq": 465
+     },
+     {
+      "name": "楓",
+      "male_freq": 163,
+      "female_freq": 534
+     },
+     {
+      "name": "凛",
+      "male_freq": 98,
+      "female_freq": 554
+     },
+     {
+      "name": "凜",
+      "male_freq": 96,
+      "female_freq": 553
+     },
+     {
+      "name": "優希",
+      "male_freq": 356,
+      "female_freq": 286
+     },
+     {
+      "name": "遥",
+      "male_freq": 73,
+      "female_freq": 426
+     },
+     {
+      "name": "未来",
+      "male_freq": 67,
+      "female_freq": 430
+     },
+     {
+      "name": "陽",
+      "male_freq": 389,
+      "female_freq": 106
+     },
+     {
+      "name": "悠",
+      "male_freq": 316,
+      "female_freq": 175
+     },
+     {
+      "name": "響",
+      "male_freq": 416,
+      "female_freq": 74
+     },
+     {
+      "name": "心",
+      "male_freq": 154,
+      "female_freq": 271
+     },
+     {
+      "name": "空",
+      "male_freq": 315,
+      "female_freq": 105
+     },
+     {
+      "name": "碧",
+      "male_freq": 158,
+      "female_freq": 247
+     },
+     {
+      "name": "光",
+      "male_freq": 290,
+      "female_freq": 107
+     },
+     {
+      "name": "陽向",
+      "male_freq": 262,
+      "female_freq": 127
+     },
+     {
+      "name": "光希",
+      "male_freq": 269,
+      "female_freq": 87
+     },
+     {
+      "name": "優羽",
+      "male_freq": 66,
+      "female_freq": 216
+     },
+     {
+      "name": "歩",
+      "male_freq": 206,
+      "female_freq": 74
+     },
+     {
+      "name": "瑞希",
+      "male_freq": 62,
+      "female_freq": 218
+     },
+     {
+      "name": "涼",
+      "male_freq": 190,
+      "female_freq": 80
+     },
+     {
+      "name": "伊織",
+      "male_freq": 168,
+      "female_freq": 92
+     },
+     {
+      "name": "奏",
+      "male_freq": 134,
+      "female_freq": 125
+     },
+     {
+      "name": "日向",
+      "male_freq": 125,
+      "female_freq": 96
+     },
+     {
+      "name": "青空",
+      "male_freq": 123,
+      "female_freq": 67
+     },
+     {
+      "name": "海音",
+      "male_freq": 109,
+      "female_freq": 80
+     },
+     {
+      "name": "希",
+      "male_freq": 77,
+      "female_freq": 104
+     },
+     {
+      "name": "真生",
+      "male_freq": 64,
+      "female_freq": 94
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 28,
+    "overlap_freq": 11350,
+    "total_babies": 366519,
+    "weighted_proportion": 0.030967016716732285,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 160,
+      "female_freq": 1001
+     },
+     {
+      "name": "楓",
+      "male_freq": 159,
+      "female_freq": 540
+     },
+     {
+      "name": "優",
+      "male_freq": 293,
+      "female_freq": 389
+     },
+     {
+      "name": "凛",
+      "male_freq": 94,
+      "female_freq": 537
+     },
+     {
+      "name": "凜",
+      "male_freq": 63,
+      "female_freq": 509
+     },
+     {
+      "name": "優希",
+      "male_freq": 336,
+      "female_freq": 230
+     },
+     {
+      "name": "未来",
+      "male_freq": 86,
+      "female_freq": 454
+     },
+     {
+      "name": "遥",
+      "male_freq": 64,
+      "female_freq": 466
+     },
+     {
+      "name": "悠",
+      "male_freq": 299,
+      "female_freq": 152
+     },
+     {
+      "name": "陽",
+      "male_freq": 341,
+      "female_freq": 105
+     },
+     {
+      "name": "陽向",
+      "male_freq": 287,
+      "female_freq": 150
+     },
+     {
+      "name": "優月",
+      "male_freq": 62,
+      "female_freq": 374
+     },
+     {
+      "name": "碧",
+      "male_freq": 172,
+      "female_freq": 227
+     },
+     {
+      "name": "心",
+      "male_freq": 140,
+      "female_freq": 258
+     },
+     {
+      "name": "響",
+      "male_freq": 322,
+      "female_freq": 67
+     },
+     {
+      "name": "光",
+      "male_freq": 246,
+      "female_freq": 101
+     },
+     {
+      "name": "空",
+      "male_freq": 260,
+      "female_freq": 84
+     },
+     {
+      "name": "光希",
+      "male_freq": 218,
+      "female_freq": 63
+     },
+     {
+      "name": "奏",
+      "male_freq": 107,
+      "female_freq": 153
+     },
+     {
+      "name": "歩",
+      "male_freq": 172,
+      "female_freq": 80
+     },
+     {
+      "name": "蒼",
+      "male_freq": 142,
+      "female_freq": 79
+     },
+     {
+      "name": "伊織",
+      "male_freq": 149,
+      "female_freq": 68
+     },
+     {
+      "name": "海音",
+      "male_freq": 119,
+      "female_freq": 93
+     },
+     {
+      "name": "日向",
+      "male_freq": 100,
+      "female_freq": 95
+     },
+     {
+      "name": "怜",
+      "male_freq": 133,
+      "female_freq": 61
+     },
+     {
+      "name": "優空",
+      "male_freq": 66,
+      "female_freq": 113
+     },
+     {
+      "name": "悠月",
+      "male_freq": 74,
+      "female_freq": 101
+     },
+     {
+      "name": "真生",
+      "male_freq": 60,
+      "female_freq": 76
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 33,
+    "overlap_freq": 10437,
+    "total_babies": 296450,
+    "weighted_proportion": 0.03520661157024793,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 150,
+      "female_freq": 875
+     },
+     {
+      "name": "凛",
+      "male_freq": 94,
+      "female_freq": 559
+     },
+     {
+      "name": "楓",
+      "male_freq": 142,
+      "female_freq": 427
+     },
+     {
+      "name": "優",
+      "male_freq": 266,
+      "female_freq": 279
+     },
+     {
+      "name": "陽向",
+      "male_freq": 353,
+      "female_freq": 116
+     },
+     {
+      "name": "優希",
+      "male_freq": 248,
+      "female_freq": 203
+     },
+     {
+      "name": "蒼空",
+      "male_freq": 367,
+      "female_freq": 66
+     },
+     {
+      "name": "心",
+      "male_freq": 150,
+      "female_freq": 269
+     },
+     {
+      "name": "悠",
+      "male_freq": 307,
+      "female_freq": 86
+     },
+     {
+      "name": "優月",
+      "male_freq": 48,
+      "female_freq": 344
+     },
+     {
+      "name": "凜",
+      "male_freq": 47,
+      "female_freq": 339
+     },
+     {
+      "name": "陽",
+      "male_freq": 297,
+      "female_freq": 72
+     },
+     {
+      "name": "碧",
+      "male_freq": 162,
+      "female_freq": 185
+     },
+     {
+      "name": "遥",
+      "male_freq": 48,
+      "female_freq": 255
+     },
+     {
+      "name": "空",
+      "male_freq": 232,
+      "female_freq": 59
+     },
+     {
+      "name": "奏",
+      "male_freq": 137,
+      "female_freq": 148
+     },
+     {
+      "name": "未来",
+      "male_freq": 47,
+      "female_freq": 221
+     },
+     {
+      "name": "光",
+      "male_freq": 176,
+      "female_freq": 78
+     },
+     {
+      "name": "光希",
+      "male_freq": 176,
+      "female_freq": 67
+     },
+     {
+      "name": "歩",
+      "male_freq": 161,
+      "female_freq": 59
+     },
+     {
+      "name": "理央",
+      "male_freq": 49,
+      "female_freq": 156
+     },
+     {
+      "name": "蒼",
+      "male_freq": 130,
+      "female_freq": 64
+     },
+     {
+      "name": "優羽",
+      "male_freq": 53,
+      "female_freq": 141
+     },
+     {
+      "name": "伊織",
+      "male_freq": 128,
+      "female_freq": 63
+     },
+     {
+      "name": "悠月",
+      "male_freq": 84,
+      "female_freq": 94
+     },
+     {
+      "name": "優心",
+      "male_freq": 106,
+      "female_freq": 67
+     },
+     {
+      "name": "日向",
+      "male_freq": 105,
+      "female_freq": 64
+     },
+     {
+      "name": "怜",
+      "male_freq": 90,
+      "female_freq": 78
+     },
+     {
+      "name": "奏音",
+      "male_freq": 63,
+      "female_freq": 96
+     },
+     {
+      "name": "海音",
+      "male_freq": 78,
+      "female_freq": 76
+     },
+     {
+      "name": "優空",
+      "male_freq": 52,
+      "female_freq": 73
+     },
+     {
+      "name": "真生",
+      "male_freq": 56,
+      "female_freq": 53
+     },
+     {
+      "name": "玲",
+      "male_freq": 53,
+      "female_freq": 50
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 32,
+    "overlap_freq": 8991,
+    "total_babies": 261968,
+    "weighted_proportion": 0.03432098576925426,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 108,
+      "female_freq": 769
+     },
+     {
+      "name": "凛",
+      "male_freq": 64,
+      "female_freq": 478
+     },
+     {
+      "name": "優",
+      "male_freq": 250,
+      "female_freq": 256
+     },
+     {
+      "name": "蒼空",
+      "male_freq": 392,
+      "female_freq": 88
+     },
+     {
+      "name": "陽向",
+      "male_freq": 297,
+      "female_freq": 134
+     },
+     {
+      "name": "楓",
+      "male_freq": 98,
+      "female_freq": 321
+     },
+     {
+      "name": "心",
+      "male_freq": 142,
+      "female_freq": 243
+     },
+     {
+      "name": "優月",
+      "male_freq": 62,
+      "female_freq": 314
+     },
+     {
+      "name": "優希",
+      "male_freq": 209,
+      "female_freq": 162
+     },
+     {
+      "name": "悠",
+      "male_freq": 246,
+      "female_freq": 72
+     },
+     {
+      "name": "響",
+      "male_freq": 234,
+      "female_freq": 52
+     },
+     {
+      "name": "碧",
+      "male_freq": 125,
+      "female_freq": 154
+     },
+     {
+      "name": "空",
+      "male_freq": 205,
+      "female_freq": 66
+     },
+     {
+      "name": "奏",
+      "male_freq": 138,
+      "female_freq": 128
+     },
+     {
+      "name": "陽",
+      "male_freq": 199,
+      "female_freq": 59
+     },
+     {
+      "name": "柚希",
+      "male_freq": 45,
+      "female_freq": 192
+     },
+     {
+      "name": "理央",
+      "male_freq": 43,
+      "female_freq": 175
+     },
+     {
+      "name": "光",
+      "male_freq": 152,
+      "female_freq": 64
+     },
+     {
+      "name": "歩",
+      "male_freq": 152,
+      "female_freq": 46
+     },
+     {
+      "name": "悠月",
+      "male_freq": 91,
+      "female_freq": 100
+     },
+     {
+      "name": "光希",
+      "male_freq": 136,
+      "female_freq": 52
+     },
+     {
+      "name": "伊織",
+      "male_freq": 128,
+      "female_freq": 60
+     },
+     {
+      "name": "優羽",
+      "male_freq": 42,
+      "female_freq": 133
+     },
+     {
+      "name": "怜",
+      "male_freq": 111,
+      "female_freq": 58
+     },
+     {
+      "name": "蒼",
+      "male_freq": 120,
+      "female_freq": 48
+     },
+     {
+      "name": "奏音",
+      "male_freq": 51,
+      "female_freq": 116
+     },
+     {
+      "name": "陽葵",
+      "male_freq": 42,
+      "female_freq": 113
+     },
+     {
+      "name": "優心",
+      "male_freq": 95,
+      "female_freq": 57
+     },
+     {
+      "name": "日向",
+      "male_freq": 85,
+      "female_freq": 54
+     },
+     {
+      "name": "海音",
+      "male_freq": 69,
+      "female_freq": 63
+     },
+     {
+      "name": "優空",
+      "male_freq": 58,
+      "female_freq": 73
+     },
+     {
+      "name": "暖",
+      "male_freq": 58,
+      "female_freq": 44
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 32,
+    "overlap_freq": 7750,
+    "total_babies": 226954,
+    "weighted_proportion": 0.034147888999532944,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 84,
+      "female_freq": 492
+     },
+     {
+      "name": "凛",
+      "male_freq": 50,
+      "female_freq": 484
+     },
+     {
+      "name": "楓",
+      "male_freq": 116,
+      "female_freq": 341
+     },
+     {
+      "name": "蒼空",
+      "male_freq": 339,
+      "female_freq": 70
+     },
+     {
+      "name": "陽向",
+      "male_freq": 275,
+      "female_freq": 91
+     },
+     {
+      "name": "凜",
+      "male_freq": 34,
+      "female_freq": 326
+     },
+     {
+      "name": "優",
+      "male_freq": 175,
+      "female_freq": 175
+     },
+     {
+      "name": "悠",
+      "male_freq": 255,
+      "female_freq": 79
+     },
+     {
+      "name": "優希",
+      "male_freq": 189,
+      "female_freq": 136
+     },
+     {
+      "name": "優月",
+      "male_freq": 45,
+      "female_freq": 274
+     },
+     {
+      "name": "柚希",
+      "male_freq": 46,
+      "female_freq": 238
+     },
+     {
+      "name": "心",
+      "male_freq": 83,
+      "female_freq": 169
+     },
+     {
+      "name": "陽",
+      "male_freq": 172,
+      "female_freq": 55
+     },
+     {
+      "name": "碧",
+      "male_freq": 116,
+      "female_freq": 97
+     },
+     {
+      "name": "奏",
+      "male_freq": 91,
+      "female_freq": 115
+     },
+     {
+      "name": "理央",
+      "male_freq": 38,
+      "female_freq": 146
+     },
+     {
+      "name": "空",
+      "male_freq": 134,
+      "female_freq": 48
+     },
+     {
+      "name": "光希",
+      "male_freq": 130,
+      "female_freq": 50
+     },
+     {
+      "name": "光",
+      "male_freq": 128,
+      "female_freq": 52
+     },
+     {
+      "name": "伊織",
+      "male_freq": 125,
+      "female_freq": 54
+     },
+     {
+      "name": "歩",
+      "male_freq": 127,
+      "female_freq": 47
+     },
+     {
+      "name": "悠月",
+      "male_freq": 68,
+      "female_freq": 91
+     },
+     {
+      "name": "怜",
+      "male_freq": 86,
+      "female_freq": 70
+     },
+     {
+      "name": "陽葵",
+      "male_freq": 35,
+      "female_freq": 118
+     },
+     {
+      "name": "璃音",
+      "male_freq": 41,
+      "female_freq": 108
+     },
+     {
+      "name": "優空",
+      "male_freq": 64,
+      "female_freq": 73
+     },
+     {
+      "name": "優羽",
+      "male_freq": 41,
+      "female_freq": 96
+     },
+     {
+      "name": "奏音",
+      "male_freq": 41,
+      "female_freq": 89
+     },
+     {
+      "name": "海音",
+      "male_freq": 61,
+      "female_freq": 61
+     },
+     {
+      "name": "優心",
+      "male_freq": 74,
+      "female_freq": 44
+     },
+     {
+      "name": "日向",
+      "male_freq": 60,
+      "female_freq": 46
+     },
+     {
+      "name": "玲",
+      "male_freq": 51,
+      "female_freq": 41
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 1.477922077922078,
+   "intercept": -2933.4138528138533,
+   "r_value": 0.9256397947367311,
+   "r_squared": 0.8568090296002576,
+   "p_value": 1.854434399020758e-09,
+   "std_err": 0.13860871431975827,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.0014170013807310114,
+   "intercept": -2.8085078928553187,
+   "r_value": 0.8942861372902969,
+   "r_squared": 0.7997476953495998,
+   "p_value": 4.627166122393276e-08,
+   "std_err": 0.0001626693516883222,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    1989,
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "src": "hs",
+  "dtype": "orth",
+  "n_top": 500
+ },
+ "meiji_orth_50": {
+  "data": [
+   {
+    "year": 2004,
+    "overlap_count": 2,
+    "overlap_freq": 46,
+    "total_babies": 2048,
+    "weighted_proportion": 0.0224609375,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 16
+     },
+     {
+      "name": "楓",
+      "male_freq": 8,
+      "female_freq": 12
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 1,
+    "overlap_freq": 16,
+    "total_babies": 1897,
+    "weighted_proportion": 0.008434370057986295,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 8,
+      "female_freq": 8
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 1,
+    "overlap_freq": 26,
+    "total_babies": 1929,
+    "weighted_proportion": 0.01347848626231208,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 18
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 2077,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2008,
+    "overlap_count": 1,
+    "overlap_freq": 20,
+    "total_babies": 2093,
+    "weighted_proportion": 0.009555661729574774,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 11,
+      "female_freq": 9
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 20,
+    "total_babies": 1957,
+    "weighted_proportion": 0.010219724067450179,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 7,
+      "female_freq": 13
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 1,
+    "overlap_freq": 24,
+    "total_babies": 2044,
+    "weighted_proportion": 0.011741682974559686,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 16
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 1,
+    "overlap_freq": 16,
+    "total_babies": 1739,
+    "weighted_proportion": 0.009200690051753882,
+    "names": [
+     {
+      "name": "陽向",
+      "male_freq": 9,
+      "female_freq": 7
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 12,
+    "total_babies": 1660,
+    "weighted_proportion": 0.007228915662650603,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 5,
+      "female_freq": 7
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 2587,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2014,
+    "overlap_count": 1,
+    "overlap_freq": 30,
+    "total_babies": 1968,
+    "weighted_proportion": 0.01524390243902439,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 22
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 1,
+    "overlap_freq": 20,
+    "total_babies": 2046,
+    "weighted_proportion": 0.009775171065493646,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 8,
+      "female_freq": 12
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 1,
+    "overlap_freq": 91,
+    "total_babies": 3944,
+    "weighted_proportion": 0.023073022312373227,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 29,
+      "female_freq": 62
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 1,
+    "overlap_freq": 33,
+    "total_babies": 3496,
+    "weighted_proportion": 0.009439359267734555,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 16,
+      "female_freq": 17
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 4026,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2019,
+    "overlap_count": 0,
+    "overlap_freq": 0,
+    "total_babies": 3525,
+    "weighted_proportion": 0.0,
+    "names": []
+   },
+   {
+    "year": 2020,
+    "overlap_count": 2,
+    "overlap_freq": 99,
+    "total_babies": 3667,
+    "weighted_proportion": 0.026997545677665668,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 20,
+      "female_freq": 31
+     },
+     {
+      "name": "凪",
+      "male_freq": 22,
+      "female_freq": 26
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 2,
+    "overlap_freq": 74,
+    "total_babies": 3492,
+    "weighted_proportion": 0.021191294387170677,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 15,
+      "female_freq": 25
+     },
+     {
+      "name": "凪",
+      "male_freq": 14,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 2,
+    "overlap_freq": 96,
+    "total_babies": 3555,
+    "weighted_proportion": 0.0270042194092827,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 37,
+      "female_freq": 21
+     },
+     {
+      "name": "葵",
+      "male_freq": 15,
+      "female_freq": 23
+     }
+    ]
+   },
+   {
+    "year": 2023,
+    "overlap_count": 4,
+    "overlap_freq": 135,
+    "total_babies": 2972,
+    "weighted_proportion": 0.04542395693135935,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 28,
+      "female_freq": 17
+     },
+     {
+      "name": "翠",
+      "male_freq": 20,
+      "female_freq": 22
+     },
+     {
+      "name": "楓",
+      "male_freq": 16,
+      "female_freq": 11
+     },
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 11
+     }
+    ]
+   },
+   {
+    "year": 2024,
+    "overlap_count": 5,
+    "overlap_freq": 195,
+    "total_babies": 2833,
+    "weighted_proportion": 0.06883162725026473,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 33,
+      "female_freq": 19
+     },
+     {
+      "name": "葵",
+      "male_freq": 19,
+      "female_freq": 25
+     },
+     {
+      "name": "碧",
+      "male_freq": 27,
+      "female_freq": 11
+     },
+     {
+      "name": "凛",
+      "male_freq": 9,
+      "female_freq": 29
+     },
+     {
+      "name": "藍",
+      "male_freq": 11,
+      "female_freq": 12
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.1,
+   "intercept": -200.06666666666666,
+   "r_value": 0.5010857776087235,
+   "r_squared": 0.2510869565217391,
+   "p_value": 0.020670364869923134,
+   "std_err": 0.039621126625789344,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.001431069413915456,
+   "intercept": -2.866016629766364,
+   "r_value": 0.5402229472015931,
+   "r_squared": 0.2918408326831753,
+   "p_value": 0.011467638828118822,
+   "std_err": 0.0005114183563568333,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "n_top": 50
+ },
+ "meiji_orth_100": {
+  "data": [
+   {
+    "year": 2004,
+    "overlap_count": 5,
+    "overlap_freq": 91,
+    "total_babies": 2048,
+    "weighted_proportion": 0.04443359375,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 16
+     },
+     {
+      "name": "楓",
+      "male_freq": 8,
+      "female_freq": 12
+     },
+     {
+      "name": "優",
+      "male_freq": 11,
+      "female_freq": 6
+     },
+     {
+      "name": "優希",
+      "male_freq": 7,
+      "female_freq": 8
+     },
+     {
+      "name": "陽向",
+      "male_freq": 6,
+      "female_freq": 7
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 4,
+    "overlap_freq": 50,
+    "total_babies": 1897,
+    "weighted_proportion": 0.02635740643120717,
+    "names": [
+     {
+      "name": "優",
+      "male_freq": 8,
+      "female_freq": 8
+     },
+     {
+      "name": "楓",
+      "male_freq": 6,
+      "female_freq": 7
+     },
+     {
+      "name": "心",
+      "male_freq": 6,
+      "female_freq": 5
+     },
+     {
+      "name": "歩",
+      "male_freq": 5,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 4,
+    "overlap_freq": 66,
+    "total_babies": 1929,
+    "weighted_proportion": 0.03421461897356143,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 18
+     },
+     {
+      "name": "心",
+      "male_freq": 5,
+      "female_freq": 11
+     },
+     {
+      "name": "優",
+      "male_freq": 5,
+      "female_freq": 8
+     },
+     {
+      "name": "奏",
+      "male_freq": 5,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 1,
+    "overlap_freq": 20,
+    "total_babies": 2077,
+    "weighted_proportion": 0.009629272989889264,
+    "names": [
+     {
+      "name": "優希",
+      "male_freq": 14,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 2,
+    "overlap_freq": 51,
+    "total_babies": 2093,
+    "weighted_proportion": 0.024366937410415672,
+    "names": [
+     {
+      "name": "陽向",
+      "male_freq": 26,
+      "female_freq": 5
+     },
+     {
+      "name": "優",
+      "male_freq": 11,
+      "female_freq": 9
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 20,
+    "total_babies": 1957,
+    "weighted_proportion": 0.010219724067450179,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 7,
+      "female_freq": 13
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 3,
+    "overlap_freq": 48,
+    "total_babies": 2044,
+    "weighted_proportion": 0.023483365949119372,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 16
+     },
+     {
+      "name": "陽向",
+      "male_freq": 9,
+      "female_freq": 5
+     },
+     {
+      "name": "奏",
+      "male_freq": 4,
+      "female_freq": 6
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 3,
+    "overlap_freq": 42,
+    "total_babies": 1739,
+    "weighted_proportion": 0.024151811385853938,
+    "names": [
+     {
+      "name": "陽向",
+      "male_freq": 9,
+      "female_freq": 7
+     },
+     {
+      "name": "優月",
+      "male_freq": 4,
+      "female_freq": 10
+     },
+     {
+      "name": "光希",
+      "male_freq": 7,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 4,
+    "overlap_freq": 49,
+    "total_babies": 1660,
+    "weighted_proportion": 0.029518072289156625,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 4,
+      "female_freq": 11
+     },
+     {
+      "name": "陽向",
+      "male_freq": 8,
+      "female_freq": 4
+     },
+     {
+      "name": "楓",
+      "male_freq": 5,
+      "female_freq": 7
+     },
+     {
+      "name": "悠",
+      "male_freq": 5,
+      "female_freq": 5
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 4,
+    "overlap_freq": 123,
+    "total_babies": 2587,
+    "weighted_proportion": 0.047545419404715884,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 6,
+      "female_freq": 40
+     },
+     {
+      "name": "陽向",
+      "male_freq": 20,
+      "female_freq": 9
+     },
+     {
+      "name": "凛",
+      "male_freq": 7,
+      "female_freq": 21
+     },
+     {
+      "name": "楓",
+      "male_freq": 6,
+      "female_freq": 14
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 4,
+    "overlap_freq": 82,
+    "total_babies": 1968,
+    "weighted_proportion": 0.041666666666666664,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 8,
+      "female_freq": 22
+     },
+     {
+      "name": "陽向",
+      "male_freq": 22,
+      "female_freq": 4
+     },
+     {
+      "name": "悠月",
+      "male_freq": 4,
+      "female_freq": 10
+     },
+     {
+      "name": "碧",
+      "male_freq": 8,
+      "female_freq": 4
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 2,
+    "overlap_freq": 40,
+    "total_babies": 2046,
+    "weighted_proportion": 0.019550342130987292,
+    "names": [
+     {
+      "name": "楓",
+      "male_freq": 8,
+      "female_freq": 12
+     },
+     {
+      "name": "凜",
+      "male_freq": 6,
+      "female_freq": 14
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 3,
+    "overlap_freq": 161,
+    "total_babies": 3944,
+    "weighted_proportion": 0.040821501014198784,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 29,
+      "female_freq": 62
+     },
+     {
+      "name": "悠",
+      "male_freq": 34,
+      "female_freq": 10
+     },
+     {
+      "name": "晴",
+      "male_freq": 16,
+      "female_freq": 10
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 2,
+    "overlap_freq": 72,
+    "total_babies": 3496,
+    "weighted_proportion": 0.020594965675057208,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 29
+     },
+     {
+      "name": "楓",
+      "male_freq": 16,
+      "female_freq": 17
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 2,
+    "overlap_freq": 90,
+    "total_babies": 4026,
+    "weighted_proportion": 0.022354694485842028,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 40
+     },
+     {
+      "name": "楓",
+      "male_freq": 12,
+      "female_freq": 28
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 5,
+    "overlap_freq": 144,
+    "total_babies": 3525,
+    "weighted_proportion": 0.04085106382978723,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 30
+     },
+     {
+      "name": "晴",
+      "male_freq": 19,
+      "female_freq": 10
+     },
+     {
+      "name": "凪",
+      "male_freq": 11,
+      "female_freq": 18
+     },
+     {
+      "name": "陽",
+      "male_freq": 17,
+      "female_freq": 10
+     },
+     {
+      "name": "奏",
+      "male_freq": 9,
+      "female_freq": 10
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 4,
+    "overlap_freq": 147,
+    "total_babies": 3667,
+    "weighted_proportion": 0.04008726479410963,
+    "names": [
+     {
+      "name": "葵",
+      "male_freq": 20,
+      "female_freq": 31
+     },
+     {
+      "name": "凪",
+      "male_freq": 22,
+      "female_freq": 26
+     },
+     {
+      "name": "晴",
+      "male_freq": 14,
+      "female_freq": 11
+     },
+     {
+      "name": "光",
+      "male_freq": 11,
+      "female_freq": 12
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 9,
+    "overlap_freq": 328,
+    "total_babies": 3492,
+    "weighted_proportion": 0.09392898052691867,
+    "names": [
+     {
+      "name": "紬",
+      "male_freq": 8,
+      "female_freq": 49
+     },
+     {
+      "name": "凛",
+      "male_freq": 8,
+      "female_freq": 47
+     },
+     {
+      "name": "葵",
+      "male_freq": 15,
+      "female_freq": 25
+     },
+     {
+      "name": "陽向",
+      "male_freq": 27,
+      "female_freq": 10
+     },
+     {
+      "name": "凪",
+      "male_freq": 14,
+      "female_freq": 20
+     },
+     {
+      "name": "楓",
+      "male_freq": 11,
+      "female_freq": 23
+     },
+     {
+      "name": "陽",
+      "male_freq": 20,
+      "female_freq": 10
+     },
+     {
+      "name": "結心",
+      "male_freq": 9,
+      "female_freq": 12
+     },
+     {
+      "name": "光",
+      "male_freq": 11,
+      "female_freq": 9
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 7,
+    "overlap_freq": 274,
+    "total_babies": 3555,
+    "weighted_proportion": 0.07707454289732771,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 37,
+      "female_freq": 21
+     },
+     {
+      "name": "碧",
+      "male_freq": 35,
+      "female_freq": 13
+     },
+     {
+      "name": "葵",
+      "male_freq": 15,
+      "female_freq": 23
+     },
+     {
+      "name": "陽向",
+      "male_freq": 26,
+      "female_freq": 11
+     },
+     {
+      "name": "陽",
+      "male_freq": 23,
+      "female_freq": 11
+     },
+     {
+      "name": "楓",
+      "male_freq": 10,
+      "female_freq": 23
+     },
+     {
+      "name": "柚希",
+      "male_freq": 9,
+      "female_freq": 17
+     }
+    ]
+   },
+   {
+    "year": 2023,
+    "overlap_count": 6,
+    "overlap_freq": 225,
+    "total_babies": 2972,
+    "weighted_proportion": 0.07570659488559893,
+    "names": [
+     {
+      "name": "凛",
+      "male_freq": 8,
+      "female_freq": 38
+     },
+     {
+      "name": "凪",
+      "male_freq": 28,
+      "female_freq": 17
+     },
+     {
+      "name": "碧",
+      "male_freq": 36,
+      "female_freq": 8
+     },
+     {
+      "name": "翠",
+      "male_freq": 20,
+      "female_freq": 22
+     },
+     {
+      "name": "楓",
+      "male_freq": 16,
+      "female_freq": 11
+     },
+     {
+      "name": "葵",
+      "male_freq": 10,
+      "female_freq": 11
+     }
+    ]
+   },
+   {
+    "year": 2024,
+    "overlap_count": 7,
+    "overlap_freq": 240,
+    "total_babies": 2833,
+    "weighted_proportion": 0.08471584892340275,
+    "names": [
+     {
+      "name": "凪",
+      "male_freq": 33,
+      "female_freq": 19
+     },
+     {
+      "name": "葵",
+      "male_freq": 19,
+      "female_freq": 25
+     },
+     {
+      "name": "碧",
+      "male_freq": 27,
+      "female_freq": 11
+     },
+     {
+      "name": "凛",
+      "male_freq": 9,
+      "female_freq": 29
+     },
+     {
+      "name": "陽",
+      "male_freq": 23,
+      "female_freq": 8
+     },
+     {
+      "name": "藍",
+      "male_freq": 11,
+      "female_freq": 12
+     },
+     {
+      "name": "奏",
+      "male_freq": 7,
+      "female_freq": 7
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.18051948051948052,
+   "intercept": -359.66147186147185,
+   "r_value": 0.5407564293574638,
+   "r_squared": 0.2924175158914338,
+   "p_value": 0.011370512914562154,
+   "std_err": 0.06442198756935867,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.002606295860100772,
+   "intercept": -5.209495448505752,
+   "r_value": 0.6701162493311649,
+   "r_squared": 0.4490557876176679,
+   "p_value": 0.0008883128414033134,
+   "std_err": 0.0006622936288722333,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "orth",
+  "n_top": 100
+ },
+ "meiji_pron_50": {
+  "data": [
+   {
+    "year": 2004,
+    "overlap_count": 2,
+    "overlap_freq": 112,
+    "total_babies": 3755,
+    "weighted_proportion": 0.029826897470039946,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 21,
+      "female_freq": 38
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 26,
+      "female_freq": 27
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 1,
+    "overlap_freq": 37,
+    "total_babies": 3351,
+    "weighted_proportion": 0.01104148015517756,
+    "names": [
+     {
+      "name": "ゆう",
+      "male_freq": 17,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 2,
+    "overlap_freq": 113,
+    "total_babies": 3387,
+    "weighted_proportion": 0.03336285798641866,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 19,
+      "female_freq": 52
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 22,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 2,
+    "overlap_freq": 127,
+    "total_babies": 3542,
+    "weighted_proportion": 0.03585544889892716,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 49,
+      "female_freq": 21
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 23,
+      "female_freq": 34
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 1,
+    "overlap_freq": 72,
+    "total_babies": 3599,
+    "weighted_proportion": 0.02000555709919422,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 43,
+      "female_freq": 29
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 71,
+    "total_babies": 3588,
+    "weighted_proportion": 0.019788182831661092,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 40,
+      "female_freq": 31
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 1,
+    "overlap_freq": 51,
+    "total_babies": 3205,
+    "weighted_proportion": 0.01591263650546022,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 28,
+      "female_freq": 23
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 2,
+    "overlap_freq": 99,
+    "total_babies": 2761,
+    "weighted_proportion": 0.035856573705179286,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 15,
+      "female_freq": 39
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 23,
+      "female_freq": 22
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 60,
+    "total_babies": 2555,
+    "weighted_proportion": 0.023483365949119372,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 19,
+      "female_freq": 41
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 1,
+    "overlap_freq": 94,
+    "total_babies": 4078,
+    "weighted_proportion": 0.0230505149583129,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 48,
+      "female_freq": 46
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 3,
+    "overlap_freq": 193,
+    "total_babies": 2889,
+    "weighted_proportion": 0.06680512287988924,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 31,
+      "female_freq": 37
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 39,
+      "female_freq": 28
+     },
+     {
+      "name": "はる",
+      "male_freq": 38,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 2,
+    "overlap_freq": 165,
+    "total_babies": 3535,
+    "weighted_proportion": 0.04667609618104668,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 27,
+      "female_freq": 57
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 45,
+      "female_freq": 36
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 3,
+    "overlap_freq": 441,
+    "total_babies": 6883,
+    "weighted_proportion": 0.06407089931715822,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 82,
+      "female_freq": 113
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 75,
+      "female_freq": 58
+     },
+     {
+      "name": "はる",
+      "male_freq": 73,
+      "female_freq": 40
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 2,
+    "overlap_freq": 297,
+    "total_babies": 6611,
+    "weighted_proportion": 0.04492512479201331,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 73,
+      "female_freq": 86
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 78,
+      "female_freq": 60
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 3,
+    "overlap_freq": 441,
+    "total_babies": 7447,
+    "weighted_proportion": 0.05921847723915671,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 76,
+      "female_freq": 109
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 91,
+      "female_freq": 56
+     },
+     {
+      "name": "はる",
+      "male_freq": 65,
+      "female_freq": 44
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 4,
+    "overlap_freq": 499,
+    "total_babies": 6674,
+    "weighted_proportion": 0.07476775546898412,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 70,
+      "female_freq": 87
+     },
+     {
+      "name": "はる",
+      "male_freq": 79,
+      "female_freq": 51
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 58,
+      "female_freq": 71
+     },
+     {
+      "name": "れい",
+      "male_freq": 40,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 3,
+    "overlap_freq": 468,
+    "total_babies": 6995,
+    "weighted_proportion": 0.06690493209435311,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 111,
+      "female_freq": 84
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 90,
+      "female_freq": 60
+     },
+     {
+      "name": "はる",
+      "male_freq": 72,
+      "female_freq": 51
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 4,
+    "overlap_freq": 522,
+    "total_babies": 6550,
+    "weighted_proportion": 0.07969465648854962,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 79,
+      "female_freq": 75
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 91,
+      "female_freq": 62
+     },
+     {
+      "name": "はる",
+      "male_freq": 80,
+      "female_freq": 45
+     },
+     {
+      "name": "せな",
+      "male_freq": 38,
+      "female_freq": 52
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 5,
+    "overlap_freq": 672,
+    "total_babies": 6628,
+    "weighted_proportion": 0.10138805069402534,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 95,
+      "female_freq": 95
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 89,
+      "female_freq": 79
+     },
+     {
+      "name": "そら",
+      "male_freq": 88,
+      "female_freq": 37
+     },
+     {
+      "name": "れい",
+      "male_freq": 49,
+      "female_freq": 47
+     },
+     {
+      "name": "せな",
+      "male_freq": 50,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2023,
+    "overlap_count": 7,
+    "overlap_freq": 716,
+    "total_babies": 5316,
+    "weighted_proportion": 0.1346877351392024,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 76,
+      "female_freq": 55
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 67,
+      "female_freq": 48
+     },
+     {
+      "name": "りお",
+      "male_freq": 38,
+      "female_freq": 73
+     },
+     {
+      "name": "はる",
+      "male_freq": 71,
+      "female_freq": 33
+     },
+     {
+      "name": "すい",
+      "male_freq": 35,
+      "female_freq": 61
+     },
+     {
+      "name": "せな",
+      "male_freq": 49,
+      "female_freq": 37
+     },
+     {
+      "name": "おと",
+      "male_freq": 30,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2024,
+    "overlap_count": 8,
+    "overlap_freq": 831,
+    "total_babies": 5393,
+    "weighted_proportion": 0.1540886334136844,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 71,
+      "female_freq": 80
+     },
+     {
+      "name": "せな",
+      "male_freq": 64,
+      "female_freq": 59
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 86,
+      "female_freq": 34
+     },
+     {
+      "name": "はる",
+      "male_freq": 75,
+      "female_freq": 31
+     },
+     {
+      "name": "なぎ",
+      "male_freq": 51,
+      "female_freq": 48
+     },
+     {
+      "name": "りお",
+      "male_freq": 33,
+      "female_freq": 66
+     },
+     {
+      "name": "おと",
+      "male_freq": 31,
+      "female_freq": 41
+     },
+     {
+      "name": "れい",
+      "male_freq": 31,
+      "female_freq": 30
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.24935064935064935,
+   "intercept": -499.43030303030304,
+   "r_value": 0.7946831082743101,
+   "r_squared": 0.6315212425765189,
+   "p_value": 1.6833949019967876e-05,
+   "std_err": 0.043696429273463476,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.005283160294016294,
+   "intercept": -10.58593192742179,
+   "r_value": 0.8515609896061441,
+   "r_squared": 0.7251561190189955,
+   "p_value": 9.78161914706221e-07,
+   "std_err": 0.0007461811356700885,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "n_top": 50
+ },
+ "meiji_pron_100": {
+  "data": [
+   {
+    "year": 2004,
+    "overlap_count": 2,
+    "overlap_freq": 112,
+    "total_babies": 3755,
+    "weighted_proportion": 0.029826897470039946,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 21,
+      "female_freq": 38
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 26,
+      "female_freq": 27
+     }
+    ]
+   },
+   {
+    "year": 2005,
+    "overlap_count": 1,
+    "overlap_freq": 37,
+    "total_babies": 3351,
+    "weighted_proportion": 0.01104148015517756,
+    "names": [
+     {
+      "name": "ゆう",
+      "male_freq": 17,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2006,
+    "overlap_count": 2,
+    "overlap_freq": 113,
+    "total_babies": 3387,
+    "weighted_proportion": 0.03336285798641866,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 19,
+      "female_freq": 52
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 22,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2007,
+    "overlap_count": 2,
+    "overlap_freq": 127,
+    "total_babies": 3542,
+    "weighted_proportion": 0.03585544889892716,
+    "names": [
+     {
+      "name": "そら",
+      "male_freq": 49,
+      "female_freq": 21
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 23,
+      "female_freq": 34
+     }
+    ]
+   },
+   {
+    "year": 2008,
+    "overlap_count": 1,
+    "overlap_freq": 72,
+    "total_babies": 3599,
+    "weighted_proportion": 0.02000555709919422,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 43,
+      "female_freq": 29
+     }
+    ]
+   },
+   {
+    "year": 2009,
+    "overlap_count": 1,
+    "overlap_freq": 71,
+    "total_babies": 3588,
+    "weighted_proportion": 0.019788182831661092,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 40,
+      "female_freq": 31
+     }
+    ]
+   },
+   {
+    "year": 2010,
+    "overlap_count": 1,
+    "overlap_freq": 51,
+    "total_babies": 3205,
+    "weighted_proportion": 0.01591263650546022,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 28,
+      "female_freq": 23
+     }
+    ]
+   },
+   {
+    "year": 2011,
+    "overlap_count": 2,
+    "overlap_freq": 99,
+    "total_babies": 2761,
+    "weighted_proportion": 0.035856573705179286,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 15,
+      "female_freq": 39
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 23,
+      "female_freq": 22
+     }
+    ]
+   },
+   {
+    "year": 2012,
+    "overlap_count": 1,
+    "overlap_freq": 60,
+    "total_babies": 2555,
+    "weighted_proportion": 0.023483365949119372,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 19,
+      "female_freq": 41
+     }
+    ]
+   },
+   {
+    "year": 2013,
+    "overlap_count": 1,
+    "overlap_freq": 94,
+    "total_babies": 4078,
+    "weighted_proportion": 0.0230505149583129,
+    "names": [
+     {
+      "name": "ひなた",
+      "male_freq": 48,
+      "female_freq": 46
+     }
+    ]
+   },
+   {
+    "year": 2014,
+    "overlap_count": 3,
+    "overlap_freq": 193,
+    "total_babies": 2889,
+    "weighted_proportion": 0.06680512287988924,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 31,
+      "female_freq": 37
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 39,
+      "female_freq": 28
+     },
+     {
+      "name": "はる",
+      "male_freq": 38,
+      "female_freq": 20
+     }
+    ]
+   },
+   {
+    "year": 2015,
+    "overlap_count": 2,
+    "overlap_freq": 165,
+    "total_babies": 3535,
+    "weighted_proportion": 0.04667609618104668,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 27,
+      "female_freq": 57
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 45,
+      "female_freq": 36
+     }
+    ]
+   },
+   {
+    "year": 2016,
+    "overlap_count": 3,
+    "overlap_freq": 441,
+    "total_babies": 6883,
+    "weighted_proportion": 0.06407089931715822,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 82,
+      "female_freq": 113
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 75,
+      "female_freq": 58
+     },
+     {
+      "name": "はる",
+      "male_freq": 73,
+      "female_freq": 40
+     }
+    ]
+   },
+   {
+    "year": 2017,
+    "overlap_count": 2,
+    "overlap_freq": 297,
+    "total_babies": 6611,
+    "weighted_proportion": 0.04492512479201331,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 73,
+      "female_freq": 86
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 78,
+      "female_freq": 60
+     }
+    ]
+   },
+   {
+    "year": 2018,
+    "overlap_count": 3,
+    "overlap_freq": 441,
+    "total_babies": 7447,
+    "weighted_proportion": 0.05921847723915671,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 76,
+      "female_freq": 109
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 91,
+      "female_freq": 56
+     },
+     {
+      "name": "はる",
+      "male_freq": 65,
+      "female_freq": 44
+     }
+    ]
+   },
+   {
+    "year": 2019,
+    "overlap_count": 4,
+    "overlap_freq": 499,
+    "total_babies": 6674,
+    "weighted_proportion": 0.07476775546898412,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 70,
+      "female_freq": 87
+     },
+     {
+      "name": "はる",
+      "male_freq": 79,
+      "female_freq": 51
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 58,
+      "female_freq": 71
+     },
+     {
+      "name": "れい",
+      "male_freq": 40,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2020,
+    "overlap_count": 3,
+    "overlap_freq": 468,
+    "total_babies": 6995,
+    "weighted_proportion": 0.06690493209435311,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 111,
+      "female_freq": 84
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 90,
+      "female_freq": 60
+     },
+     {
+      "name": "はる",
+      "male_freq": 72,
+      "female_freq": 51
+     }
+    ]
+   },
+   {
+    "year": 2021,
+    "overlap_count": 4,
+    "overlap_freq": 522,
+    "total_babies": 6550,
+    "weighted_proportion": 0.07969465648854962,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 79,
+      "female_freq": 75
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 91,
+      "female_freq": 62
+     },
+     {
+      "name": "はる",
+      "male_freq": 80,
+      "female_freq": 45
+     },
+     {
+      "name": "せな",
+      "male_freq": 38,
+      "female_freq": 52
+     }
+    ]
+   },
+   {
+    "year": 2022,
+    "overlap_count": 5,
+    "overlap_freq": 672,
+    "total_babies": 6628,
+    "weighted_proportion": 0.10138805069402534,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 95,
+      "female_freq": 95
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 89,
+      "female_freq": 79
+     },
+     {
+      "name": "そら",
+      "male_freq": 88,
+      "female_freq": 37
+     },
+     {
+      "name": "れい",
+      "male_freq": 49,
+      "female_freq": 47
+     },
+     {
+      "name": "せな",
+      "male_freq": 50,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2023,
+    "overlap_count": 7,
+    "overlap_freq": 716,
+    "total_babies": 5316,
+    "weighted_proportion": 0.1346877351392024,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 76,
+      "female_freq": 55
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 67,
+      "female_freq": 48
+     },
+     {
+      "name": "りお",
+      "male_freq": 38,
+      "female_freq": 73
+     },
+     {
+      "name": "はる",
+      "male_freq": 71,
+      "female_freq": 33
+     },
+     {
+      "name": "すい",
+      "male_freq": 35,
+      "female_freq": 61
+     },
+     {
+      "name": "せな",
+      "male_freq": 49,
+      "female_freq": 37
+     },
+     {
+      "name": "おと",
+      "male_freq": 30,
+      "female_freq": 43
+     }
+    ]
+   },
+   {
+    "year": 2024,
+    "overlap_count": 8,
+    "overlap_freq": 831,
+    "total_babies": 5393,
+    "weighted_proportion": 0.1540886334136844,
+    "names": [
+     {
+      "name": "あおい",
+      "male_freq": 71,
+      "female_freq": 80
+     },
+     {
+      "name": "せな",
+      "male_freq": 64,
+      "female_freq": 59
+     },
+     {
+      "name": "ひなた",
+      "male_freq": 86,
+      "female_freq": 34
+     },
+     {
+      "name": "はる",
+      "male_freq": 75,
+      "female_freq": 31
+     },
+     {
+      "name": "なぎ",
+      "male_freq": 51,
+      "female_freq": 48
+     },
+     {
+      "name": "りお",
+      "male_freq": 33,
+      "female_freq": 66
+     },
+     {
+      "name": "おと",
+      "male_freq": 31,
+      "female_freq": 41
+     },
+     {
+      "name": "れい",
+      "male_freq": 31,
+      "female_freq": 30
+     }
+    ]
+   }
+  ],
+  "reg_count": {
+   "slope": 0.24935064935064935,
+   "intercept": -499.43030303030304,
+   "r_value": 0.7946831082743101,
+   "r_squared": 0.6315212425765189,
+   "p_value": 1.6833949019967876e-05,
+   "std_err": 0.043696429273463476,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "reg_proportion": {
+   "slope": 0.005283160294016294,
+   "intercept": -10.58593192742179,
+   "r_value": 0.8515609896061441,
+   "r_squared": 0.7251561190189955,
+   "p_value": 9.78161914706221e-07,
+   "std_err": 0.0007461811356700885,
+   "trend": "increasing",
+   "significant": true,
+   "years": [
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "src": "meiji",
+  "dtype": "pron",
+  "n_top": 100
+ }
+}

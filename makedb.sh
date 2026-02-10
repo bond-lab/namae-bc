@@ -150,6 +150,15 @@ echo "Calculate genderedness of names"
 python calc_gender.py ../web/db/namae.db \
        ../web/static/data/genderedness.json
 
+echo "Pre-compute androgyny data"
+python calc_androgyny.py
+
+echo "Pre-compute overlap data"
+python calc_overlap_json.py
+
+echo "Pre-compute top names data"
+python calc_topnames.py
+
 popd
 
 ### need to make the jinmei graph, but only once
