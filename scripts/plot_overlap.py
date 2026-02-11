@@ -92,13 +92,16 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
 
     # add the total number of babies
     totals_by_year = dd(int)
+    totals_src = src_filter
+    totals_dtype = data_type
     if src_filter == 'meiji':
-        src_filter = 'totals'
+        totals_src = 'totals'
+        totals_dtype = 'orth'  # totals only stored as orth
     c.execute(f"""
     SELECT year, sum(count)
     FROM name_year_cache
     WHERE src = ? AND dtype = ?
-    GROUP BY year""", (src_filter, data_type))
+    GROUP BY year""", (totals_src, totals_dtype))
     print("totals for", src_filter, data_type)
     for row in c:
         print("totals", row)
@@ -340,9 +343,12 @@ def main():
             print(details)
             print(totals)
             for year in details:
+                total = totals[year]
+                if total == 0:
+                    continue
                 data.append((year,
                             len(details[year]),
-                            2 * sum(x[3] for x in details[year]) / totals[year]))
+                            2 * sum(x[3] for x in details[year]) / total))
                             
             
             if data:
