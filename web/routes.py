@@ -381,6 +381,17 @@ def feature():
     if not feat1:
         return redirect(url_for('feature', f1=features[0][0], f2=features[0][1], nm=features[0][2]))
 
+    # Validate feature names against known features
+    valid_feats = set()
+    for group in (features, overall):
+        for f1v, f2v, _, _ in group:
+            valid_feats.add(f1v)
+            if f2v:
+                valid_feats.add(f2v)
+    valid_feats.add('kanji')
+    if feat1 not in valid_feats or (feat2 and feat2 not in valid_feats):
+        abort(404)
+
     db_settings = get_db_settings()
 
     conn = get_db(current_directory, "namae.db")

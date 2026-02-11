@@ -70,6 +70,8 @@ def load_heisei_data(data_dir, db_path):
                         parts = line.strip().split('\t')
                         if len(parts) == 3:
                             rank, name, frequency = int(parts[0]), parts[1], int(parts[2])
+                            if rank == 0:  # one source file is 0-indexed
+                                rank = 1
                             for (f, t) in mapping:
                                 oldname = name
                                 name = name.replace(f, t)

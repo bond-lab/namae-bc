@@ -65,7 +65,7 @@ class TestGetTopNames:
         from web.db import get_top_names
         r10 = get_top_names(conn, src='bc', dtype='orth', gender='F', n_top=10)
         r50 = get_top_names(conn, src='bc', dtype='orth', gender='F', n_top=50)
-        y = str(r10['years'][0])
+        y = r10['years'][0]
         assert len(r50['names_by_year'][y]) >= len(r10['names_by_year'][y])
 
     def test_entries_have_name_rank_freq(self, conn):
@@ -226,7 +226,7 @@ class TestGetKanjiDistribution:
             year = list(data.keys())[0]
             # Should be a list of [solo, initial, middle, end, count]
             assert isinstance(data[year], list)
-            assert len(data[year]) == 5
+            assert len(data[year]) == 5, f"Expected 5 elements, got {len(data[year])}: {data[year]}"
 
     def test_invalid_input_returns_empty(self, conn):
         from web.db import get_kanji_distribution

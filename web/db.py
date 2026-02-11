@@ -806,10 +806,10 @@ GROUP BY year""",
     for year, initial, middle, end, solo in c:
         data[year] = [solo, initial, middle, end]
     
-    # Get total names for each year
+    # Get total names for each year (use orth since kanji is orthographic)
     c.execute(f"""
     SELECT year, count FROM name_year_cache
-    WHERE gender = ? and SRC = ?""",
+    WHERE gender = ? AND src = ? AND dtype = 'orth'""",
               (gender, src))
     
     for year, count in c:

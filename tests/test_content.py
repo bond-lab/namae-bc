@@ -156,10 +156,10 @@ class TestSessionEffects:
     def test_color_palette_change(self, client_fresh):
         """Changing palette should affect page rendering."""
         client_fresh.post('/settings', data={
-            'color_palette': 'blue_red',
+            'color_palette': 'red_blue',
             'db_option': 'bc',
         })
-        resp = client_fresh.get('/phenomena/androgyny.html')
+        resp = client_fresh.get('/irregular.html')
         html = resp.data.decode()
         assert resp.status_code == 200
         assert 'blue' in html
