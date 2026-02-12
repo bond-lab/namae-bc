@@ -578,17 +578,18 @@ def kanji():
 ###
 @app.route("/irregular.html")
 def irregular():
-    """Show irregular names statistics"""
-    db_settings = get_db_settings()
+    """Show irregular names statistics.
 
+    Always uses Baby Calendar data — irregular mappings require both
+    orthography and pronunciation, which only bc provides.
+    """
     # Try pre-computed JSON first
     json_path = os.path.join(current_directory, "static", "data", "irregular_data.json")
     if os.path.exists(json_path):
         with open(json_path, 'r', encoding='utf-8') as f:
             precomputed = json.load(f)
-        key = db_settings['db_src']
-        if key in precomputed:
-            entry = precomputed[key]
+        if 'bc' in precomputed:
+            entry = precomputed['bc']
             return render_template(
                 "phenomena/irregular.html",
                 data=entry['data'],
@@ -601,7 +602,7 @@ def irregular():
     # Fallback to live query
     conn = get_db(current_directory, "namae.db")
     results, regression_stats, gender_comparison = get_irregular(
-        conn, table=db_settings['db_table'], src=db_settings['db_query_src'])
+        conn, table='namae', src='bc')
     data = []
     for row in results:
         year, gender, names, number, irregular_names, proportion = row
