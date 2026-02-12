@@ -1,6 +1,6 @@
 """Route declaration."""
 from flask import current_app as app
-from web.settings import DEFAULT_DB_OPTION
+from web.settings import DEFAULT_DB_OPTION, features, overall, phenomena
 from flask import render_template, request, session, make_response, redirect, url_for, abort
 
 import toml
@@ -8,7 +8,8 @@ import pathlib
 import sqlite3, os
 from collections import defaultdict as dd
 
-from web.db import get_db, get_name, get_name_year, get_name_count_year, \
+from web.db import get_db, get_name, get_names_summary, \
+                get_name_year, get_name_count_year, \
                 get_orth, get_pron, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
@@ -62,42 +63,6 @@ repo_root = os.path.dirname(current_directory)
 threshold = 2
 
 
-### [(feat1, feat2, name, (possible combinations)), ...
-features = [
-    ('char1', '', '1st Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('char_1', '', 'Last Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('char_2', 'char_1', 'Last 2 Chars', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('mora1', '', '1st Mora', ('bc', 'meiji_p')),
-    ('mora_1', '', 'Last Mora', ('bc', 'meiji_p')),
-    ('mora_2', 'mora_1', 'Last 2. Moras', ('bc', 'meiji_p')),
-    ('char_1', 'mora_1', 'Last Char. +  Mora', ('bc')),
-    ('char1', 'mora1', 'First Char. +  Mora', ('bc')),
-    ('syll1', '', '1st Syllable', ('bc', 'meiji_p')),
-    ('syll_1', '', 'Last Syllable', ('bc', 'meiji_p')),
-    ('syll_2', 'syll_1', 'Last 2. Syllables', ('bc', 'meiji_p')),
-    ('char_1', 'syll_1', 'Last Char. +  Syllable', ('bc')),
-    ('char1', 'syll1', 'First Char. +  Syllable', ('bc')),
-    ('uni_ch', '', '1 Char. Name', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('kanji', '', 'Kanji', ('bc', 'hs', 'hs+bc', 'meiji')),
-]
-
-overall = [
-    ('script', '', 'Script', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('olength', '', 'Length Char.', ('bc', 'hs', 'hs+bc', 'meiji')),
-    ('mlength', '', 'Length Mora', ('bc', 'meiji_p')),
-    ('slength', '', 'Length Syllables', ('bc', 'meiji_p')),
-]
-
-phenomena = [
-    ('jinmei', '', 'Kanji for names'),
-    ('redup', '', 'Reduplication'),
-    ('irregular', '', 'Irregular Readings'),
-    ('genderedness', '', 'Genderedness of names'),
-    ('diversity', '', 'Diversity Measures'),
-    ('overlap', '', 'Overlapping Names'),
-    ('androgyny', '', 'Androgynous Names'),
-    ('topnames', '', 'Top Names'),
-]
 
 def get_db_settings():
     """Get database settings from session."""
@@ -321,32 +286,48 @@ def names():
     freq
     mratio
     """
-    conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
-    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'],
-                                       src=db_settings['db_query_src'],
-                                       dtype=db_settings['db_dtype'])
 
-    data = list()
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "names_data.json")
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
+        key = db_settings['db_src']
+        if key in precomputed:
+            data = [tuple(row) for row in precomputed[key]]
+            return render_template("names.html", data=data)
 
-    for k, h in mfname:
-        data.append((k, h,
-                     len(mfname[(k,h)]['M']) + len(mfname[(k,h)]['F']),
-                     len(mfname[(k,h)]['F']) / 
-                     (len(mfname[(k,h)]['M']) + len(mfname[(k,h)]['F']))))
-                    
-    return render_template(
-        f"names.html",
-        data=data,
-    )
+    # Fallback to live query (using nrank for speed)
+    conn = get_db(current_directory, "namae.db")
+    data = get_names_summary(conn, src=db_settings['db_query_src'],
+                             dtype=db_settings['db_dtype'])
+
+    return render_template("names.html", data=data)
 
 @app.route("/stats.html")
 def stats():
     """
     show some statistics
     """
-    conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
+
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "stats_data.json")
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
+        key = db_settings['db_src']
+        if key in precomputed:
+            entry = precomputed[key]
+            stats_data = entry['stats']
+            feat_stats = [(fs['name'], fs['count'], fs['summ'])
+                          for fs in entry['feat_stats']]
+            return render_template("stats.html",
+                                   stats=stats_data, fstats=feat_stats)
+
+    # Fallback to live query
+    conn = get_db(current_directory, "namae.db")
     qsrc = db_settings['db_query_src']
     stats_data = get_stats(conn, table=db_settings['db_table'],
                            src=qsrc)
@@ -357,14 +338,11 @@ def stats():
             data, tests, summ = get_feature(conn, feat1, feat2, threshold,
                                             short=True,
                                             table=db_settings['db_table'],
-                                            src=qsrc) 
+                                            src=qsrc)
             feat_stats.append((name, len(data), summ))
-                            
-    return render_template(
-        f"stats.html",
-        stats=stats_data,
-        fstats=feat_stats,
-    )
+
+    return render_template("stats.html",
+                           stats=stats_data, fstats=feat_stats)
 
 @app.route("/features.html")
 def feature():
@@ -394,17 +372,35 @@ def feature():
 
     db_settings = get_db_settings()
 
-    conn = get_db(current_directory, "namae.db")
-    data, tests, summ = get_feature(conn, feat1, feat2, threshold,
-                                    table=db_settings['db_table'],
-                                    src=db_settings['db_query_src'])
-    
     # Determine which feature group this belongs to
     is_overall = any(f[0] == feat1 and f[1] == feat2 for f in overall)
     feature_group = overall if is_overall else features
 
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "features_data.json")
+    json_key = f"{db_settings['db_src']}_{feat1}_{feat2}" if feat2 else f"{db_settings['db_src']}_{feat1}"
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
+        if json_key in precomputed:
+            entry = precomputed[json_key]
+            data = [tuple(d) for d in entry['data']]
+            tests = [tuple(t[:7]) + (tuple(tuple(x) for x in t[7]),) for t in entry['tests']]
+            summ = entry['summ']
+            return render_template(
+                "feature.html", data=data, feats=(feat1, feat2),
+                beta=beta, tests=tests, summ=summ,
+                threshold=threshold, title=name,
+                feature_group=feature_group)
+
+    # Fallback to live query
+    conn = get_db(current_directory, "namae.db")
+    data, tests, summ = get_feature(conn, feat1, feat2, threshold,
+                                    table=db_settings['db_table'],
+                                    src=db_settings['db_query_src'])
+
     return render_template(
-        f"feature.html",
+        "feature.html",
         data=data,
         feats=(feat1,feat2),
         beta=beta,
@@ -557,13 +553,31 @@ def kanji():
 @app.route("/irregular.html")
 def irregular():
     """Show irregular names statistics"""
-    conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
+
+    # Try pre-computed JSON first
+    json_path = os.path.join(current_directory, "static", "data", "irregular_data.json")
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            precomputed = json.load(f)
+        key = db_settings['db_src']
+        if key in precomputed:
+            entry = precomputed[key]
+            return render_template(
+                "phenomena/irregular.html",
+                data=entry['data'],
+                regression_stats=entry['regression_stats'],
+                gender_comparison=entry['gender_comparison'],
+                title='Irregular Names Statistics',
+                male_color=session.get('male_color', 'orange'),
+                female_color=session.get('female_color', 'purple'))
+
+    # Fallback to live query
+    conn = get_db(current_directory, "namae.db")
     results, regression_stats, gender_comparison = get_irregular(
         conn, table=db_settings['db_table'], src=db_settings['db_query_src'])
     data = []
     for row in results:
-        # Unpack the tuple: (year, gender, names, number, irregular_names)
         year, gender, names, number, irregular_names, proportion = row
         data.append({
             'year': year,
@@ -573,8 +587,7 @@ def irregular():
             'irregular_names': irregular_names,
             'proportion': proportion
         })
-     
-    
+
     return render_template(
         "phenomena/irregular.html",
         data=data,
@@ -870,8 +883,6 @@ def topnames():
     seen = set()
 
     for src in db_options:
-        if src == 'hs+bc':
-            continue
         qsrc = resolve_src(src)
         opt_dtypes = db_options[src][2]
         dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]

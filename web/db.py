@@ -15,8 +15,6 @@ db_options = {
            ('orth', 'pron', 'both'), (2008, 2022)),
     'hs': ('namae', 'Heisei',
            ('orth'), (1989, 2009)),
-    'hs+bc': ('combined', 'Combined',
-              ('orth'), (1989, 2022)),
     'meiji': ('namae', 'Meiji (orth)',
               ('orth'), (2004, 2024)),
     'meiji_p': ('namae', 'Meiji (phon)',
@@ -82,6 +80,33 @@ def get_name(conn, table='namae', src='bc', dtype=None):
         hindex[pron].add((orth, pron))
     return mfname, kindex, hindex
 
+
+def get_names_summary(conn, src='bc', dtype=None):
+    """Return [(orth, pron, total_years, f_ratio), ...] using the nrank table.
+
+    Much faster than get_name() for the names listing page because nrank
+    is pre-aggregated (~1.5M rows for hs vs 14.5M in namae).
+    """
+    c = conn.cursor()
+    if dtype == 'pron':
+        null_filter = "AND pron IS NOT NULL"
+    else:
+        null_filter = "AND orth IS NOT NULL"
+
+    c.execute(f"""SELECT orth, pron,
+        COUNT(DISTINCT CASE WHEN gender='M' THEN year END) as m_years,
+        COUNT(DISTINCT CASE WHEN gender='F' THEN year END) as f_years
+    FROM nrank WHERE src = ? {null_filter}
+    GROUP BY orth, pron""", (src,))
+
+    data = []
+    for orth, pron, m_years, f_years in c:
+        total = m_years + f_years
+        if total > 0:
+            data.append((orth, pron, total, f_years / total))
+    return data
+
+
 def get_orth(conn, orth, src='bc'):
     c = conn.cursor()
     c.execute(f"""SELECT year, gender, sum(freq)
@@ -111,7 +136,7 @@ def get_name_count_year(conn, src='bc',
 
     Args:
         conn: SQLite connection object.
-        src: Source of the data ('bc', 'hs', 'hs+bc').
+        src: Source of the data ('bc', 'hs', 'meiji').
         dtype: Type of data to retrieve ('orth', 'pron', 'both').
 
     Returns:
@@ -119,8 +144,8 @@ def get_name_count_year(conn, src='bc',
     Raises:
         ValueError: If an invalid combination of src and dtype is provided.
     """
-    if src in ['hs', 'hs+bc'] and dtype != 'orth':
-        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
+    if src == 'hs' and dtype != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs'.")
 
     # Use the cache table
     c = conn.cursor()
@@ -148,7 +173,7 @@ def get_name_year(conn, table='namae',
     Args:
         conn: SQLite connection object.
         table: Name of the table to query.
-        src: Source of the data ('bc', 'hs', 'hs+bc').
+        src: Source of the data ('bc', 'hs', 'meiji').
         dtype: Type of data to retrieve ('orth', 'pron', 'both').
 
     Returns:
@@ -157,8 +182,8 @@ def get_name_year(conn, table='namae',
     Raises:
         ValueError: If an invalid combination of src and dtype is provided.
     """
-    if src in ['hs', 'hs+bc'] and dtype != 'orth':
-        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs' and 'hs+bc'.")
+    if src == 'hs' and dtype != 'orth':
+        raise ValueError(f"Invalid combination: {src} with {dtype}. Only 'orth' is allowed for 'hs'.")
     c = conn.cursor()
 
     # Determine the columns to select based on dtype
@@ -330,7 +355,7 @@ def get_feature(conn, feat1, feat2, threshold, table='namae', src='bc', short=Fa
         ### Calculate Statistics
         for d in data:
             CT = [[d[2], d[1]],
-                  [summ['allm']-d[2], summ['allf']-d[1]]]
+                  [summ['allf']-d[2], summ['allm']-d[1]]]
             res = fisher_exact(CT)
             exe = [] ## up to three from a list
             if d[0] in examples:
@@ -749,30 +774,17 @@ def cache_years(db_path, src):
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
-    if src == 'hs+bc':
-        table = db_options[src][0]
+    for dtype in  ('orth', 'pron'):
         c.execute(f'''
         INSERT INTO name_year_cache (src, dtype, year, gender, count)
-        SELECT src, 'orth', year, gender, COUNT(*)  as tfreq
-        FROM {table}
+        SELECT src, '{dtype}', year, gender, SUM(freq)  AS tfreq
+        FROM nrank
         WHERE src = ?
-        AND orth IS NOT NULL
+        AND {dtype} IS NOT NULL
         GROUP BY year, gender
         HAVING tfreq > 0
         ORDER BY year, gender
-        ''', (src, ))
-    else:
-        for dtype in  ('orth', 'pron'):
-            c.execute(f'''
-            INSERT INTO name_year_cache (src, dtype, year, gender, count)
-            SELECT src, '{dtype}', year, gender, SUM(freq)  AS tfreq
-            FROM nrank
-            WHERE src = ?
-            AND {dtype} IS NOT NULL
-            GROUP BY year, gender
-            HAVING tfreq > 0
-            ORDER BY year, gender
-            ''', (src, ))  
+        ''', (src, ))  
     conn.commit()
     conn.close()
     

@@ -33,10 +33,6 @@ class TestSchema:
             (table,))
         assert cur.fetchone() is not None, f"Table {table} missing"
 
-    def test_combined_view_exists(self, conn):
-        cur = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='view' AND name='combined'")
-        assert cur.fetchone() is not None
 
 
 # ── Source coverage ──────────────────────────────────────────────────

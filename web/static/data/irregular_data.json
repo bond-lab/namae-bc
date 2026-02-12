@@ -1,0 +1,1738 @@
+{
+ "bc": {
+  "data": [
+   {
+    "year": 2008,
+    "gender": "F",
+    "names": 529,
+    "number": 588,
+    "irregular_names": 165,
+    "proportion": 0.28061224489795916
+   },
+   {
+    "year": 2008,
+    "gender": "M",
+    "names": 509,
+    "number": 566,
+    "irregular_names": 117,
+    "proportion": 0.2067137809187279
+   },
+   {
+    "year": 2009,
+    "gender": "F",
+    "names": 468,
+    "number": 532,
+    "irregular_names": 136,
+    "proportion": 0.2556390977443609
+   },
+   {
+    "year": 2009,
+    "gender": "M",
+    "names": 500,
+    "number": 550,
+    "irregular_names": 113,
+    "proportion": 0.20545454545454545
+   },
+   {
+    "year": 2010,
+    "gender": "F",
+    "names": 700,
+    "number": 854,
+    "irregular_names": 227,
+    "proportion": 0.265807962529274
+   },
+   {
+    "year": 2010,
+    "gender": "M",
+    "names": 647,
+    "number": 746,
+    "irregular_names": 161,
+    "proportion": 0.2158176943699732
+   },
+   {
+    "year": 2011,
+    "gender": "F",
+    "names": 492,
+    "number": 559,
+    "irregular_names": 159,
+    "proportion": 0.2844364937388193
+   },
+   {
+    "year": 2011,
+    "gender": "M",
+    "names": 514,
+    "number": 567,
+    "irregular_names": 123,
+    "proportion": 0.21693121693121692
+   },
+   {
+    "year": 2012,
+    "gender": "F",
+    "names": 601,
+    "number": 664,
+    "irregular_names": 180,
+    "proportion": 0.2710843373493976
+   },
+   {
+    "year": 2012,
+    "gender": "M",
+    "names": 585,
+    "number": 640,
+    "irregular_names": 134,
+    "proportion": 0.209375
+   },
+   {
+    "year": 2013,
+    "gender": "F",
+    "names": 417,
+    "number": 454,
+    "irregular_names": 105,
+    "proportion": 0.23127753303964757
+   },
+   {
+    "year": 2013,
+    "gender": "M",
+    "names": 435,
+    "number": 480,
+    "irregular_names": 79,
+    "proportion": 0.16458333333333333
+   },
+   {
+    "year": 2014,
+    "gender": "F",
+    "names": 554,
+    "number": 627,
+    "irregular_names": 174,
+    "proportion": 0.27751196172248804
+   },
+   {
+    "year": 2014,
+    "gender": "M",
+    "names": 505,
+    "number": 558,
+    "irregular_names": 120,
+    "proportion": 0.21505376344086022
+   },
+   {
+    "year": 2015,
+    "gender": "F",
+    "names": 245,
+    "number": 269,
+    "irregular_names": 70,
+    "proportion": 0.26022304832713755
+   },
+   {
+    "year": 2015,
+    "gender": "M",
+    "names": 214,
+    "number": 227,
+    "irregular_names": 59,
+    "proportion": 0.2599118942731278
+   },
+   {
+    "year": 2016,
+    "gender": "F",
+    "names": 237,
+    "number": 255,
+    "irregular_names": 67,
+    "proportion": 0.2627450980392157
+   },
+   {
+    "year": 2016,
+    "gender": "M",
+    "names": 212,
+    "number": 231,
+    "irregular_names": 61,
+    "proportion": 0.26406926406926406
+   },
+   {
+    "year": 2017,
+    "gender": "F",
+    "names": 452,
+    "number": 509,
+    "irregular_names": 156,
+    "proportion": 0.30648330058939094
+   },
+   {
+    "year": 2017,
+    "gender": "M",
+    "names": 429,
+    "number": 453,
+    "irregular_names": 123,
+    "proportion": 0.271523178807947
+   },
+   {
+    "year": 2018,
+    "gender": "F",
+    "names": 587,
+    "number": 678,
+    "irregular_names": 202,
+    "proportion": 0.29793510324483774
+   },
+   {
+    "year": 2018,
+    "gender": "M",
+    "names": 645,
+    "number": 716,
+    "irregular_names": 190,
+    "proportion": 0.26536312849162014
+   },
+   {
+    "year": 2019,
+    "gender": "F",
+    "names": 733,
+    "number": 839,
+    "irregular_names": 281,
+    "proportion": 0.33492252681764006
+   },
+   {
+    "year": 2019,
+    "gender": "M",
+    "names": 746,
+    "number": 821,
+    "irregular_names": 214,
+    "proportion": 0.26065773447015833
+   },
+   {
+    "year": 2020,
+    "gender": "F",
+    "names": 440,
+    "number": 481,
+    "irregular_names": 157,
+    "proportion": 0.3264033264033264
+   },
+   {
+    "year": 2020,
+    "gender": "M",
+    "names": 475,
+    "number": 509,
+    "irregular_names": 148,
+    "proportion": 0.2907662082514735
+   },
+   {
+    "year": 2021,
+    "gender": "F",
+    "names": 212,
+    "number": 216,
+    "irregular_names": 69,
+    "proportion": 0.3194444444444444
+   },
+   {
+    "year": 2021,
+    "gender": "M",
+    "names": 217,
+    "number": 224,
+    "irregular_names": 46,
+    "proportion": 0.20535714285714285
+   },
+   {
+    "year": 2022,
+    "gender": "F",
+    "names": 115,
+    "number": 122,
+    "irregular_names": 39,
+    "proportion": 0.319672131147541
+   },
+   {
+    "year": 2022,
+    "gender": "M",
+    "names": 123,
+    "number": 123,
+    "irregular_names": 30,
+    "proportion": 0.24390243902439024
+   }
+  ],
+  "regression_stats": {
+   "M": {
+    "slope": 0.004429444313467783,
+    "intercept": -8.692298269991332,
+    "r_value": 0.5723497131498991,
+    "r_squared": 0.32758419414277185,
+    "p_value": 0.025768903541553666,
+    "std_err": 0.0017600907365298612,
+    "trend": "increasing",
+    "significant": true,
+    "years": [
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022
+    ],
+    "proportions": [
+     0.2067137809187279,
+     0.20545454545454545,
+     0.2158176943699732,
+     0.21693121693121692,
+     0.209375,
+     0.16458333333333333,
+     0.21505376344086022,
+     0.2599118942731278,
+     0.26406926406926406,
+     0.271523178807947,
+     0.26536312849162014,
+     0.26065773447015833,
+     0.2907662082514735,
+     0.20535714285714285,
+     0.24390243902439024
+    ]
+   },
+   "F": {
+    "slope": 0.0049191757311987635,
+    "intercept": -9.625859191029809,
+    "r_value": 0.7305783048964096,
+    "r_squared": 0.5337446595853113,
+    "p_value": 0.0019785075980310995,
+    "std_err": 0.001275163284066666,
+    "trend": "increasing",
+    "significant": true,
+    "years": [
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022
+    ],
+    "proportions": [
+     0.28061224489795916,
+     0.2556390977443609,
+     0.265807962529274,
+     0.2844364937388193,
+     0.2710843373493976,
+     0.23127753303964757,
+     0.27751196172248804,
+     0.26022304832713755,
+     0.2627450980392157,
+     0.30648330058939094,
+     0.29793510324483774,
+     0.33492252681764006,
+     0.3264033264033264,
+     0.3194444444444444,
+     0.319672131147541
+    ]
+   }
+  },
+  "gender_comparison": {
+   "t_statistic": -4.49535211820261,
+   "p_value": 0.00011003948064940815,
+   "significant": true,
+   "male_mean": 0.23303202164625206,
+   "female_mean": 0.28627990733569864,
+   "difference": -0.05324788568944658,
+   "comparison": "female_higher",
+   "direction": "Female names have significantly MORE irregular mappings than male names"
+  }
+ },
+ "hs": {
+  "data": [
+   {
+    "year": 1989,
+    "gender": "F",
+    "names": 0,
+    "number": 432928,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1989,
+    "gender": "M",
+    "names": 0,
+    "number": 470077,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1990,
+    "gender": "F",
+    "names": 0,
+    "number": 399061,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1990,
+    "gender": "M",
+    "names": 0,
+    "number": 420020,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1991,
+    "gender": "F",
+    "names": 0,
+    "number": 299501,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1991,
+    "gender": "M",
+    "names": 0,
+    "number": 319512,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1992,
+    "gender": "F",
+    "names": 0,
+    "number": 242772,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1992,
+    "gender": "M",
+    "names": 0,
+    "number": 258475,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1993,
+    "gender": "F",
+    "names": 0,
+    "number": 321974,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1993,
+    "gender": "M",
+    "names": 0,
+    "number": 343999,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1994,
+    "gender": "F",
+    "names": 0,
+    "number": 334272,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1994,
+    "gender": "M",
+    "names": 0,
+    "number": 351865,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1995,
+    "gender": "F",
+    "names": 0,
+    "number": 318894,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1995,
+    "gender": "M",
+    "names": 0,
+    "number": 330294,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1996,
+    "gender": "F",
+    "names": 0,
+    "number": 288553,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1996,
+    "gender": "M",
+    "names": 0,
+    "number": 300699,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1997,
+    "gender": "F",
+    "names": 0,
+    "number": 541122,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1997,
+    "gender": "M",
+    "names": 0,
+    "number": 537888,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1998,
+    "gender": "F",
+    "names": 0,
+    "number": 557677,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1998,
+    "gender": "M",
+    "names": 0,
+    "number": 556905,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1999,
+    "gender": "F",
+    "names": 0,
+    "number": 620697,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 1999,
+    "gender": "M",
+    "names": 0,
+    "number": 633810,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2000,
+    "gender": "F",
+    "names": 0,
+    "number": 586977,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2000,
+    "gender": "M",
+    "names": 0,
+    "number": 606325,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2001,
+    "gender": "F",
+    "names": 0,
+    "number": 433567,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2001,
+    "gender": "M",
+    "names": 0,
+    "number": 436269,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2002,
+    "gender": "F",
+    "names": 0,
+    "number": 422232,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2002,
+    "gender": "M",
+    "names": 0,
+    "number": 422984,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2003,
+    "gender": "F",
+    "names": 0,
+    "number": 377937,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2003,
+    "gender": "M",
+    "names": 0,
+    "number": 383813,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2004,
+    "gender": "F",
+    "names": 0,
+    "number": 219166,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2004,
+    "gender": "M",
+    "names": 0,
+    "number": 222672,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "F",
+    "names": 0,
+    "number": 191697,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "M",
+    "names": 0,
+    "number": 197555,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "F",
+    "names": 0,
+    "number": 179325,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "M",
+    "names": 0,
+    "number": 187194,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "F",
+    "names": 0,
+    "number": 143323,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "M",
+    "names": 0,
+    "number": 153127,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "F",
+    "names": 0,
+    "number": 128582,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "M",
+    "names": 0,
+    "number": 133386,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "F",
+    "names": 0,
+    "number": 112872,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "M",
+    "names": 0,
+    "number": 114082,
+    "irregular_names": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression_stats": {
+   "M": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     1989,
+     1990,
+     1991,
+     1992,
+     1993,
+     1994,
+     1995,
+     1996,
+     1997,
+     1998,
+     1999,
+     2000,
+     2001,
+     2002,
+     2003,
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "F": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     1989,
+     1990,
+     1991,
+     1992,
+     1993,
+     1994,
+     1995,
+     1996,
+     1997,
+     1998,
+     1999,
+     2000,
+     2001,
+     2002,
+     2003,
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "gender_comparison": {
+   "t_statistic": NaN,
+   "p_value": NaN,
+   "significant": false,
+   "male_mean": 0.0,
+   "female_mean": 0.0,
+   "difference": 0.0,
+   "comparison": "no_difference",
+   "direction": "No significant difference between male and female irregular mappings"
+  }
+ },
+ "meiji": {
+  "data": [
+   {
+    "year": 2004,
+    "gender": "F",
+    "names": 0,
+    "number": 2878,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2004,
+    "gender": "M",
+    "names": 0,
+    "number": 2925,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "F",
+    "names": 0,
+    "number": 2582,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "M",
+    "names": 0,
+    "number": 2666,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "F",
+    "names": 0,
+    "number": 2640,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "M",
+    "names": 0,
+    "number": 2676,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "F",
+    "names": 0,
+    "number": 2774,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "M",
+    "names": 0,
+    "number": 2845,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "F",
+    "names": 0,
+    "number": 2892,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "M",
+    "names": 0,
+    "number": 2800,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "F",
+    "names": 0,
+    "number": 2758,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "M",
+    "names": 0,
+    "number": 2787,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "gender": "F",
+    "names": 0,
+    "number": 2625,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "gender": "M",
+    "names": 0,
+    "number": 2624,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "gender": "F",
+    "names": 0,
+    "number": 2277,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "gender": "M",
+    "names": 0,
+    "number": 2223,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "gender": "F",
+    "names": 0,
+    "number": 2151,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "gender": "M",
+    "names": 0,
+    "number": 2064,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "gender": "F",
+    "names": 0,
+    "number": 3297,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "gender": "M",
+    "names": 0,
+    "number": 3368,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "gender": "F",
+    "names": 0,
+    "number": 2388,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "gender": "M",
+    "names": 0,
+    "number": 2469,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2015,
+    "gender": "F",
+    "names": 0,
+    "number": 2684,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2015,
+    "gender": "M",
+    "names": 0,
+    "number": 2897,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "gender": "F",
+    "names": 0,
+    "number": 5442,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "gender": "M",
+    "names": 0,
+    "number": 5385,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "gender": "F",
+    "names": 0,
+    "number": 5037,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "gender": "M",
+    "names": 0,
+    "number": 5070,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "gender": "F",
+    "names": 0,
+    "number": 5721,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "gender": "M",
+    "names": 0,
+    "number": 5752,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "gender": "F",
+    "names": 0,
+    "number": 5268,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "gender": "M",
+    "names": 0,
+    "number": 4931,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2020,
+    "gender": "F",
+    "names": 0,
+    "number": 5117,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2020,
+    "gender": "M",
+    "names": 0,
+    "number": 5545,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2021,
+    "gender": "F",
+    "names": 0,
+    "number": 5077,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2021,
+    "gender": "M",
+    "names": 0,
+    "number": 4965,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2022,
+    "gender": "F",
+    "names": 0,
+    "number": 5111,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2022,
+    "gender": "M",
+    "names": 0,
+    "number": 5072,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2023,
+    "gender": "F",
+    "names": 0,
+    "number": 4147,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2023,
+    "gender": "M",
+    "names": 0,
+    "number": 4141,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2024,
+    "gender": "F",
+    "names": 0,
+    "number": 4118,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2024,
+    "gender": "M",
+    "names": 0,
+    "number": 4108,
+    "irregular_names": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression_stats": {
+   "M": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022,
+     2023,
+     2024
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "F": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022,
+     2023,
+     2024
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "gender_comparison": {
+   "t_statistic": NaN,
+   "p_value": NaN,
+   "significant": false,
+   "male_mean": 0.0,
+   "female_mean": 0.0,
+   "difference": 0.0,
+   "comparison": "no_difference",
+   "direction": "No significant difference between male and female irregular mappings"
+  }
+ },
+ "meiji_p": {
+  "data": [
+   {
+    "year": 2004,
+    "gender": "F",
+    "names": 0,
+    "number": 2878,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2004,
+    "gender": "M",
+    "names": 0,
+    "number": 2925,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "F",
+    "names": 0,
+    "number": 2582,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2005,
+    "gender": "M",
+    "names": 0,
+    "number": 2666,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "F",
+    "names": 0,
+    "number": 2640,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2006,
+    "gender": "M",
+    "names": 0,
+    "number": 2676,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "F",
+    "names": 0,
+    "number": 2774,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2007,
+    "gender": "M",
+    "names": 0,
+    "number": 2845,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "F",
+    "names": 0,
+    "number": 2892,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2008,
+    "gender": "M",
+    "names": 0,
+    "number": 2800,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "F",
+    "names": 0,
+    "number": 2758,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2009,
+    "gender": "M",
+    "names": 0,
+    "number": 2787,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "gender": "F",
+    "names": 0,
+    "number": 2625,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2010,
+    "gender": "M",
+    "names": 0,
+    "number": 2624,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "gender": "F",
+    "names": 0,
+    "number": 2277,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2011,
+    "gender": "M",
+    "names": 0,
+    "number": 2223,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "gender": "F",
+    "names": 0,
+    "number": 2151,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2012,
+    "gender": "M",
+    "names": 0,
+    "number": 2064,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "gender": "F",
+    "names": 0,
+    "number": 3297,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2013,
+    "gender": "M",
+    "names": 0,
+    "number": 3368,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "gender": "F",
+    "names": 0,
+    "number": 2388,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2014,
+    "gender": "M",
+    "names": 0,
+    "number": 2469,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2015,
+    "gender": "F",
+    "names": 0,
+    "number": 2684,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2015,
+    "gender": "M",
+    "names": 0,
+    "number": 2897,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "gender": "F",
+    "names": 0,
+    "number": 5442,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2016,
+    "gender": "M",
+    "names": 0,
+    "number": 5385,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "gender": "F",
+    "names": 0,
+    "number": 5037,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2017,
+    "gender": "M",
+    "names": 0,
+    "number": 5070,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "gender": "F",
+    "names": 0,
+    "number": 5721,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2018,
+    "gender": "M",
+    "names": 0,
+    "number": 5752,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "gender": "F",
+    "names": 0,
+    "number": 5268,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2019,
+    "gender": "M",
+    "names": 0,
+    "number": 4931,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2020,
+    "gender": "F",
+    "names": 0,
+    "number": 5117,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2020,
+    "gender": "M",
+    "names": 0,
+    "number": 5545,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2021,
+    "gender": "F",
+    "names": 0,
+    "number": 5077,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2021,
+    "gender": "M",
+    "names": 0,
+    "number": 4965,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2022,
+    "gender": "F",
+    "names": 0,
+    "number": 5111,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2022,
+    "gender": "M",
+    "names": 0,
+    "number": 5072,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2023,
+    "gender": "F",
+    "names": 0,
+    "number": 4147,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2023,
+    "gender": "M",
+    "names": 0,
+    "number": 4141,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2024,
+    "gender": "F",
+    "names": 0,
+    "number": 4118,
+    "irregular_names": 0,
+    "proportion": 0.0
+   },
+   {
+    "year": 2024,
+    "gender": "M",
+    "names": 0,
+    "number": 4108,
+    "irregular_names": 0,
+    "proportion": 0.0
+   }
+  ],
+  "regression_stats": {
+   "M": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022,
+     2023,
+     2024
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "F": {
+    "slope": 0.0,
+    "intercept": 0.0,
+    "r_value": NaN,
+    "r_squared": NaN,
+    "p_value": NaN,
+    "std_err": NaN,
+    "trend": "stable",
+    "significant": false,
+    "years": [
+     2004,
+     2005,
+     2006,
+     2007,
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2021,
+     2022,
+     2023,
+     2024
+    ],
+    "proportions": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "gender_comparison": {
+   "t_statistic": NaN,
+   "p_value": NaN,
+   "significant": false,
+   "male_mean": 0.0,
+   "female_mean": 0.0,
+   "difference": 0.0,
+   "comparison": "no_difference",
+   "direction": "No significant difference between male and female irregular mappings"
+  }
+ }
+}

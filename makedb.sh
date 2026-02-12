@@ -159,6 +159,18 @@ python calc_overlap_json.py
 echo "Pre-compute top names data"
 python calc_topnames.py
 
+echo "Pre-compute stats page data"
+python calc_stats_json.py
+
+echo "Pre-compute feature page data"
+python calc_features_json.py
+
+echo "Pre-compute names page data"
+python calc_names_json.py
+
+echo "Pre-compute irregular page data"
+python calc_irregular_json.py
+
 popd
 
 ### need to make the jinmei graph, but only once

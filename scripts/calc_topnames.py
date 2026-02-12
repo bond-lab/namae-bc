@@ -17,8 +17,6 @@ def main():
     seen = set()
 
     for src in db_options:
-        if src == 'hs+bc':
-            continue
         qsrc = resolve_src(src)
         opt_dtypes = db_options[src][2]
         dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]

@@ -182,7 +182,7 @@ def get_data(db_path):
     cursor = conn.cursor()
     
     # Execute query
-    query = "SELECT * FROM name_year_cache WHERE src != 'hs+bc';"
+    query = "SELECT * FROM name_year_cache;"
     cursor.execute(query)
     
     # Get column names
