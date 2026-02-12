@@ -113,7 +113,16 @@ def test_names_page(fresh, db):
     _switch_db(fresh, db)
     resp, elapsed = _timed_get(fresh, '/names.html')
     assert resp.status_code == 200
-    assert elapsed < 25, f"/names.html [{db}] took {elapsed:.1f}s"
+    assert elapsed < 2, f"/names.html [{db}] took {elapsed:.1f}s (skeleton should be fast)"
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db", _db_ids())
+def test_names_api(fresh, db):
+    _switch_db(fresh, db)
+    resp, elapsed = _timed_get(fresh, '/api/names.json')
+    assert resp.status_code == 200
+    assert elapsed < 25, f"/api/names.json [{db}] took {elapsed:.1f}s"
 
 
 @pytest.mark.slow

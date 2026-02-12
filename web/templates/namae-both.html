@@ -15,7 +15,7 @@
 <!-- Color and sort according to type   -->
 
 <div class="container">
-  <h1>{{name}} ({{add_pron(hira)}})</h1>
+  <h1><a href="{{url_for('namae', orth=name)}}">{{name}}</a> (<a href="{{url_for('namae', pron=hira)}}">{{add_pron(hira)}}</a>)</h1>
 
 
     <table class="table w-auto">

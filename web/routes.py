@@ -68,11 +68,11 @@ def get_db_settings():
     """Get database settings from session."""
     selected_db_option = session.get('db_option', DEFAULT_DB_OPTION)
     opt_dtypes = db_options[selected_db_option][2]
-    # Determine primary dtype: string means single dtype, tuple means pick default
+    # Determine primary dtype: string means single dtype, tuple means 'both'
     if isinstance(opt_dtypes, str):
         primary_dtype = opt_dtypes
     else:
-        primary_dtype = 'orth'
+        primary_dtype = 'both'
     return {
         'db_src': selected_db_option,
         'db_query_src': resolve_src(selected_db_option),
@@ -279,31 +279,57 @@ def namae():
     
 @app.route("/names.html")
 def names():
-    """
-    show the names
-    name
-    hira
-    freq
-    mratio
-    """
+    """Show the names page (skeleton — data loaded via AJAX)."""
     db_settings = get_db_settings()
 
-    # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "names_data.json")
+    # Determine entry count for the loading message
+    src_key = db_settings['db_src']
+    json_path = os.path.join(current_directory, "static", "data", f"names_{src_key}.json")
+    entry_count = 0
     if os.path.exists(json_path):
         with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
-        key = db_settings['db_src']
-        if key in precomputed:
-            data = [tuple(row) for row in precomputed[key]]
-            return render_template("names.html", data=data)
+            entry_count = len(json.load(f).get('data', []))
 
-    # Fallback to live query (using nrank for speed)
+    return render_template("names.html", entry_count=entry_count)
+
+
+@app.route("/api/names.json")
+def names_api():
+    """Serve per-source names JSON for DataTables AJAX.
+
+    If the client accepts gzip and a pre-compressed .gz file exists,
+    serve that directly.  Otherwise serve the uncompressed file.
+    Falls back to a live DB query if neither file is present.
+    """
+    db_settings = get_db_settings()
+    src_key = db_settings['db_src']
+    json_path = os.path.join(current_directory, "static", "data", f"names_{src_key}.json")
+    gz_path = json_path + '.gz'
+
+    # Try pre-compressed gzip file
+    accept_enc = request.headers.get('Accept-Encoding', '')
+    if 'gzip' in accept_enc and os.path.exists(gz_path):
+        with open(gz_path, 'rb') as f:
+            data = f.read()
+        resp = make_response(data)
+        resp.headers['Content-Type'] = 'application/json'
+        resp.headers['Content-Encoding'] = 'gzip'
+        return resp
+
+    # Try uncompressed file
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = f.read()
+        resp = make_response(data)
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
+
+    # Fallback to live query
     conn = get_db(current_directory, "namae.db")
-    data = get_names_summary(conn, src=db_settings['db_query_src'],
-                             dtype=db_settings['db_dtype'])
-
-    return render_template("names.html", data=data)
+    rows = get_names_summary(conn, src=db_settings['db_query_src'],
+                              dtype=db_settings['db_dtype'])
+    payload = {"data": [list(row) for row in rows]}
+    return payload
 
 @app.route("/stats.html")
 def stats():

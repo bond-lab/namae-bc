@@ -8,8 +8,19 @@
 <div class="container">
   <h1>All the Names</h1>
 
+  <div id="loading-message" class="text-center my-4">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">
+      Loading names&hellip;
+      {% if entry_count > 100000 %}
+      <br><small class="text-muted">Loading ~{{ "{:,}".format(entry_count) }} names, this may take a moment.</small>
+      {% endif %}
+    </p>
+  </div>
 
-  <table id='data' class="table table-hover table-borderless table-sm">
+  <table id='data' class="table table-hover table-borderless table-sm" style="display:none">
     <caption>Names, Gender and more</caption>
     <thead class="thead-light">
     <tr>
@@ -17,24 +28,44 @@
     </tr>
     </thead>
     <tbody>
-      {%- for (name, hira, freq, fratio) in data %}
-      <tr class="{{status}}">
-	<td> <a href='{{url_for('namae', orth=name or '', pron=hira or '')}}'>{{name or hira}}</a></td>
-	<td>{{hira or ''}}</td>
-	<td>{{freq}}</td>
-	<td>{{fratio}}</td>
-      </tr>
-      {% endfor %}
-        </tbody>
-    </table>
+    </tbody>
+  </table>
 </div>
 {% endblock %}
 
 {% block scripts %}
   <script>
     $(document).ready(function () {
-	$('#data').DataTable({"pageLength": 100,
-			      "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ]});
+        var table = $('#data').DataTable({
+            "ajax": "{{ url_for('names_api') }}",
+            "deferRender": true,
+            "pageLength": 100,
+            "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
+            "columns": [
+                {
+                    "data": 0,
+                    "render": function(data, type, row) {
+                        if (type === 'display') {
+                            var orth = row[0] || '';
+                            var pron = row[1] || '';
+                            var label = orth || pron;
+                            var params = [];
+                            if (orth) params.push('orth=' + encodeURIComponent(orth));
+                            if (pron) params.push('pron=' + encodeURIComponent(pron));
+                            return '<a href="/namae?' + params.join('&') + '">' + label + '</a>';
+                        }
+                        return data || '';
+                    }
+                },
+                {"data": 1, "render": function(data) { return data || ''; }},
+                {"data": 2},
+                {"data": 3}
+            ],
+            "initComplete": function() {
+                $('#loading-message').hide();
+                $('#data').show();
+            }
+        });
     });
   </script>
 {% endblock %}

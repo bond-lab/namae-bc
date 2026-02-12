@@ -88,7 +88,9 @@ def get_names_summary(conn, src='bc', dtype=None):
     is pre-aggregated (~1.5M rows for hs vs 14.5M in namae).
     """
     c = conn.cursor()
-    if dtype == 'pron':
+    if dtype == 'both':
+        null_filter = "AND orth IS NOT NULL AND pron IS NOT NULL"
+    elif dtype == 'pron':
         null_filter = "AND pron IS NOT NULL"
     else:
         null_filter = "AND orth IS NOT NULL"
