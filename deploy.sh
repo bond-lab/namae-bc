@@ -25,7 +25,7 @@ DEST="compling.upol.cz:/var/www/namae"
 cd "$(dirname "$0")"
 
 # Use --relative so data/README.md and data/download/ keep their paths
-rsync -avz --relative \
+rsync -avz --relative --exclude='__pycache__' \
     web \
     wsgi.py \
     requirements.txt \
