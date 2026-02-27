@@ -741,6 +741,7 @@ def overlap():
         'bc':    [50, 100],
         'hs':    [50, 100, 500],
         'meiji': [50, 100],
+        'meiji_p': [50],
     }
 
     # Try pre-computed JSON first
@@ -757,7 +758,7 @@ def overlap():
         qsrc = resolve_src(src)
         opt_dtypes = db_options[src][2]
         dtype_list = list(opt_dtypes) if isinstance(opt_dtypes, tuple) else [opt_dtypes]
-        n_tops = source_n_tops.get(qsrc, [50])
+        n_tops = source_n_tops.get(src, [50])
 
         for dtype in dtype_list:
             if dtype == 'both':

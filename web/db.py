@@ -869,12 +869,19 @@ def get_overlap(conn, src='bc', dtype='orth', n_top=50):
         year_overlaps[year].append((name, m_freq, f_freq))
 
     # Get total babies per year (sum M+F from name_year_cache)
+    if src == 'meiji' or src == 'meiji_p':
+        totals_src = 'totals'
+        totals_dtype='orth'
+    else:
+        totals_src = src
+        totals_dtype=dtype
+        
     c.execute("""
     SELECT year, SUM(count)
     FROM name_year_cache
     WHERE src = ? AND dtype = ?
     GROUP BY year
-    """, (src, dtype))
+    """, (totals_src, totals_dtype))
     totals = dict(c.fetchall())
 
     data = []

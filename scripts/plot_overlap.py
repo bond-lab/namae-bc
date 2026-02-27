@@ -94,7 +94,7 @@ def get_overlap_details(db_path, src_filter, data_type, n_top=50):
     totals_by_year = dd(int)
     totals_src = src_filter
     totals_dtype = data_type
-    if src_filter == 'meiji':
+    if src_filter == 'meiji' or src_filter == 'meiji_p':
         totals_src = 'totals'
         totals_dtype = 'orth'  # totals only stored as orth
     c.execute(f"""
@@ -348,7 +348,7 @@ def main():
                     continue
                 data.append((year,
                             len(details[year]),
-                            2 * sum(x[3] for x in details[year]) / total))
+                             sum(x[3] for x in details[year]) / total))
                             
             
             if data:
