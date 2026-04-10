@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import matplotlib.style as style
 from cycler import cycler
@@ -6,7 +8,8 @@ import io
 
 
 def plot_multi_panel_trends(all_metrics, selected_metrics, title,
-                            filename, confidence_intervals=None):
+                            filename, confidence_intervals=None,
+                            formats=('png',)):
     """
     Plot multi-panel visualization of selected diversity measures over time.
     Handles missing metrics for certain years (e.g., newness for first year).
@@ -87,10 +90,11 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
     
     plt.tight_layout()
     plt.suptitle(title)
-    
-    # Save plot to a file
-    plt.savefig(filename, dpi=300)
-    plt.close(fig)    
+
+    stem = str(Path(str(filename)).with_suffix(''))
+    for fmt in formats:
+        plt.savefig(f'{stem}.{fmt}', dpi=300)
+    plt.close(fig)
 
 
  

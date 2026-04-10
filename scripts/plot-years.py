@@ -6,12 +6,13 @@ store the number of live births per year.
 
 import sqlite3
 import os, sys
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from db import db_options, get_name_count_year, resolve_src
 
 
-def create_gender_plot(src, db_path, plot_dir):
+def create_gender_plot(src, db_path, plot_dir, formats=('png',)):
     """
     Create and save a bar plot showing the number of names per year divided by gender.
 
@@ -51,8 +52,8 @@ def create_gender_plot(src, db_path, plot_dir):
     # Create the figure and axis for plotting
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    filename =f'years_{src}'
-    plot_path = os.path.join(plot_dir, f'{filename}.png')
+    filename = f'years_{src}'
+    plot_stem = os.path.join(plot_dir, filename)
      
     # Plot male and female counts
     ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
@@ -106,8 +107,8 @@ def create_gender_plot(src, db_path, plot_dir):
     # Add a legend with minimalist styling
     ax.legend(frameon=False)
 
-    # Save the plot to a file
-    plt.savefig(plot_path, format='png')
+    for fmt in formats:
+        plt.savefig(f'{plot_stem}.{fmt}', dpi=150)
     plt.close(fig)
 
 # Iterate over each data source and update year counts and create plots

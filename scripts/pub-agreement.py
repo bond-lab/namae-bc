@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from scipy.spatial.distance import jensenshannon
 from scipy.stats import wasserstein_distance, chi2_contingency
 import matplotlib.pyplot as plt
@@ -153,7 +154,7 @@ def _interpret_chi_square_results(chi2, p, cramers_v):
     return f"{significance}, {effect} (Cramer's V = {cramers_v:.4f})"
 
 
-def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_names_analysis.png', figsize=(14, 6)):
+def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_names_analysis.png', figsize=(14, 6), formats=('png',)):
     """
     Create a two-subplot visualization of common names count and JS divergence by gender over time.
     
@@ -230,12 +231,13 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
     
-    # Adjust layout and save
     plt.tight_layout()
     plt.subplots_adjust(top=0.85)
-    plt.savefig(output_filename, dpi=300, bbox_inches='tight')
+    stem = str(Path(str(output_filename)).with_suffix(''))
+    for fmt in formats:
+        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
     plt.close()
-    
+
     return output_filename
 
 
@@ -322,31 +324,23 @@ def get_other(conn, meiji, src='hs', cutoff=100):
     return byyear
 
 
-# Main execution
-if __name__ == "__main__":
-    # Database setup
-    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+_default_db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+_default_plot_dir = os.path.join(os.path.dirname(__file__), '../web/static/plot')
+
+
+def main(db_path=_default_db_path, plot_dir=_default_plot_dir, formats=('png',)):
+    """Regenerate Meiji vs Heisei/BC agreement plots."""
     conn = sqlite3.connect(db_path)
 
-    # Load Meiji data as reference
     data_m = get_meiji(conn)
-
-    # Sample session with custom colors for plotting
-    sample_session = {
-        'female_color': 'purple',
-        'male_color': 'orange'
-    }
-
-    # Initialize tables for storing results
+    sample_session = {'female_color': 'purple', 'male_color': 'orange'}
     tables = dd(dict)
 
-    # Compare Meiji data with other sources
     for src in ('hs', 'bc'):
         print(f"Similarity for {src}")
         data = get_other(conn, data_m, src=src)
         results = {'M': dict(), 'F': dict()}
-        
-        # Perform comparisons for each year and gender
+
         for year in data:
             if year not in data_m:
                 continue
@@ -357,36 +351,29 @@ if __name__ == "__main__":
                     f'{year} {gender}'
                 )
 
-        # Create summary tables
         for gender in results:
-            data_summary = dict()
-            data_summary['caption'] = f"Ranking Agreement between Meiji Yasuda and {src}"
-            data_summary['headers'] = ['Year', 'Overlap', 'JS divergence', 'EM distance', 
-                                     'Correlation', 'Difference', 'P-value']
-            data_summary['rows'] = []
-            
+            data_summary = {
+                'caption': f"Ranking Agreement between Meiji Yasuda and {src}",
+                'headers': ['Year', 'Overlap', 'JS divergence', 'EM distance',
+                            'Correlation', 'Difference', 'P-value'],
+                'rows': [],
+            }
             for year in results[gender]:
                 r = results[gender][year]
                 data_summary['rows'].append([
-                    year,
-                    r['common_names_count'],
-                    r['js_divergence'],
-                    r['earth_movers_distance'],
-                    r['correlation'],
-                    r['chi_square']['cramers_v'],
-                    r['chi_square']['p_value']
+                    year, r['common_names_count'], r['js_divergence'],
+                    r['earth_movers_distance'], r['correlation'],
+                    r['chi_square']['cramers_v'], r['chi_square']['p_value']
                 ])
-
         tables['ch04'][f'meiji_vs_{src}'] = data_summary
-                
-        # Generate plots
-        outdir = os.path.join(os.path.dirname(__file__), '../web/static/plot')
-        figpath = os.path.join(outdir, f'book_meiji_vs_{src}.png')
-        filename = plot_gender_names_analysis(results, sample_session, output_filename=figpath)
-        print(f"Plot saved as: {filename}")
 
-    # Save results to JSON
-    #print(tables)
+        figpath = os.path.join(plot_dir, f'book_meiji_vs_{src}.png')
+        plot_gender_names_analysis(results, sample_session,
+                                   output_filename=figpath, formats=formats)
+        print(f"Plot saved: {figpath}")
+
+    conn.close()
+
     data_path = os.path.join(os.path.dirname(__file__), '../web/static/data/book_tables.json')
     try:
         with open(data_path) as f:
@@ -394,7 +381,10 @@ if __name__ == "__main__":
         old_tables.update(tables)
         tables = old_tables
     except FileNotFoundError:
-        print(f"Warning: {data_path} not found, creating new file")
-    
+        pass
     with open(data_path, 'w') as out:
         json.dump(tables, out)
+
+
+if __name__ == "__main__":
+    main()

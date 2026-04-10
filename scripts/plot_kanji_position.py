@@ -1,5 +1,6 @@
 import sys, os
 import sqlite3
+from pathlib import Path
 from collections import defaultdict as dd, Counter
 
 import numpy as np
@@ -8,15 +9,11 @@ from matplotlib import rcParams
 from matplotlib.ticker import MaxNLocator
 
 
-# Add the parent directory to the system path for module imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 current_directory = os.path.abspath(os.path.dirname(__file__))
 
 db_path = os.path.join(current_directory, "../web/db/namae.db")
 plot_dir = os.path.join(current_directory, "../web/static/plot")
-
-conn = sqlite3.connect(db_path)
-c = conn.cursor()
 
 def get_distribution(c, meta):
     (kanji, gender, src) = meta
@@ -49,7 +46,7 @@ GROUP BY year""",
 
     return data
 
-def plot_kanji_positions(data, meta, title=True):
+def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png',)):
     """
     Plot proportions of kanji positions over time.
     
@@ -126,6 +123,11 @@ def plot_kanji_positions(data, meta, title=True):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     
     plt.tight_layout()
+    if output_path is not None:
+        stem = str(Path(str(output_path)).with_suffix(''))
+        for fmt in formats:
+            fig.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
+        plt.close(fig)
     return fig, ax
 
 # Example usage:
@@ -156,27 +158,27 @@ def get_unique_characters(c, gender='M', src='hs', min_freq=None):
     
     return sorted(unique_chars)
 
-meta = ('翔', 'M', 'hs')
-meta = ('美', 'F', 'hs')
-meta = ('苺', 'F', 'hs')
+def main(db_path=db_path, plot_dir=plot_dir, formats=('png',)):
+    """Regenerate all kanji-position plots for high-frequency characters."""
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    out_dir = Path(os.path.dirname(__file__)) / 'position'
+    out_dir.mkdir(exist_ok=True)
 
-# for meta in [('音', 'M', 'hs'), ('音', 'F', 'hs')]:
-#     data = get_distribution(c,meta)
-#     fig, ax = plot_kanji_positions(data, meta)
-#     plt.savefig(f"position/{'_'.join(meta)}.png", dpi=300, bbox_inches='tight')
+    src = 'meiji'
+    for gender in ('M', 'F'):
+        characters = get_unique_characters(c, gender, src, min_freq=10000)
+        for ch in characters:
+            for g in ('M', 'F'):
+                meta = (ch, g, src)
+                print(f"Processing {ch}, {g}, {src}")
+                data = get_distribution(c, meta)
+                plot_kanji_positions(data, meta, title=False,
+                                     output_path=str(out_dir / '_'.join(meta)),
+                                     formats=formats)
+    conn.close()
 
-src = 'meiji'
-for gender in ('M', 'F'):
-    characters = get_unique_characters(c, gender, src,
-                                       min_freq=10000)
-    for ch in characters:
-        for gender in ('M', 'F'):
-            meta = (ch, gender, src)
-            print(f"Processing {ch}, {gender}, {src}")
-            data = get_distribution(c,meta)
-            fig, ax = plot_kanji_positions(data, meta, title=False)
-            plt.savefig(f"position/{'_'.join(meta)}.png",
-                        dpi=150, bbox_inches='tight')
-            plt.close()
 
-    
+if __name__ == "__main__":
+    main()
+
