@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from matplotlib.ticker import MaxNLocator
+from scipy.interpolate import PchipInterpolator
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -74,13 +75,22 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     total = solo + initial + middle + end
     max_prop = np.max(total) if len(total) > 0 else 0.1
     
-    # Create stacked area chart
+    # Create stacked area chart with PCHIP smoothing
     fig, ax = plt.subplots(figsize=(10, 6))
-    
-    ax.fill_between(years, 0, solo, alpha=0.7, label='Solo', color='#d62728')
-    ax.fill_between(years, solo, solo + initial, alpha=0.7, label='Initial', color='#1f77b4')
-    ax.fill_between(years, solo + initial, solo + initial + middle, alpha=0.7, label='Middle', color='#2ca02c')
-    ax.fill_between(years, solo + initial + middle, solo + initial + middle + end, alpha=0.7, label='End', color='#ff7f0e')
+
+    if len(years) >= 3:
+        xs = np.linspace(years[0], years[-1], 300)
+        s_s = np.clip(PchipInterpolator(years, solo)(xs), 0, None)
+        s_i = np.clip(PchipInterpolator(years, initial)(xs), 0, None)
+        s_m = np.clip(PchipInterpolator(years, middle)(xs), 0, None)
+        s_e = np.clip(PchipInterpolator(years, end)(xs), 0, None)
+    else:
+        xs, s_s, s_i, s_m, s_e = years, solo, initial, middle, end
+
+    ax.fill_between(xs, 0, s_s, alpha=0.7, label='Solo', color='#d62728')
+    ax.fill_between(xs, s_s, s_s + s_i, alpha=0.7, label='Initial', color='#1f77b4')
+    ax.fill_between(xs, s_s + s_i, s_s + s_i + s_m, alpha=0.7, label='Middle', color='#2ca02c')
+    ax.fill_between(xs, s_s + s_i + s_m, s_s + s_i + s_m + s_e, alpha=0.7, label='End', color='#ff7f0e')
     
     # Tufte styling
     ax.spines['top'].set_visible(False)

@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 from scipy.spatial.distance import jensenshannon
 from scipy.stats import wasserstein_distance, chi2_contingency
+from scipy.interpolate import PchipInterpolator
 import matplotlib.pyplot as plt
 import sqlite3
 import os
@@ -199,11 +200,19 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     # Create the figure and subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
     
+    def _smooth(ax, xs, ys, color, label):
+        if len(xs) >= 3:
+            interp = PchipInterpolator(xs, ys)
+            x_fine = np.linspace(xs[0], xs[-1], 300)
+            ax.plot(x_fine, interp(x_fine), color=color, linewidth=3, label=label)
+        else:
+            ax.plot(xs, ys, color=color, linewidth=3, label=label)
+        ax.scatter(xs, ys, color=color, s=50, zorder=5,
+                   edgecolors='white', linewidths=2)
+
     # Plot 1: Common Names Count
-    ax1.plot(years, male_common_names, marker='.', linewidth=3, markersize=8, 
-             color=male_color, label='Male', markerfacecolor='white', markeredgewidth=2)
-    ax1.plot(years, female_common_names, marker='.', linewidth=3, markersize=8, 
-             color=female_color, label='Female', markerfacecolor='white', markeredgewidth=2)
+    _smooth(ax1, years, male_common_names, male_color, 'Male')
+    _smooth(ax1, years, female_common_names, female_color, 'Female')
     
     ax1.set_title('Common Names Count Over Time', fontsize=14, fontweight='bold', pad=25)
     ax1.set_xlabel('Year', fontsize=12)
@@ -216,10 +225,8 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     ax1.spines['right'].set_visible(False)
     
     # Plot 2: JS Divergence
-    ax2.plot(years, male_js_divergence, marker='.', linewidth=3, markersize=8, 
-             color=male_color, label='Male', markerfacecolor='white', markeredgewidth=2)
-    ax2.plot(years, female_js_divergence, marker='.', linewidth=3, markersize=8, 
-             color=female_color, label='Female', markerfacecolor='white', markeredgewidth=2)
+    _smooth(ax2, years, male_js_divergence, male_color, 'Male')
+    _smooth(ax2, years, female_js_divergence, female_color, 'Female')
     
     ax2.set_title('JS Divergence Over Time', fontsize=14, fontweight='bold', pad=25)
     ax2.set_xlabel('Year', fontsize=12)

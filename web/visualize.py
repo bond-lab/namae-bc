@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 from cycler import cycler
 import numpy as np
+from scipy.interpolate import PchipInterpolator
 import io
 
 
@@ -56,8 +57,12 @@ def plot_multi_panel_trends(all_metrics, selected_metrics, title,
             
             # Only plot if we have valid data
             if valid_years and valid_values:
-                ax.plot(valid_years, valid_values, marker=marker, linestyle='-', 
-                        color=color, label=label)
+                ax.scatter(valid_years, valid_values, marker=marker,
+                           color=color, s=36, zorder=5, label=label)
+                if len(valid_years) >= 3:
+                    interp = PchipInterpolator(valid_years, valid_values)
+                    xs = np.linspace(valid_years[0], valid_years[-1], 300)
+                    ax.plot(xs, interp(xs), color=color, linewidth=2)
                 
                 # Add confidence intervals if available
                 if confidence_intervals is not None:

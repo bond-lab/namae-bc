@@ -12,12 +12,20 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import numpy as np
 from scipy import stats as scipy_stats
+from scipy.interpolate import PchipInterpolator
 
 current_directory = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = Path(current_directory) / ".." / "web" / "static" / "data"
 
 MALE_COLOR = "#ff7f0e"
 FEMALE_COLOR = "#9467bd"
+
+
+def _smooth_plot(ax, xdata, ydata, n=300, **kwargs):
+    """Plot a PCHIP-smoothed curve (equivalent to D3 curveMonotoneX)."""
+    interp = PchipInterpolator(xdata, ydata)
+    xs = np.linspace(min(xdata), max(xdata), n)
+    ax.plot(xs, interp(xs), **kwargs)
 
 
 def _regression_line(years, slope, intercept):
@@ -93,7 +101,7 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        ax.plot(yrs, vals, color=color, linewidth=2.5, label=label)
+        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5, label=label)
         ax.scatter(yrs, vals, color=color, s=18, zorder=5,
                    edgecolors="white", linewidths=1.2)
 
@@ -154,12 +162,13 @@ def plot_genderedness_dataset(data, regression_stats, caption,
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        ax.plot(yrs, vals, color=color, linewidth=2.5, label=label)
+        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5, label=label)
         ax.scatter(yrs, vals, color=color, s=18, zorder=5,
                    edgecolors="white", linewidths=1.2)
 
     _add_trend_lines(ax, regression_stats, None, None, MALE_COLOR, FEMALE_COLOR)
 
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
     ax.set_xlabel("Year", fontsize=11)
     ax.set_ylabel("Genderedness", fontsize=11)
     ax.spines["top"].set_visible(False)

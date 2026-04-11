@@ -5,6 +5,7 @@ from collections import defaultdict as dd, Counter
 import numpy as np
 from scipy import stats
 from scipy.stats import pearsonr
+from scipy.interpolate import PchipInterpolator
 import pandas as pd
 
 from db import db_options, get_name_year, get_name_count_year
@@ -288,8 +289,12 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
             
             # Only plot if we have valid data
             if valid_years and valid_values:
-                ax.plot(valid_years, valid_values, marker=marker, linestyle=':', 
-                        color=color, linewidth=2, markersize=6)
+                ax.scatter(valid_years, valid_values, marker=marker,
+                           color=color, s=36, zorder=5)
+                if len(valid_years) >= 3:
+                    interp = PchipInterpolator(valid_years, valid_values)
+                    xs = np.linspace(valid_years[0], valid_years[-1], 300)
+                    ax.plot(xs, interp(xs), color=color, linewidth=2)
                 
                 # Add trend line if statistics are significant
                 if trend_stats and show_stats:

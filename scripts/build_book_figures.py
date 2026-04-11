@@ -289,21 +289,32 @@ def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
         return
     data.sort()
     years = [r[0] for r in data]
-    values = [r[1] if kind == 'count' else r[2] for r in data]
-    ylabel = "Overlapping Names" if kind == 'count' else "Weighted Overlap"
+    if kind == 'count':
+        values = [r[1] for r in data]
+        ylabel = "Number of Overlapping Names"
+    else:
+        values = [r[2] * 100 for r in data]
+        ylabel = "Weighted Overlap (%)"
 
     import numpy as np
     from scipy.stats import linregress
+    from scipy.interpolate import PchipInterpolator
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(years, values, marker='o' if kind == 'count' else 's',
-            color='#1f77b4', linewidth=1.5, markersize=5, linestyle='--',
-            label='Overlap')
+    marker = 'o' if kind == 'count' else 's'
+    ax.scatter(years, values, marker=marker, color='#1f77b4', s=25, zorder=5,
+               label='Overlap')
+    if len(years) >= 3:
+        interp = PchipInterpolator(years, values)
+        xs = np.linspace(years[0], years[-1], 300)
+        ax.plot(xs, interp(xs), color='#1f77b4', linewidth=1.5)
     slope, intercept, _, p_value, _ = linregress(years, values)
     reg_x = np.array([min(years), max(years)])
     ax.plot(reg_x, slope * reg_x + intercept, color='#1f77b4', linewidth=1.5)
     ax.set_xlabel('Year')
     ax.set_ylabel(ylabel)
+    if kind == 'weighted':
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.1f}%"))
     ax.grid(True, alpha=0.3, axis='y')
     ax.set_ylim(bottom=0)
     ax.spines['top'].set_visible(False)
@@ -408,13 +419,52 @@ def build_figure_15b(output_stem, formats):
 
 
 def build_figure_16(output_stem: Path, formats: tuple[str, ...]) -> None:
-    """Gender-neutral names (F-ratio in [0.2,0.8]) in Heisei data."""
-    src_png = PLOT_DIR / "pron_gender_proportion_histogram_Orthography (2008-2022).png"
-    if src_png.exists() and 'svg' not in formats:
-        shutil.copy2(src_png, Path(f"{output_stem}.png"))
-    else:
-        # Reuse the hs orth proportion chart as the closest available proxy
-        build_figure_11b(output_stem, formats)
+    """Proportion of androgynous names over time in Heisei Namae data."""
+    from scipy.interpolate import PchipInterpolator
+    from scipy.stats import linregress
+    import numpy as np
+
+    with open(DATA_DIR / "androgyny_data.json", encoding="utf-8") as f:
+        blob = json.load(f)
+
+    ds = blob["hs_orth_token_tau2"]
+    rows = ds["data"]
+    years = [r["year"] for r in rows]
+    proportions = [r["proportion"] for r in rows]
+    reg = ds["regression"]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    interp = PchipInterpolator(years, proportions)
+    xs = np.linspace(min(years), max(years), 300)
+    ax.plot(xs, interp(xs), color="#2ca02c", linewidth=2.5,
+            label="Androgynous")
+    ax.scatter(years, proportions, color="#2ca02c", s=18, zorder=5,
+               edgecolors="white", linewidths=1.2)
+
+    reg_x = np.array([min(years), max(years)])
+    ax.plot(reg_x, reg["slope"] * reg_x + reg["intercept"],
+            color="#2ca02c", linewidth=1.5, alpha=0.7)
+
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
+    ax.set_xlabel("Year", fontsize=11)
+    ax.set_ylabel("Proportion of Androgynous Names", fontsize=11)
+    ax.set_ylim(bottom=0)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.legend(frameon=False, fontsize=10)
+    ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
+
+    total_a = sum(r["androgynous"] for r in rows)
+    total_n = sum(r["total"] for r in rows)
+    ax.text(0.02, 0.96, f"Overall: {total_a/total_n*100:.1f}% ({total_a:,}/{total_n:,})",
+            transform=ax.transAxes, fontsize=8, color="gray", va="top")
+
+    plt.tight_layout()
+    for fmt in formats:
+        fig.savefig(f"{output_stem}.{fmt}", dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 
 def _kanji_pos(kanji: str, gender: str, src: str,
@@ -437,16 +487,16 @@ def build_figure_18(output_stem, formats):
     _kanji_pos('翔', 'M', 'hs', output_stem, formats)
 
 def build_figure_19a(output_stem, formats):
-    _kanji_pos('陽', 'M', 'hs', output_stem, formats)
-
-def build_figure_19b(output_stem, formats):
     _kanji_pos('陽', 'M', 'meiji', output_stem, formats)
 
+def build_figure_19b(output_stem, formats):
+    _kanji_pos('陽', 'F', 'meiji', output_stem, formats)
+
 def build_figure_20a(output_stem, formats):
-    _kanji_pos('凛', 'F', 'hs', output_stem, formats)
+    _kanji_pos('凛', 'M', 'hs', output_stem, formats)
 
 def build_figure_20b(output_stem, formats):
-    _kanji_pos('凛', 'F', 'meiji', output_stem, formats)
+    _kanji_pos('凛', 'F', 'hs', output_stem, formats)
 
 
 def _genderedness_chart(dataset_key: str,
@@ -495,6 +545,31 @@ def build_figure_21c(output_stem, formats):
     _genderedness_chart(key, output_stem, formats)
 
 
+# Free-text notes shown in the index alongside each figure
+FIGURE_NOTES: dict[str, str] = {
+    '5a': 'Browser screenshot (web app, not matplotlib)',
+    '5b': 'Browser screenshot (web app, not matplotlib)',
+    '20a': 'Uses Heisei Namae Jiten data (1989–2009); manuscript caption references Meiji Yasuda.',
+    '20b': 'Uses Heisei Namae Jiten data (1989–2009); manuscript caption references Meiji Yasuda.',
+}
+
+# Caption overrides: replaces the manuscript-extracted caption for specific figures.
+CAPTION_OVERRIDES: dict[str, str] = {
+    '20a': 'Position distribution of 凛 in names and as a single-kanji name (boys; Heisei Namae Jiten data)',
+    '20b': 'Position distribution of 凛 in names and as a single-kanji name (girls; Heisei Namae Jiten data)',
+}
+
+
+def _get_caption(captions: dict[str, str], fig_id: str) -> str:
+    """Return the caption for fig_id, with fallbacks to parent number and overrides."""
+    if fig_id in CAPTION_OVERRIDES:
+        return CAPTION_OVERRIDES[fig_id]
+    if fig_id in captions:
+        return captions[fig_id]
+    # Fall back to parent figure number (strip trailing letter, e.g. '19a' -> '19')
+    parent = fig_id.rstrip('abcdefgh')
+    return captions.get(parent, "")
+
 # Map of figure IDs to their builder functions
 BUILDERS: dict[str, object] = {
     '1':   build_figure_1,
@@ -509,7 +584,6 @@ BUILDERS: dict[str, object] = {
     '7c':  build_figure_7c,
     '8':   build_figure_8,
     '9':   build_figure_9,
-    '10':  build_figure_10,
     '11a': build_figure_11a,
     '11b': build_figure_11b,
     '11c': build_figure_11c,
@@ -542,17 +616,63 @@ def _figure_label(fig_id: str) -> str:
     return f"Figure {fig_id.upper() if fig_id[-1].isalpha() else fig_id}"
 
 
+def _manuscript_images(fig_id: str) -> list[str]:
+    """Return manuscript image paths (relative to BOOK_DIR) for a figure ID."""
+    ms_dir = BOOK_DIR / "manuscript"
+
+    # Exact match: Figure_9_manuscript.png or Figure_7a_manuscript.png
+    exact = ms_dir / f"Figure_{fig_id}_manuscript.png"
+    if exact.exists():
+        return [f"manuscript/Figure_{fig_id}_manuscript.png"]
+
+    # Numbered variants: Figure_9_1_manuscript.png, Figure_9_2_manuscript.png
+    numbered = sorted(ms_dir.glob(f"Figure_{fig_id}_[0-9]_manuscript.png"))
+    if numbered:
+        return [f"manuscript/{p.name}" for p in numbered]
+
+    # Sub-figures like 19a/19b → try Figure_19_1, Figure_19_2
+    m = re.match(r'(\d+)([a-z])$', fig_id)
+    if m:
+        num, letter = m.group(1), m.group(2)
+        idx = ord(letter) - ord('a') + 1
+        p = ms_dir / f"Figure_{num}_{idx}_manuscript.png"
+        if p.exists():
+            return [f"manuscript/Figure_{num}_{idx}_manuscript.png"]
+
+    return []
+
+
 def write_index_md(captions: dict[str, str], figure_ids: list[str],
                    formats: tuple[str, ...]) -> None:
     lines = ["# Book Figures Index\n"]
     for fig_id in figure_ids:
         label = _figure_label(fig_id)
-        title = captions.get(fig_id, "")
+        title = _get_caption(captions, fig_id)
+        note = FIGURE_NOTES.get(fig_id, "")
         heading = f"{label}: {title}" if title else label
         lines.append(f"## {heading}\n")
-        for fmt in formats:
-            fname = f"Figure_{fig_id}.{fmt}"
-            lines.append(f"![{heading}]({fname})\n")
+        if note:
+            lines.append(f"*{note}*\n")
+
+        ms_imgs = _manuscript_images(fig_id)
+        gen_imgs = [(fmt, f"Figure_{fig_id}.{fmt}")
+                    for fmt in formats
+                    if (BOOK_DIR / f"Figure_{fig_id}.{fmt}").exists()]
+
+        cols: list[tuple[str, str]] = []
+        for path in ms_imgs:
+            cols.append(("Manuscript", f"![manuscript]({path})"))
+        for fmt, fname in gen_imgs:
+            if fmt in ("png", "svg"):
+                cols.append((fmt.upper(), f"![{fmt}]({fname})"))
+
+        if cols:
+            headers = " | ".join(c[0] for c in cols)
+            seps = " | ".join("---" for _ in cols)
+            cells = " | ".join(c[1] for c in cols)
+            lines.append(f"| {headers} |")
+            lines.append(f"| {seps} |")
+            lines.append(f"| {cells} |")
         lines.append("")
 
     (BOOK_DIR / "figure_index.md").write_text("\n".join(lines), encoding="utf-8")
@@ -564,24 +684,45 @@ def write_index_html(captions: dict[str, str], figure_ids: list[str],
     rows = []
     for fig_id in figure_ids:
         label = _figure_label(fig_id)
-        title = captions.get(fig_id, "")
+        title = _get_caption(captions, fig_id)
+        note = FIGURE_NOTES.get(fig_id, "")
         heading = f"{label}: {title}" if title else label
-        rows.append(f"  <h2>{heading}</h2>")
+        rows.append(f'  <h2>{heading}</h2>')
+        if note:
+            rows.append(f'  <p style="color:#888;font-style:italic;margin:.25em 0">{note}</p>')
+        rows.append('  <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">')
+
+        ms_imgs = _manuscript_images(fig_id)
+        for path in ms_imgs:
+            rows.append(
+                f'    <figure style="flex:1;min-width:200px;margin:0">'
+                f'<figcaption style="font-size:.85em;color:#555">Manuscript</figcaption>'
+                f'<img src="{path}" style="max-width:100%;border:1px solid #ccc"></figure>'
+            )
+
         for fmt in formats:
             fname = f"Figure_{fig_id}.{fmt}"
             out_path = BOOK_DIR / fname
-            if out_path.exists():
-                if fmt == 'png':
-                    rows.append(f'  <img src="{fname}" alt="{heading}" style="max-width:100%;"><br>')
-                else:
-                    rows.append(f'  <a href="{fname}">{fname}</a><br>')
+            if not out_path.exists():
+                continue
+            if fmt in ("png", "svg"):
+                rows.append(
+                    f'    <figure style="flex:1;min-width:200px;margin:0">'
+                    f'<figcaption style="font-size:.85em;color:#555">{fmt.upper()}</figcaption>'
+                    f'<img src="{fname}" style="max-width:100%;border:1px solid #ccc"></figure>'
+                )
+            else:
+                rows.append(f'    <p><a href="{fname}">{fname}</a></p>')
+
+        rows.append('  </div>')
 
     html = (
         "<!DOCTYPE html>\n<html lang='en'>\n<head>\n"
         "<meta charset='UTF-8'>\n"
         "<title>Book Figures</title>\n"
-        "<style>body{font-family:sans-serif;max-width:900px;margin:2em auto}"
-        " h2{margin-top:2em} img{border:1px solid #ccc;margin-top:.5em}</style>\n"
+        "<style>body{font-family:sans-serif;max-width:1400px;margin:2em auto;padding:0 1em}"
+        " h2{margin-top:2em} figure img{display:block}"
+        " figcaption{margin-bottom:.25em;font-weight:bold}</style>\n"
         "</head>\n<body>\n<h1>Book Figures</h1>\n"
         + "\n".join(rows)
         + "\n</body>\n</html>\n"
@@ -609,6 +750,8 @@ def main():
                         help="Skip figures whose PNG already exists in book/")
     parser.add_argument("--figures", default="",
                         help="Comma-separated subset of figure IDs to build (e.g. 1,7a,9)")
+    parser.add_argument("--index-only", action="store_true",
+                        help="Regenerate index files without rebuilding any figures")
     args = parser.parse_args()
 
     formats = tuple(args.formats.split(","))
@@ -618,8 +761,15 @@ def main():
     captions = extract_captions(DOC_PATH)
     print(f"  Found {len(captions)} figure captions")
 
-    # Determine which figures to build
     all_ids = _sorted_fig_ids(list(BUILDERS.keys()))
+
+    if args.index_only:
+        print("\nWriting index files...")
+        write_index_md(captions, all_ids, formats)
+        write_index_html(captions, all_ids, formats)
+        return
+
+    # Determine which figures to build
     if args.figures:
         requested = {f.strip() for f in args.figures.split(",")}
         all_ids = [fid for fid in all_ids if fid in requested]
