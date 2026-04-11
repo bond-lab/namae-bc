@@ -15,8 +15,13 @@ import json
 import os
 import re
 import shutil
+import signal
+import socket
 import sqlite3
+import subprocess
 import sys
+import time
+from contextlib import contextmanager
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).parent
@@ -41,11 +46,54 @@ PLOT_DIR = REPO_ROOT / "web" / "static" / "plot"
 DATA_DIR = REPO_ROOT / "web" / "static" / "data"
 DB_PATH = REPO_ROOT / "web" / "db" / "namae.db"
 DOC_PATH = REPO_ROOT / "local" / "Barešová_Bond_manuscript_CORR_IB.docx"
+FLASK_PORT = 5100
+FLASK_FIGURES = {"5a", "5b"}
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams["svg.fonttype"] = "path"
+
+
+# ---------------------------------------------------------------------------
+# Flask server lifecycle
+# ---------------------------------------------------------------------------
+
+def _port_open(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("127.0.0.1", port)) == 0
+
+
+@contextmanager
+def flask_server():
+    """Start the Flask app on FLASK_PORT if not already running; stop on exit."""
+    already_running = _port_open(FLASK_PORT)
+    proc = None
+    if not already_running:
+        wsgi = REPO_ROOT / "wsgi.py"
+        python = Path(sys.executable).parent.parent / ".venv" / "bin" / "python"
+        if not python.exists():
+            python = sys.executable
+        proc = subprocess.Popen(
+            [str(python), str(wsgi)],
+            cwd=str(REPO_ROOT),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        deadline = time.monotonic() + 15
+        while not _port_open(FLASK_PORT):
+            if time.monotonic() > deadline:
+                proc.kill()
+                raise RuntimeError(
+                    f"Flask app did not start on port {FLASK_PORT} within 15s"
+                )
+            time.sleep(0.2)
+    try:
+        yield
+    finally:
+        if proc is not None:
+            proc.send_signal(signal.SIGTERM)
+            proc.wait(timeout=5)
 
 
 # ---------------------------------------------------------------------------
@@ -137,7 +185,12 @@ def build_figure_4(output_stem: Path, formats: tuple[str, ...]) -> None:
 
 def _playwright_capture(url: str, output_stem: Path, formats: tuple[str, ...]) -> None:
     """Capture a single web page via Playwright and save to all requested formats."""
-    from playwright.sync_api import sync_playwright
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError as e:
+        raise ImportError(
+            "playwright is required: uv pip install playwright && playwright install chromium"
+        ) from e
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -774,29 +827,38 @@ def main():
         requested = {f.strip() for f in args.figures.split(",")}
         all_ids = [fid for fid in all_ids if fid in requested]
 
-    errors = []
-    for fig_id in all_ids:
-        builder = BUILDERS.get(fig_id)
-        label = _figure_label(fig_id)
-        output_stem = BOOK_DIR / f"Figure_{fig_id}"
+    needs_flask = bool(set(all_ids) & FLASK_FIGURES)
 
-        if builder is None:
-            print(f"  {label}: no builder defined — skipped")
-            continue
+    def _build_all(errors):
+        for fig_id in all_ids:
+            builder = BUILDERS.get(fig_id)
+            label = _figure_label(fig_id)
+            output_stem = BOOK_DIR / f"Figure_{fig_id}"
 
-        if args.skip_existing:
-            existing = [Path(f"{output_stem}.{fmt}") for fmt in formats]
-            if all(p.exists() for p in existing):
-                print(f"  {label}: already exists — skipped")
+            if builder is None:
+                print(f"  {label}: no builder defined — skipped")
                 continue
 
-        title = captions.get(fig_id, "")
-        print(f"Building {label}{': ' + title[:60] if title else ''}...")
-        try:
-            builder(output_stem, formats)
-        except Exception as exc:
-            print(f"  ERROR building {label}: {exc}")
-            errors.append((fig_id, exc))
+            if args.skip_existing:
+                existing = [Path(f"{output_stem}.{fmt}") for fmt in formats]
+                if all(p.exists() for p in existing):
+                    print(f"  {label}: already exists — skipped")
+                    continue
+
+            title = captions.get(fig_id, "")
+            print(f"Building {label}{': ' + title[:60] if title else ''}...")
+            try:
+                builder(output_stem, formats)
+            except Exception as exc:
+                print(f"  ERROR building {label}: {exc}")
+                errors.append((fig_id, exc))
+
+    errors = []
+    if needs_flask:
+        with flask_server():
+            _build_all(errors)
+    else:
+        _build_all(errors)
 
     print("\nWriting index files...")
     write_index_md(captions, all_ids, formats)

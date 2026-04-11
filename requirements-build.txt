@@ -13,3 +13,4 @@ pyyaml
 kanaconv
 scikit-learn
 python-docx
+playwright
