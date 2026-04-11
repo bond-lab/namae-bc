@@ -135,6 +135,44 @@ def build_figure_4(output_stem: Path, formats: tuple[str, ...]) -> None:
                                   use_log_scale=True, formats=formats)
 
 
+def _playwright_capture(url: str, output_stem: Path, formats: tuple[str, ...]) -> None:
+    """Capture a single web page via Playwright and save to all requested formats."""
+    from playwright.sync_api import sync_playwright
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page(viewport={"width": 1280, "height": 900})
+        page.goto(url, wait_until="networkidle")
+        page.wait_for_timeout(2000)
+
+        if "png" in formats:
+            page.screenshot(path=f"{output_stem}.png", full_page=False)
+        if "pdf" in formats:
+            page.pdf(path=f"{output_stem}.pdf",
+                     width="1280px", height="900px",
+                     print_background=True)
+        if "svg" in formats:
+            svg = page.evaluate("() => { const el = document.querySelector('svg'); return el ? el.outerHTML : null; }")
+            if svg:
+                Path(f"{output_stem}.svg").write_text(svg, encoding="utf-8")
+
+        browser.close()
+
+
+def build_figure_5a(output_stem: Path, formats: tuple[str, ...]) -> None:
+    """蓮 (れん /ren/) pronunciation page."""
+    _playwright_capture(
+        "http://127.0.0.1:5100/namae?pron=%E3%82%8C%E3%82%93",
+        output_stem, formats)
+
+
+def build_figure_5b(output_stem: Path, formats: tuple[str, ...]) -> None:
+    """蓮 (はす /hasu/) pronunciation page."""
+    _playwright_capture(
+        "http://127.0.0.1:5100/namae?pron=%E3%81%AF%E3%81%99",
+        output_stem, formats)
+
+
 def build_figure_6(output_stem: Path, formats: tuple[str, ...]) -> None:
     m = _load_script("img-jinmei")
     m.plot_kanji_usage(output_path=str(output_stem), formats=formats)
@@ -254,12 +292,19 @@ def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
     values = [r[1] if kind == 'count' else r[2] for r in data]
     ylabel = "Overlapping Names" if kind == 'count' else "Weighted Overlap"
 
+    import numpy as np
+    from scipy.stats import linregress
+
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(years, values, marker='o' if kind == 'count' else 's',
-            color='blue', linewidth=2, markersize=6)
+            color='#1f77b4', linewidth=1.5, markersize=5, linestyle='--',
+            label='Overlap')
+    slope, intercept, _, p_value, _ = linregress(years, values)
+    reg_x = np.array([min(years), max(years)])
+    ax.plot(reg_x, slope * reg_x + intercept, color='#1f77b4', linewidth=1.5)
     ax.set_xlabel('Year')
     ax.set_ylabel(ylabel)
-    ax.grid(True, alpha=0.3)
+    ax.grid(True, alpha=0.3, axis='y')
     ax.set_ylim(bottom=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -300,6 +345,7 @@ def _proportion_graph(gname: str, output_stem: Path, formats: tuple[str, ...]) -
         return
     mp = _load_script("plot_proportion")
     db = _load_script("db")
+    conn = sqlite3.connect(str(DB_PATH))
     table_name = db.db_options['bc'][0]
     names_raw = db.get_name_year(conn, src='bc', table=table_name, dtype='both')
     conn.close()
@@ -349,10 +395,10 @@ def build_figure_13b(output_stem, formats):
     _overlap_graph('meiji', 'pron', 50, 'weighted', output_stem, formats)
 
 def build_figure_14a(output_stem, formats):
-    _overlap_graph('meiji', 'orth', 50, 'count', output_stem, formats)
+    _overlap_graph('meiji', 'orth', 100, 'count', output_stem, formats)
 
 def build_figure_14b(output_stem, formats):
-    _overlap_graph('meiji', 'orth', 50, 'weighted', output_stem, formats)
+    _overlap_graph('meiji', 'orth', 100, 'weighted', output_stem, formats)
 
 def build_figure_15a(output_stem, formats):
     _overlap_graph('hs', 'orth', 500, 'count', output_stem, formats)
@@ -391,13 +437,13 @@ def build_figure_18(output_stem, formats):
     _kanji_pos('翔', 'M', 'hs', output_stem, formats)
 
 def build_figure_19a(output_stem, formats):
-    _kanji_pos('陽', 'M', 'meiji', output_stem, formats)
+    _kanji_pos('陽', 'M', 'hs', output_stem, formats)
 
 def build_figure_19b(output_stem, formats):
-    _kanji_pos('陽', 'F', 'meiji', output_stem, formats)
+    _kanji_pos('陽', 'M', 'meiji', output_stem, formats)
 
 def build_figure_20a(output_stem, formats):
-    _kanji_pos('凛', 'M', 'meiji', output_stem, formats)
+    _kanji_pos('凛', 'F', 'hs', output_stem, formats)
 
 def build_figure_20b(output_stem, formats):
     _kanji_pos('凛', 'F', 'meiji', output_stem, formats)
@@ -455,7 +501,8 @@ BUILDERS: dict[str, object] = {
     '2':   build_figure_2,
     '3':   build_figure_3,
     '4':   build_figure_4,
-    '5':   None,  # screenshot
+    '5a':  build_figure_5a,
+    '5b':  build_figure_5b,
     '6':   build_figure_6,
     '7a':  build_figure_7a,
     '7b':  build_figure_7b,
@@ -503,12 +550,9 @@ def write_index_md(captions: dict[str, str], figure_ids: list[str],
         title = captions.get(fig_id, "")
         heading = f"{label}: {title}" if title else label
         lines.append(f"## {heading}\n")
-        if fig_id == '5':
-            lines.append("*Screenshot — not a generated figure.*\n")
-        else:
-            for fmt in formats:
-                fname = f"Figure_{fig_id}.{fmt}"
-                lines.append(f"![{heading}]({fname})\n")
+        for fmt in formats:
+            fname = f"Figure_{fig_id}.{fmt}"
+            lines.append(f"![{heading}]({fname})\n")
         lines.append("")
 
     (BOOK_DIR / "figure_index.md").write_text("\n".join(lines), encoding="utf-8")
@@ -523,17 +567,14 @@ def write_index_html(captions: dict[str, str], figure_ids: list[str],
         title = captions.get(fig_id, "")
         heading = f"{label}: {title}" if title else label
         rows.append(f"  <h2>{heading}</h2>")
-        if fig_id == '5':
-            rows.append("  <p><em>Screenshot — not a generated figure.</em></p>")
-        else:
-            for fmt in formats:
-                fname = f"Figure_{fig_id}.{fmt}"
-                out_path = BOOK_DIR / fname
-                if out_path.exists():
-                    if fmt == 'png':
-                        rows.append(f'  <img src="{fname}" alt="{heading}" style="max-width:100%;"><br>')
-                    else:
-                        rows.append(f'  <a href="{fname}">{fname}</a><br>')
+        for fmt in formats:
+            fname = f"Figure_{fig_id}.{fmt}"
+            out_path = BOOK_DIR / fname
+            if out_path.exists():
+                if fmt == 'png':
+                    rows.append(f'  <img src="{fname}" alt="{heading}" style="max-width:100%;"><br>')
+                else:
+                    rows.append(f'  <a href="{fname}">{fname}</a><br>')
 
     html = (
         "<!DOCTYPE html>\n<html lang='en'>\n<head>\n"
@@ -590,7 +631,7 @@ def main():
         output_stem = BOOK_DIR / f"Figure_{fig_id}"
 
         if builder is None:
-            print(f"  {label}: screenshot — skipped")
+            print(f"  {label}: no builder defined — skipped")
             continue
 
         if args.skip_existing:

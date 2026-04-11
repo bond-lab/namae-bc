@@ -102,10 +102,21 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.set_xlabel("Year", fontsize=11)
     ax.set_ylabel("Irregular Proportion", fontsize=11)
+    ax.set_ylim(bottom=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.legend(frameon=False, fontsize=10)
     ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
+
+    # Summary stats annotation (overall totals across all years)
+    totals = {g: (sum(p[2] for p in pts), sum(p[3] for p in pts))
+              for g, pts in series.items() if pts}
+    label_map = {"M": "Male", "F": "Female"}
+    parts = [f"{label_map[g]} {irr/n*100:.1f}% ({irr:,}/{n:,})"
+             for g, (irr, n) in sorted(totals.items())]
+    ax.text(0.02, 0.04, "Overall: " + "; ".join(parts),
+            transform=ax.transAxes, fontsize=8, color="gray", va="bottom")
+
     plt.tight_layout()
 
     if output_stem:
