@@ -118,6 +118,15 @@ class TestNameSearch:
         resp = client.get('/namae?orth=abc')
         assert_html_ok(resp)
 
+    def test_namae_orth_without_pron(self, client):
+        """Kanji present in Heisei (NULL pron) must not crash with hira2roma.
+
+        花 exists in Heisei with no pronunciation; previously this caused
+        TypeError: expected string or bytes-like object, got 'NoneType'.
+        """
+        resp = client.get('/namae?orth=%E8%8A%B1&pron=')
+        assert_html_ok(resp, must_contain=['花'])
+
 
 # ── Kanji search ─────────────────────────────────────────────────────
 
@@ -143,6 +152,23 @@ class TestKanjiSearch:
     def test_kanji_glob_injection(self, client):
         """Special GLOB characters should not crash."""
         resp = client.get('/kanji?kanji=*')
+        assert_html_ok(resp)
+
+    def test_kanji_names_list_present(self, client):
+        """Kanji page must include a list of names containing that kanji."""
+        resp = client.get('/kanji?kanji=%E8%8A%B1')  # 花
+        assert_html_ok(resp, must_contain=['Names containing', '花'])
+
+    def test_kanji_names_link_to_namae(self, client):
+        """Each name badge must link to the namae lookup page."""
+        resp = client.get('/kanji?kanji=%E7%BF%94')  # 翔
+        assert_html_ok(resp)
+        html = resp.data.decode()
+        assert '/namae?' in html, "Expected links to /namae? in names list"
+
+    def test_kanji_no_names_no_crash(self, client):
+        """A kanji with no names in the DB must not crash (empty names list)."""
+        resp = client.get('/kanji?kanji=%E6%8B%B3')  # 拳 — unlikely in names
         assert_html_ok(resp)
 
 
@@ -234,8 +260,7 @@ class TestOverlap:
     def test_overlap_has_datasets(self, client):
         resp = client.get('/overlap.html')
         html = resp.data.decode()
-        assert 'const datasets' in html
-        # Should have multiple source cards
+        # Should have multiple source sections (now rendered as SVG + tables)
         assert 'overlap_bc_orth' in html
 
 
@@ -247,7 +272,9 @@ class TestAndrogyny:
     def test_androgyny_has_datasets(self, client):
         resp = client.get('/phenomena/androgyny.html')
         html = resp.data.decode()
-        assert 'const datasets' in html
+        # Multiple source sections rendered as SVG + tables
+        assert 'androgyny_bc' in html
+        assert 'androgyny_hs' in html
 
 
 class TestTopNames:

@@ -1,15 +1,17 @@
 # Book Figures Index
 
-## Figure 5A
+## Figure 5A: Screenshots of the search results for 蓮
 
-![Figure 5A](Figure_5a.png)
+*Browser screenshot (web app, not matplotlib)*
 
-![Figure 5A](Figure_5a.pdf)
+| PNG | SVG |
+| --- | --- |
+| ![png](Figure_5a.png) | ![svg](Figure_5a.svg) |
 
+## Figure 5B: Screenshots of the search results for 蓮
 
-## Figure 5B
+*Browser screenshot (web app, not matplotlib)*
 
-![Figure 5B](Figure_5b.png)
-
-![Figure 5B](Figure_5b.pdf)
-
+| PNG | SVG |
+| --- | --- |
+| ![png](Figure_5b.png) | ![svg](Figure_5b.svg) |

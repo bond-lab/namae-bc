@@ -10,10 +10,11 @@ from collections import defaultdict as dd
 
 from web.db import get_db, get_name, get_names_summary, \
                 get_name_year, get_name_count_year, \
+                get_name_for_orth, get_name_for_pron, \
                 get_orth, get_pron, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
-                get_mapping, get_kanji_distribution, \
+                get_mapping, get_kanji_distribution, get_kanji_page_data, \
                 get_irregular, get_androgyny, get_overlap, \
                 get_top_names, resolve_src
 import json
@@ -21,6 +22,7 @@ import markdown
 from markupsafe import Markup
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 import regex
+from typing import Any
 
 def _is_hiragana(text):
     """Check if text is entirely hiragana."""
@@ -60,8 +62,47 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 # Root of the repository (parent of web/)
 repo_root = os.path.dirname(current_directory)
 
+# Module-level cache for pre-computed JSON files.  Populated on first access,
+# persists for the lifetime of the worker process (cleared on Apache restart).
+_json_cache: dict[str, Any] = {}
+
+
+def _load_data_json(filename: str) -> Any | None:
+    """Load and cache a pre-computed JSON file from static/data/.
+
+    Returns None if the file does not exist.
+    """
+    path = os.path.join(current_directory, "static", "data", filename)
+    if path not in _json_cache:
+        try:
+            with open(path, encoding="utf-8") as f:
+                _json_cache[path] = json.load(f)
+        except FileNotFoundError:
+            _json_cache[path] = None
+    return _json_cache[path]
+
+# Hex equivalents of the CSS color names stored in the session.
+# Must match MALE_COLOR / FEMALE_COLOR in scripts/web_plot_style.py.
+_COLOR_HEX: dict[str, str] = {
+    'orange': '#ff7f0e',
+    'purple': '#9467bd',
+    'blue':   '#1f77b4',
+    'red':    '#d62728',
+}
+
 threshold = 2
 
+
+def _load_plot_svg(filename: str) -> Any | None:
+    """Read a pre-generated SVG from static/plot/ and return as Markup.
+
+    Returns None if the file has not been built yet.
+    """
+    path = os.path.join(current_directory, "static", "plot", filename)
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        return Markup(f.read())
 
 
 def get_db_settings():
@@ -86,6 +127,8 @@ def get_db_settings():
 def inject_common_variables():
     """Inject common variables into all templates."""
     db_settings = get_db_settings()
+    male_color = session.get('male_color', 'orange')
+    female_color = session.get('female_color', 'purple')
     return {
         **db_settings,
         'features': features,
@@ -93,6 +136,10 @@ def inject_common_variables():
         'phenomena': phenomena,
         'page': request.endpoint,
         'show_book': session.get('show_book', False),
+        'male_color': male_color,
+        'female_color': female_color,
+        'male_color_hex': _COLOR_HEX.get(male_color, '#ff7f0e'),
+        'female_color_hex': _COLOR_HEX.get(female_color, '#9467bd'),
     }
 
 @app.route("/", methods=["GET", "POST"])
@@ -105,18 +152,21 @@ def home():
 
 @app.route("/phenomena/diversity.html")
 def diversity():
-    """
-    Show diversity measures
-    """
+    """Show diversity measures with pre-generated inline SVGs."""
     diversity_data = {}
     for src in db_options:
         for dtype in dtypes:
-            try:
-                file_path = os.path.join(current_directory, f"static/data/diversity_data_{src}_{dtype}.json")
-                with open(file_path) as f:
-                    diversity_data[f"{src}_{dtype}"] = json.load(f)
-            except FileNotFoundError:
+            data = _load_data_json(f"diversity_data_{src}_{dtype}.json")
+            if data is None:
                 continue
+            key = f"{src}_{dtype}"
+            diversity_data[key] = {
+                "metrics": data.get("metrics", {}),
+                "svgs": {
+                    group: _load_plot_svg(f"web_diversity_{key}_{group}.svg")
+                    for group in ("Var", "BP", "TTR_Newness")
+                },
+            }
 
     return render_template(
         "phenomena/diversity.html",
@@ -226,47 +276,50 @@ def namae():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     qsrc = db_settings['db_query_src']
-    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'],
-                                       src=qsrc,
-                                       dtype=db_settings['db_dtype'])
+    table = db_settings['db_table']
+
     if pron:
         mora = mora_hiragana(pron)
-        syll=syllable_hiragana(mora)
+        syll = syllable_hiragana(mora)
 
     if pron and orth:
+        kindex_entry, mfname_entry = get_name_for_orth(conn, orth, qsrc, table)
+        hindex_entry, _ = get_name_for_pron(conn, pron, qsrc, table)
         mapp = get_mapping(conn, orth, pron)
         return render_template(
-            f"namae-both.html",
+            "namae-both.html",
             name=orth,
             hira=pron,
             mora=mora,
             syll=syll,
             mapp=mapp,
             script=whichScript(orth),
-            mfname=mfname,
-            kindex=kindex,
-            hindex=hindex,
+            mfname=mfname_entry,
+            kindex={orth: kindex_entry},
+            hindex={pron: hindex_entry},
             male_color=session.get('male_color', 'orange'),
             female_color=session.get('female_color', 'purple')
-)
+        )
     elif pron:
+        hindex_entry, mfname_entry = get_name_for_pron(conn, pron, qsrc, table)
         data = get_pron(conn, pron, src=qsrc)
         return render_template(
-            f"namae-pron.html",
+            "namae-pron.html",
             hira=pron,
             mora=mora,
             syll=syll,
-            hindex=hindex,
+            hindex={pron: hindex_entry},
             data=data,
             male_color=session.get('male_color', 'orange'),
             female_color=session.get('female_color', 'purple')
         )
     elif orth:
+        kindex_entry, mfname_entry = get_name_for_orth(conn, orth, qsrc, table)
         data = get_orth(conn, orth, src=qsrc)
         return render_template(
-            f"namae-orth.html",
+            "namae-orth.html",
             name=orth,
-            kindex=kindex,
+            kindex={orth: kindex_entry},
             data=data,
             script=whichScript(orth),
             male_color=session.get('male_color', 'orange'),
@@ -282,13 +335,10 @@ def names():
     """Show the names page (skeleton — data loaded via AJAX)."""
     db_settings = get_db_settings()
 
-    # Determine entry count for the loading message
+    # Determine entry count for the loading message (from lightweight metadata file)
     src_key = db_settings['db_src']
-    json_path = os.path.join(current_directory, "static", "data", f"names_{src_key}.json")
-    entry_count = 0
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            entry_count = len(json.load(f).get('data', []))
+    counts = _load_data_json("names_counts.json") or {}
+    entry_count = counts.get(src_key, 0)
 
     return render_template("names.html", entry_count=entry_count)
 
@@ -339,10 +389,8 @@ def stats():
     db_settings = get_db_settings()
 
     # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "stats_data.json")
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("stats_data.json")
+    if precomputed is not None:
         key = db_settings['db_src']
         if key in precomputed:
             entry = precomputed[key]
@@ -403,11 +451,9 @@ def feature():
     feature_group = overall if is_overall else features
 
     # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "features_data.json")
     json_key = f"{db_settings['db_src']}_{feat1}_{feat2}" if feat2 else f"{db_settings['db_src']}_{feat1}"
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("features_data.json")
+    if precomputed is not None:
         if json_key in precomputed:
             entry = precomputed[json_key]
             data = [tuple(d) for d in entry['data']]
@@ -471,20 +517,28 @@ def years():
 
 @app.route("/phenomena/redup.html")
 def redup():
-    """
-    show examples of reduplication
-    """
-    conn = get_db(current_directory, "namae.db")
-    data = get_redup(conn)
+    """Show reduplication examples; loads pre-computed JSON when available."""
+    blob = _load_data_json("redup_data.json")
+    if blob is not None:
+        # Reconstruct tuple-keyed dicts from serialised list records
+        data = {}
+        for section, records in blob.items():
+            data[section] = {
+                (r["pron"], r["gender"]): {"freq": r["freq"], "orths": r["orths"]}
+                for r in records
+            }
+    else:
+        conn = get_db(current_directory, "namae.db")
+        data = get_redup(conn)
 
     stats = dd(dict)
     for t in data:
         stats[t]['T'] = sum(data[t][x]['freq'] for x in data[t])
         stats[t]['M'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'M')
         stats[t]['F'] = sum(data[t][x]['freq'] for x in data[t] if x[1] == 'F')
-    
+
     return render_template(
-        f"phenomena/redup.html",
+        "phenomena/redup.html",
         data=data,
         title='Reduplication in Names',
         stats=stats
@@ -509,12 +563,7 @@ def book():
     """
     Show all diagrams and tables for the book.
     """
-    try:
-        file_path = os.path.join(current_directory, f"static/data/book_tables.json")
-        with open(file_path) as f:
-            table_data = json.load(f)
-    except FileNotFoundError:
-        table_data=dict()    
+    table_data = _load_data_json("book_tables.json") or {}
 
     
     return render_template(
@@ -560,10 +609,8 @@ def kanji():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
 
-    data_male = get_kanji_distribution(conn, kanji_char, 'M',
-                                       db_settings['db_query_src'])
-    data_female = get_kanji_distribution(conn, kanji_char, 'F',
-                                         db_settings['db_query_src'])
+    src = db_settings['db_query_src']
+    data_male, data_female, names = get_kanji_page_data(conn, kanji_char, src)
 
     return render_template(
         "kanji.html",
@@ -571,6 +618,7 @@ def kanji():
         title=f'Information about 「{kanji_char}」',
         data_male=data_male,
         data_female=data_female,
+        names=names,
     )
 
 ###
@@ -584,10 +632,8 @@ def irregular():
     orthography and pronunciation, which only bc provides.
     """
     # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "irregular_data.json")
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("irregular_data.json")
+    if precomputed is not None:
         if 'bc' in precomputed:
             entry = precomputed['bc']
             return render_template(
@@ -595,9 +641,8 @@ def irregular():
                 data=entry['data'],
                 regression_stats=entry['regression_stats'],
                 gender_comparison=entry['gender_comparison'],
-                title='Irregular Names Statistics',
-                male_color=session.get('male_color', 'orange'),
-                female_color=session.get('female_color', 'purple'))
+                svg=_load_plot_svg("web_irregular.svg"),
+                title='Irregular Names Statistics')
 
     # Fallback to live query
     conn = get_db(current_directory, "namae.db")
@@ -620,9 +665,8 @@ def irregular():
         data=data,
         regression_stats=regression_stats,
         gender_comparison=gender_comparison,
+        svg=_load_plot_svg("web_irregular.svg"),
         title='Irregular Names Statistics',
-        male_color=session.get('male_color', 'orange'),
-        female_color=session.get('female_color', 'purple')
     )
 
 
@@ -631,17 +675,14 @@ def genderedness():
     """
     Render *all* datasets found in genderedness JSON on a single page.
     """
-    data_path = os.path.join(current_directory, "static", "data", "genderedness.json")
+    blob = _load_data_json("genderedness.json")
 
-    if not os.path.exists(data_path):
+    if not blob:
         return render_template("phenomena/genderedness.html",
                                title="Genderedness Over Time",
                                datasets=[],
                                male_color=session.get('male_color', 'orange'),
                                female_color=session.get('female_color', 'purple'))
-
-    with open(data_path, "r", encoding="utf-8") as f:
-        blob = json.load(f)
 
     if not isinstance(blob, dict) or not blob:
         blob = {}
@@ -706,15 +747,14 @@ def genderedness():
             "caption": caption,
             "data": data,
             "regression_stats": regression_stats,
-            "summary": summary
+            "summary": summary,
+            "svg": _load_plot_svg(f"web_genderedness_{key}.svg"),
         })
 
     return render_template(
         "phenomena/genderedness.html",
         title="Genderedness Over Time",
         datasets=datasets,
-        male_color=session.get('male_color', 'orange'),
-        female_color=session.get('female_color', 'purple')
     )
 
 def _regression_summary(rs):
@@ -744,12 +784,7 @@ def overlap():
         'meiji_p': [50],
     }
 
-    # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "overlap_data.json")
-    precomputed = None
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("overlap_data.json")
 
     datasets = []
     seen = set()
@@ -799,6 +834,7 @@ def overlap():
                     'reg_proportion': reg_proportion,
                     'summary_count': _regression_summary(reg_count),
                     'summary_proportion': _regression_summary(reg_proportion),
+                    'svg': _load_plot_svg(f"web_overlap_{key}.svg"),
                 })
 
     return render_template(
@@ -819,12 +855,7 @@ def androgyny():
         'type':  ('Names (Type)', 'names'),
     }
 
-    # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "androgyny_data.json")
-    precomputed = None
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("androgyny_data.json")
 
     datasets = []
     seen = set()
@@ -884,15 +915,14 @@ def androgyny():
                         'dtype': dtype,
                         'tau': tau,
                         'count_type': count_type,
-                        'unit': unit
+                        'unit': unit,
+                        'svg': _load_plot_svg(f"web_androgyny_{key}.svg"),
                     })
 
     return render_template(
         "phenomena/androgyny.html",
         title="Androgynous Names Over Time",
         datasets=datasets,
-        male_color=session.get('male_color', 'orange'),
-        female_color=session.get('female_color', 'purple')
     )
 
 
@@ -900,12 +930,7 @@ def androgyny():
 def topnames():
     """Top N names over time — reads pre-computed JSON (falls back to live query)."""
 
-    # Try pre-computed JSON first
-    json_path = os.path.join(current_directory, "static", "data", "topnames_data.json")
-    precomputed = None
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            precomputed = json.load(f)
+    precomputed = _load_data_json("topnames_data.json")
 
     datasets = []
     seen = set()

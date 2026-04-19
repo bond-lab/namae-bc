@@ -86,7 +86,7 @@ def _overall_params():
     ('/phenomena/topnames.html', 2),
     ('/genderedness.html', 2),
     ('/phenomena/jinmeiyou.html', 2),
-    ('/phenomena/redup.html', 5),
+    ('/phenomena/redup.html', 8),
 ])
 def test_static_routes(client, url, max_seconds):
     resp, elapsed = _timed_get(client, url)

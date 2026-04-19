@@ -167,16 +167,26 @@ The complement of this measure is the <b>Berger-Parker Dominance Index</b>, whic
         <div class="mb-3">
 
           <h3>Visualizations</h3>
-            <div class="plot-container">
-    
-                <img src="{{ url_for('static', filename='plot/diversity_' ~ key ~ '_Var.png') }}" class="img-fluid" alt="Diversity Measures">
+          {% set group_labels = [('Var', 'Diversity Measures'), ('BP', 'Berger-Parker Index'), ('TTR_Newness', 'TTR and Newness')] %}
+          {% for group_key, group_title in group_labels %}
+          {% set chart_id = 'chart-' ~ key ~ '-' ~ group_key %}
+          <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">{{ group_title }}</span>
+              {% if data.svgs[group_key] %}
+              <button class="btn btn-sm btn-outline-primary"
+                      onclick="downloadSVG('{{ chart_id }}', 'diversity_{{ key }}_{{ group_key }}.svg')">Download SVG</button>
+              {% endif %}
             </div>
-            <div class="plot-container">
-                <img src="{{ url_for('static', filename='plot/diversity_' ~ key ~ '_BP.png') }}" class="img-fluid" alt="Berger-Parker Index">
+            <div class="card-body p-2">
+              {% if data.svgs[group_key] %}
+                <div id="{{ chart_id }}">{{ data.svgs[group_key] }}</div>
+              {% else %}
+                <div class="alert alert-warning">Chart not yet generated — run <code>makedb.sh analysis</code>.</div>
+              {% endif %}
             </div>
-            <div class="plot-container">
-                <img src="{{ url_for('static', filename='plot/diversity_' ~ key ~ '_TTR_Newness.png') }}" class="img-fluid" alt="TTR and Newness Measures">
-            </div>
+          </div>
+          {% endfor %}
         </div>
 
 
@@ -186,7 +196,7 @@ The complement of this measure is the <b>Berger-Parker Dominance Index</b>, whic
     Show/Hide Tables
   </button>
   <div class="collapse" id="tables-{{ key }}">
-	   {% for gender, yearly in data.metrics.items() %}
+	   {% for gender, yearly in data['metrics'].items() %}
 	   {% if yearly %}
           <table class="table table-striped">
 	    <caption>{{gender}}</caption>
