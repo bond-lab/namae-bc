@@ -13,9 +13,13 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
 
 <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-{% block head %}
-<!-- Child templates can add scripts here -->
-{% endblock %}
+<style>
+:root {
+  --color-male: {{ male_color_hex }};
+  --color-female: {{ female_color_hex }};
+}
+</style>
+{% block head %}{% endblock %}
 
 </head>
 
@@ -52,6 +56,18 @@ The Growing Trend of Non-Gender-Specific Names in Contemporary Japan</a>.
    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+    <script>
+    function downloadSVG(containerId, filename) {
+        const svg = document.getElementById(containerId).querySelector('svg');
+        if (!svg) return;
+        const blob = new Blob([new XMLSerializer().serializeToString(svg)],
+                              {type: 'image/svg+xml'});
+        const a = Object.assign(document.createElement('a'),
+                                {href: URL.createObjectURL(blob), download: filename});
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+    </script>
     {% block scripts %}{% endblock %}
 
   

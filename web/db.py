@@ -81,6 +81,51 @@ def get_name(conn, table='namae', src='bc', dtype=None):
     return mfname, kindex, hindex
 
 
+def get_name_for_orth(conn, orth, src, table='namae'):
+    """Return (kindex_entry, mfname_entry) for a single orthography.
+
+    Replaces a full get_name() call for orth-only lookups.  Only fetches
+    rows for the requested orth — O(matches) instead of O(all names).
+
+    Returns:
+        kindex_entry: set of (orth, pron) pairs for this orth.
+        mfname_entry: {(orth, pron): {gender: [years]}} for this orth.
+    """
+    c = conn.cursor()
+    c.execute(
+        f"SELECT orth, pron, gender, year FROM {table} WHERE orth=? AND src=?",
+        (orth, src),
+    )
+    kindex_entry = set()
+    mfname_entry = dd(lambda: dd(list))
+    for row_orth, pron, gender, year in c:
+        kindex_entry.add((row_orth, pron))
+        mfname_entry[(row_orth, pron)][gender].append(year)
+    return kindex_entry, mfname_entry
+
+
+def get_name_for_pron(conn, pron, src, table='namae'):
+    """Return (hindex_entry, mfname_entry) for a single pronunciation.
+
+    Replaces a full get_name() call for pron-only lookups.
+
+    Returns:
+        hindex_entry: set of (orth, pron) pairs for this pronunciation.
+        mfname_entry: {(orth, pron): {gender: [years]}} for this pron.
+    """
+    c = conn.cursor()
+    c.execute(
+        f"SELECT orth, pron, gender, year FROM {table} WHERE pron=? AND src=?",
+        (pron, src),
+    )
+    hindex_entry = set()
+    mfname_entry = dd(lambda: dd(list))
+    for orth, row_pron, gender, year in c:
+        hindex_entry.add((orth, row_pron))
+        mfname_entry[(orth, row_pron)][gender].append(year)
+    return hindex_entry, mfname_entry
+
+
 def get_names_summary(conn, src='bc', dtype=None):
     """Return [(orth, pron, total_years, f_ratio), ...] using the nrank table.
 
@@ -830,6 +875,66 @@ GROUP BY year""",
         data[year].append(count)
     
     return dict(data)
+
+def get_kanji_page_data(conn, kanji, src):
+    """Return position-distribution data for both genders plus names list.
+
+    Replaces three separate GLOB scans (get_kanji_distribution × 2 +
+    get_names_with_kanji) with two queries: one nrank scan covering both
+    genders, and one ntok→namae scan for the names list.
+
+    Args:
+        conn: SQLite connection.
+        kanji: Single kanji character.
+        src: Data source key (e.g. 'bc', 'hs', 'meiji').
+
+    Returns:
+        (data_male, data_female, names) where data_male/data_female are
+        the same dicts as get_kanji_distribution(), and names is a list
+        of {orth, pron, gender} dicts ordered by gender then orth.
+    """
+    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']'):
+        return {}, {}, []
+
+    c = conn.cursor()
+    male: dict = dd(lambda: [0, 0, 0, 0])
+    female: dict = dd(lambda: [0, 0, 0, 0])
+
+    # Single nrank pass for position distribution (both genders at once)
+    c.execute(f"""
+        SELECT gender, year,
+            sum(CASE WHEN orth GLOB '{kanji}*' AND length(orth)>1 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth GLOB '*{kanji}*' AND orth NOT GLOB '{kanji}*'
+                      AND orth NOT GLOB '*{kanji}' AND length(orth)>2 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth GLOB '*{kanji}' AND length(orth)>1 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth = '{kanji}' THEN freq ELSE 0 END)
+        FROM nrank
+        WHERE orth GLOB '*{kanji}*' AND src=? AND freq IS NOT NULL
+        GROUP BY gender, year""",
+        (src,))
+    for gender, year, initial, middle, end, solo in c:
+        bucket = male if gender == 'M' else female
+        bucket[year] = [solo, initial, middle, end]
+
+    # Append year totals from cache
+    c.execute("SELECT gender, year, count FROM name_year_cache WHERE src=? AND dtype='orth'", (src,))
+    for gender, year, count in c:
+        bucket = male if gender == 'M' else female
+        if year in bucket:
+            bucket[year].append(count)
+
+    # Names list via ntok→namae (avoids re-scanning nrank)
+    c.execute("""
+        SELECT DISTINCT n.orth, n.pron, n.gender
+        FROM ntok t JOIN namae n ON t.nid = n.nid
+        WHERE t.kid = (SELECT kid FROM kanji WHERE kanji = ?)
+          AND n.src = ?
+        ORDER BY n.gender, n.orth""",
+        (kanji, src))
+    names = [{"orth": orth, "pron": pron, "gender": gender} for orth, pron, gender in c]
+
+    return dict(male), dict(female), names
+
 
 def get_overlap(conn, src='bc', dtype='orth', n_top=50):
     """Calculate overlap between male and female names in top-N ranks per year.

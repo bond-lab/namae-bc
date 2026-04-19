@@ -13,27 +13,33 @@
           <div class="alert alert-warning">{{ error }}</div>
           {% endif %}
           
-          <form action="{{ url_for('kanji') }}" method="get" class="mb-4">
+          <form action="{{ url_for('kanji') }}" method="get" class="mb-4" id="kanji-form">
             <div class="input-group input-group-lg">
-              <input 
-                type="text" 
-                class="form-control" 
-                name="kanji" 
-                placeholder="Enter a kanji character (e.g., 美, 翔, 愛)" 
+              <input
+                type="text"
+                class="form-control"
+                name="kanji"
+                placeholder="Enter a kanji character (e.g., 美, 翔, 愛)"
                 aria-label="Kanji character"
                 maxlength="1"
                 required
                 pattern="[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]"
                 title="Please enter a single kanji character"
               >
-              <button class="btn btn-primary" type="submit">
-                <span style="font-size: 1.2em;">📊</span> Search
+              <button class="btn btn-primary" type="submit" id="kanji-submit">
+                <span id="submit-icon" style="font-size: 1.2em;">📊</span>
+                <span id="submit-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Search
               </button>
             </div>
             <div class="form-text mt-2">
               Enter a single kanji character to analyze its position usage in names.
             </div>
           </form>
+          <div id="search-loading" class="d-none text-center my-3">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Looking up kanji data…</p>
+          </div>
           
           <div class="alert alert-info" role="alert">
             <h5 class="alert-heading">What does this show?</h5>
@@ -81,4 +87,14 @@
     </div>
   </div>
 </div>
+{% block scripts %}
+<script>
+document.getElementById('kanji-form').addEventListener('submit', function() {
+  document.getElementById('submit-icon').classList.add('d-none');
+  document.getElementById('submit-spinner').classList.remove('d-none');
+  document.getElementById('kanji-submit').disabled = true;
+  document.getElementById('search-loading').classList.remove('d-none');
+});
+</script>
+{% endblock %}
 {% endblock %}

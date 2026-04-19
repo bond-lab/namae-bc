@@ -154,7 +154,7 @@ class TestSessionEffects:
         assert resp.status_code == 200
 
     def test_color_palette_change(self, client_fresh):
-        """Changing palette should affect page rendering."""
+        """Changing palette should inject correct hex values into CSS variables."""
         client_fresh.post('/settings', data={
             'color_palette': 'red_blue',
             'db_option': 'bc',
@@ -162,7 +162,7 @@ class TestSessionEffects:
         resp = client_fresh.get('/irregular.html')
         html = resp.data.decode()
         assert resp.status_code == 200
-        assert 'blue' in html
+        assert '#1f77b4' in html  # male-blue hex in --color-male CSS variable
 
 
 # ── Overlap content validation ───────────────────────────────────────
@@ -171,18 +171,10 @@ class TestOverlapContent:
     def test_overlap_has_names_data(self, client):
         resp = client.get('/overlap.html')
         html = resp.data.decode()
-        m = re.search(r'const datasets = (\[.*?\]);\s*$', html,
-                      re.MULTILINE | re.DOTALL)
-        assert m
-        data = json.loads(m.group(1))
-        assert len(data) > 0
-        # Check first dataset has expected structure
-        ds = data[0]
-        assert 'data' in ds
-        assert len(ds['data']) > 0
-        row = ds['data'][0]
-        assert 'year' in row
-        assert 'overlap_count' in row
+        assert resp.status_code == 200
+        # Table headers confirm data structure is rendered
+        assert 'Overlap Count' in html
+        assert 'overlap_bc_orth' in html
 
 
 # ── Androgyny content validation ─────────────────────────────────────
@@ -191,25 +183,21 @@ class TestAndrogynyContent:
     def test_androgyny_has_multiple_sources(self, client):
         resp = client.get('/phenomena/androgyny.html')
         html = resp.data.decode()
-        m = re.search(r'const datasets = (\[.*?\]);\s*$', html,
-                      re.MULTILINE | re.DOTALL)
-        assert m
-        data = json.loads(m.group(1))
-        # Should have datasets from multiple sources
-        keys = [d['key'] for d in data]
-        sources = set(k.split('_')[1] for k in keys)
-        assert len(sources) >= 2, f"Only {sources} found, expected multiple sources"
+        assert resp.status_code == 200
+        # Dataset sections for multiple sources rendered in page
+        assert 'androgyny_bc' in html
+        assert 'androgyny_hs' in html
 
     def test_androgyny_proportions_in_range(self, client):
-        resp = client.get('/phenomena/androgyny.html')
-        html = resp.data.decode()
-        m = re.search(r'const datasets = (\[.*?\]);\s*$', html,
-                      re.MULTILINE | re.DOTALL)
-        data = json.loads(m.group(1))
-        for ds in data:
-            for row in ds['data']:
+        # Validate pre-computed data directly (proportions no longer embedded in HTML)
+        import json as _json
+        from pathlib import Path
+        data_file = Path(__file__).parent / '..' / 'web' / 'static' / 'data' / 'androgyny_data.json'
+        blob = _json.loads(data_file.read_text())
+        for key, entry in blob.items():
+            for row in entry['data']:
                 assert 0.0 <= row['proportion'] <= 1.0, \
-                    f"proportion {row['proportion']} out of range in {ds['key']}"
+                    f"proportion {row['proportion']} out of range in {key}"
 
 
 # ── Diversity content ────────────────────────────────────────────────

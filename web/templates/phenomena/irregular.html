@@ -1,14 +1,5 @@
 {% extends 'layout.html' %}
 
-{% block head %}
-<!-- D3.js library from allowed CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<!-- Shared D3 utilities -->
-<script src="{{ url_for('static', filename='js/d3_utils.js') }}"></script>
-<!-- Irregular names plotting script -->
-<script src="{{ url_for('static', filename='js/plot_irregular.js') }}"></script>
-{% endblock %}
-
 {% block content %}
 {% from 'macros.html' import nav_tabs %}
 <div class="container mt-4">
@@ -24,12 +15,17 @@
   <div class="card mt-4 mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Irregular Proportion Over Time</h5>
-      <button id="download-plot" class="btn btn-sm btn-outline-primary" title="Download as PNG">
-        💾 Save Plot
-      </button>
+      {% if svg %}
+      <button class="btn btn-sm btn-outline-primary"
+              onclick="downloadSVG('irregular-chart', 'irregular.svg')">Download SVG</button>
+      {% endif %}
     </div>
     <div class="card-body">
-      <div id="irregular-plot" style="min-height: 550px;"></div>
+      {% if svg %}
+        <div id="irregular-chart">{{ svg }}</div>
+      {% else %}
+        <div class="alert alert-warning">Chart not yet generated — run <code>makedb.sh analysis</code>.</div>
+      {% endif %}
     </div>
   </div>
 
@@ -210,56 +206,4 @@
   {% endif %}
 </div>
 
-<script>
-  // Data from Flask route
-  const data = {{ data | tojson }};
-  const regressionStats = {{ regression_stats | tojson }};
-  const maleColorName = {{ male_color | tojson }};
-  const femaleColorName = {{ female_color | tojson }};
-  
-  // Convert color names to hex using utility function
-  const maleColor = getColorHex(maleColorName);
-  const femaleColor = getColorHex(femaleColorName);
-
-  // Plot when page loads
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof plotIrregularNames === 'undefined') {
-      console.error('plotIrregularNames function not found!');
-      document.getElementById('irregular-plot').innerHTML = 
-        '<div class="alert alert-danger">Error: JavaScript file not loaded.</div>';
-      return;
-    }
-
-    // Create the plot
-    plotIrregularNames(data, 'irregular-plot', {
-      width: document.getElementById('irregular-plot').offsetWidth || 800,
-      height: 500,
-      maleColor: maleColor,
-      femaleColor: femaleColor,
-      regressionStats: regressionStats,
-      showTitle: false
-    });
-
-    // Setup download button using shared utility
-    setupDownloadButton('download-plot', 'irregular-plot', 'irregular_names.png');
-  });
-
-  // Redraw on window resize
-  let resizeTimer;
-  window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-      if (typeof plotIrregularNames !== 'undefined') {
-        plotIrregularNames(data, 'irregular-plot', {
-          width: document.getElementById('irregular-plot').offsetWidth || 800,
-          height: 500,
-          maleColor: maleColor,
-          femaleColor: femaleColor,
-          regressionStats: regressionStats,
-          showTitle: false
-        });
-      }
-    }, 250);
-  });
-</script>
 {% endblock %}
