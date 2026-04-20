@@ -117,6 +117,8 @@ def get_db_settings():
         primary_dtype = opt_dtypes
     else:
         primary_dtype = 'both'
+    supports_orth = primary_dtype in ('orth', 'both')
+    supports_pron = primary_dtype in ('pron', 'both')
     return {
         'db_src': selected_db_option,
         'db_query_src': resolve_src(selected_db_option),
@@ -124,6 +126,9 @@ def get_db_settings():
         'db_name': db_options[selected_db_option][1],
         'db_range': db_options[selected_db_option][3],
         'db_dtype': primary_dtype,
+        'db_supports_orth': supports_orth,
+        'db_supports_pron': supports_pron,
+        'db_supports_kanji': supports_orth,
     }
 
 @app.context_processor
@@ -278,6 +283,16 @@ def namae():
 
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
+
+    # Check model supports the requested search type
+    if pron and not db_settings['db_supports_pron']:
+        return render_template("namae-nasi.html",
+            error=f"Pronunciation search is not available for {db_settings['db_name']}. "
+                  f"Try switching to Baby Calendar or Meiji (phon) in Settings.")
+    if orth and not db_settings['db_supports_orth']:
+        return render_template("namae-nasi.html",
+            error=f"Written-form search is not available for {db_settings['db_name']}. "
+                  f"Try switching to Baby Calendar, Heisei, or Meiji (orth) in Settings.")
     qsrc = db_settings['db_query_src']
     table = db_settings['db_table']
 

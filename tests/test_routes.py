@@ -7,6 +7,34 @@ Requires:  web/db/namae.db (built via makedb.sh)
 import json
 import pytest
 
+from web.db import db_options
+from web.settings import features, overall
+
+
+# ---------------------------------------------------------------------------
+# Per-model metadata
+# ---------------------------------------------------------------------------
+
+#: What each db option supports for search.
+DB_CAPS = {
+    'bc':      {'orth': True,  'pron': True,  'kanji': True},
+    'hs':      {'orth': True,  'pron': False, 'kanji': True},
+    'meiji':   {'orth': True,  'pron': False, 'kanji': True},
+    'meiji_p': {'orth': False, 'pron': True,  'kanji': False},
+}
+
+#: A name that exists in every orth-supporting source.
+SAMPLE_ORTH = '花'
+#: A pronunciation that exists in bc and meiji_p.
+SAMPLE_PRON = 'はな'
+#: A kanji that exists in every orth-supporting source.
+SAMPLE_KANJI = '花'
+
+
+def _switch_db(client, db: str) -> None:
+    """POST to /settings to switch the active database."""
+    client.post('/settings', data={'color_palette': 'purple_orange', 'db_option': db})
+
 
 # ── Helpers ──────────────────────────────────────────────────────────
 
@@ -373,3 +401,201 @@ def _extract_datasets(html):
                   re.MULTILINE | re.DOTALL)
     assert m, "Could not find datasets JSON in page"
     return json.loads(m.group(1))
+
+
+# ============================================================================
+# Comprehensive per-model tests
+# ============================================================================
+
+# ---------------------------------------------------------------------------
+# All static / universal pages load for every model
+# ---------------------------------------------------------------------------
+
+_UNIVERSAL_PAGES = [
+    '/',
+    '/phenomena/diversity.html',
+    '/phenomena/androgyny.html',
+    '/overlap.html',
+    '/phenomena/topnames.html',
+    '/genderedness.html',
+    '/phenomena/jinmeiyou.html',
+    '/phenomena/redup.html',
+    '/phenomena/proportion.html',
+]
+
+_MODEL_PAGES = [
+    '/names.html',
+    '/stats.html',
+    '/years.html',
+]
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db", list(db_options.keys()))
+@pytest.mark.parametrize("url", _UNIVERSAL_PAGES)
+def test_universal_page_all_models(app, db, url):
+    """Every universal page must return 200 for every model."""
+    client = app.test_client()
+    _switch_db(client, db)
+    resp = client.get(url)
+    assert resp.status_code == 200, f"{url} [{db}] → {resp.status_code}"
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db", list(db_options.keys()))
+@pytest.mark.parametrize("url", _MODEL_PAGES)
+def test_model_page_all_dbs(app, db, url):
+    """Model-dependent pages must return 200 for every model."""
+    client = app.test_client()
+    _switch_db(client, db)
+    resp = client.get(url)
+    assert resp.status_code == 200, f"{url} [{db}] → {resp.status_code}"
+
+
+# ---------------------------------------------------------------------------
+# Name search — all four models × all search types
+# ---------------------------------------------------------------------------
+
+class TestNameSearchAllModels:
+    """Search correctness and graceful-failure for every model/search combination."""
+
+    @pytest.fixture(autouse=True)
+    def fresh(self, app):
+        self.client = app.test_client()
+
+    def _get(self, url):
+        return self.client.get(url)
+
+    # Orth-supporting models
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items() if caps['orth']])
+    def test_orth_search(self, db):
+        """Orth search works on all orth-supporting models."""
+        _switch_db(self.client, db)
+        resp = self._get(f'/namae?orth={SAMPLE_ORTH}')
+        assert resp.status_code == 200
+        assert SAMPLE_ORTH.encode() in resp.data
+
+    # Pron-supporting models
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items() if caps['pron']])
+    def test_pron_search(self, db):
+        """Pron search works on all pron-supporting models."""
+        _switch_db(self.client, db)
+        resp = self._get(f'/namae?pron={SAMPLE_PRON}')
+        assert resp.status_code == 200
+
+    # bc only: combined orth+pron search (愛/あい verified to exist in bc)
+    def test_orth_and_pron_search_bc(self):
+        """Combined orth+pron search works on bc."""
+        _switch_db(self.client, 'bc')
+        resp = self._get('/namae?orth=%E6%84%9B&pron=%E3%81%82%E3%81%84')  # 愛/あい
+        assert resp.status_code == 200
+        assert '愛'.encode() in resp.data
+
+    # Graceful failures: pron search on orth-only models
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items()
+                                    if caps['orth'] and not caps['pron']])
+    def test_pron_search_on_orth_only_model_graceful(self, db):
+        """Pron search on orth-only model returns 200 with helpful error, not 500."""
+        _switch_db(self.client, db)
+        resp = self._get(f'/namae?pron={SAMPLE_PRON}')
+        assert resp.status_code == 200
+        html = resp.data.decode()
+        assert 'not available' in html.lower() or 'error' in html.lower() or 'alert' in html.lower()
+
+    # Graceful failures: orth search on pron-only model
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items()
+                                    if caps['pron'] and not caps['orth']])
+    def test_orth_search_on_pron_only_model_graceful(self, db):
+        """Orth search on pron-only model returns 200 with helpful error, not 500."""
+        _switch_db(self.client, db)
+        resp = self._get(f'/namae?orth={SAMPLE_ORTH}')
+        assert resp.status_code == 200
+        html = resp.data.decode()
+        assert 'not available' in html.lower() or 'error' in html.lower() or 'alert' in html.lower()
+
+
+# ---------------------------------------------------------------------------
+# Kanji search — all models
+# ---------------------------------------------------------------------------
+
+class TestKanjiSearchAllModels:
+    """Kanji search works for orth-supporting models; graceful for pron-only."""
+
+    @pytest.fixture(autouse=True)
+    def fresh(self, app):
+        self.client = app.test_client()
+
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items() if caps['kanji']])
+    def test_kanji_search_supported(self, db):
+        """Kanji lookup returns 200 and contains the kanji on supported models."""
+        _switch_db(self.client, db)
+        resp = self.client.get(f'/kanji?kanji={SAMPLE_KANJI}')
+        assert resp.status_code == 200
+        assert SAMPLE_KANJI.encode() in resp.data
+
+    @pytest.mark.parametrize("db", [db for db, caps in DB_CAPS.items() if not caps['kanji']])
+    def test_kanji_search_unsupported_graceful(self, db):
+        """Kanji lookup on pron-only model returns 200 without crashing."""
+        _switch_db(self.client, db)
+        resp = self.client.get(f'/kanji?kanji={SAMPLE_KANJI}')
+        assert resp.status_code == 200
+
+    def test_single_quote_injection(self):
+        """Single-quote in kanji param must not cause a 500."""
+        _switch_db(self.client, 'bc')
+        resp = self.client.get("/kanji?kanji='")
+        assert resp.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# All features × compatible databases
+# ---------------------------------------------------------------------------
+
+def _all_feature_params():
+    params = []
+    for f1, f2, name, possible in features:
+        for db in possible:
+            params.append(pytest.param(db, f1, f2, id=f"{db}/{name}"))
+    return params
+
+
+def _all_overall_params():
+    params = []
+    for f1, f2, name, possible in overall:
+        for db in possible:
+            params.append(pytest.param(db, f1, f2, id=f"{db}/{name}"))
+    return params
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db,f1,f2", _all_feature_params())
+def test_feature_all_combos(app, db, f1, f2):
+    """Every feature × compatible DB must return 200."""
+    client = app.test_client()
+    _switch_db(client, db)
+    resp = client.get(f'/features.html?f1={f1}&f2={f2}&nm=test')
+    assert resp.status_code == 200, f"features f1={f1} f2={f2} [{db}] → {resp.status_code}"
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db,f1,f2", _all_overall_params())
+def test_overall_all_combos(app, db, f1, f2):
+    """Every overall feature × compatible DB must return 200."""
+    client = app.test_client()
+    _switch_db(client, db)
+    resp = client.get(f'/features.html?f1={f1}&f2={f2}&nm=test')
+    assert resp.status_code == 200, f"overall f1={f1} f2={f2} [{db}] → {resp.status_code}"
+
+
+# ---------------------------------------------------------------------------
+# Irregular page — bc only (only source with orth+pron)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.slow
+@pytest.mark.parametrize("db", list(db_options.keys()))
+def test_irregular_all_models(app, db):
+    """Irregular page must return 200 for every model (always uses bc data)."""
+    client = app.test_client()
+    _switch_db(client, db)
+    resp = client.get('/irregular.html')
+    assert resp.status_code == 200, f"/irregular.html [{db}] → {resp.status_code}"
