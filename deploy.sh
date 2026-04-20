@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# deploy.sh
+#
 # Deploy the web application to the production server.
 #
 # Usage:  bash deploy.sh
@@ -8,7 +10,7 @@
 #
 # Server layout:
 #   /var/www/namae/
-#   ├── web/              (Flask app)
+#   ├── web/              (Flask app + static data + DB)
 #   ├── wsgi.py
 #   ├── requirements.txt
 #   ├── ATTRIBUTIONS.md   (rendered by docs pages)
@@ -18,7 +20,7 @@
 #           ├── README.md (rendered by docs pages)
 #           └── *.tsv     (downloadable data files)
 
-set -e
+set -euo pipefail
 
 DEST="compling.upol.cz:/var/www/namae"
 
@@ -36,6 +38,9 @@ rsync -avz --relative --exclude='__pycache__' \
 
 echo ""
 echo "Restarting Apache..."
-ssh compling.upol.cz sudo systemctl restart apache2
+# Requires passwordless sudo on the server for this command, or will prompt.
+# To set up: add to /etc/sudoers on compling.upol.cz:
+#   bond ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart apache2
+ssh -t compling.upol.cz "sudo systemctl restart apache2"
 
 echo "Done."

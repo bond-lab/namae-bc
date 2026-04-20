@@ -181,6 +181,12 @@ python calc_names_json.py
 echo "Pre-compute irregular page data"
 python calc_irregular_json.py
 
+echo "Pre-compute reduplication page data"
+python calc_redup_json.py
+
+echo "Build web SVG figures (irregular, genderedness, overlap, androgyny)"
+python calc_web_figures.py
+
 popd
 
 ### need to make the jinmei graph, but only once

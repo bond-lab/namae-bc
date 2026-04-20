@@ -7,6 +7,32 @@ import pytest
 from web.utils import mora_hiragana, syllable_hiragana, whichScript, expand_r
 
 
+# ── hira2roma filter ─────────────────────────────────────────────────
+
+class TestHira2Roma:
+    """Tests for the hira2roma Jinja2 template filter.
+
+    Names in Heisei and Meiji datasets have NULL pronunciation; the filter
+    must not crash when passed None or empty string.
+    """
+
+    @pytest.fixture(scope="class")
+    def hira2roma(self, app):
+        return app.jinja_env.filters["hira2roma"]
+
+    def test_none_returns_empty(self, hira2roma):
+        assert hira2roma(None) == ""
+
+    def test_empty_string_returns_empty(self, hira2roma):
+        assert hira2roma("") == ""
+
+    def test_normal_hiragana(self, hira2roma):
+        assert hira2roma("はなこ") != ""
+
+    def test_special_case_itt(self, hira2roma):
+        assert hira2roma("いっ") == "i'"
+
+
 # ── whichScript ──────────────────────────────────────────────────────
 
 class TestWhichScript:

@@ -17,10 +17,11 @@ def create_app():
     # Add the custom filter
     @app.template_filter('hira2roma')
     def hira2roma(text):
-        if text=='いっ':
+        if not text:
+            return ""
+        if text == 'いっ':
             return "i'"
-        else:
-            return conv.to_romaji(text)
+        return conv.to_romaji(text)
 
     with app.app_context():
         from . import routes

@@ -12,10 +12,18 @@ function plotKanjiPositions(data, kanji, gender, src, containerId, options = {})
     } = options;
 
     // Clear any existing content
-    d3.select(`#${containerId}`).selectAll("*").remove();
+    const container = d3.select(`#${containerId}`);
+    container.selectAll("*").remove();
 
     // Process data
     const years = Object.keys(data).map(Number).sort((a, b) => a - b);
+
+    if (years.length === 0) {
+        container.append("p")
+            .attr("class", "text-muted text-center mt-4")
+            .text(`No data available for ${gender === 'M' ? 'male' : 'female'} names.`);
+        return;
+    }
     
     const processedData = years.map(year => {
         const [solo, initial, middle, end, count] = data[year];

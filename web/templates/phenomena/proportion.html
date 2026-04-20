@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+{% from 'macros.html' import nav_tabs %}
+<div class="container mt-4">
+  {{ nav_tabs('phenomena', phenomena) }}
+  <h1 class="mb-3">{{ title }}</h1>
+  <p class="text-muted">
+    Each histogram shows how babies are distributed across 12 gender bins,
+    from <strong>100% male</strong> names on the left to
+    <strong>100% female</strong> names on the right.
+    Bar colour blends from <span style="color:var(--color-male,#ff7f0e)">&#9632; male</span>
+    to <span style="color:var(--color-female,#9467bd)">&#9632; female</span> according to the
+    gender mix within each bin.
+    The pronounced U-shape reflects that most Japanese given names are strongly
+    gendered; the central bins (androgynous names) hold very few babies.
+    Three time periods and three ways of counting names are shown.
+  </p>
+
+  {% if groups %}
+  <!-- Tab nav -->
+  <ul class="nav nav-tabs mb-3" id="proportionTabs" role="tablist">
+    {% for grp in groups %}
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if loop.first %}active{% endif %}"
+              id="tab-{{ grp.slug }}"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-{{ grp.slug }}"
+              type="button" role="tab">
+        {{ grp.label }}
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div class="tab-content">
+    {% for grp in groups %}
+    <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+         id="pane-{{ grp.slug }}" role="tabpanel">
+      <div class="row row-cols-1 row-cols-md-3 g-3">
+        {% for chart in grp.charts %}
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">{{ chart.period_label }}</span>
+              {% if chart.svg %}
+              <button class="btn btn-sm btn-outline-primary"
+                      onclick="downloadSVG('chart-{{ chart.key }}', '{{ chart.key }}.svg')">
+                SVG
+              </button>
+              {% endif %}
+            </div>
+            <div class="card-body p-2">
+              {% if chart.svg %}
+                <div id="chart-{{ chart.key }}">{{ chart.svg }}</div>
+              {% else %}
+                <div class="alert alert-warning mb-0">
+                  Chart not yet generated — run <code>makedb.sh analysis</code>.
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning">No proportion data available. Please build the database first.</div>
+  {% endif %}
+</div>
+{% endblock %}
