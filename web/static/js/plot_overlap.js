@@ -56,7 +56,7 @@ function plotOverlap(data, containerId, options = {}) {
     // Y scale domain
     let yMax;
     if (isCount) {
-        yMax = Math.max(1, Math.ceil(d3.max(clean, d => d.value) * 1.15));
+        yMax = Math.max(1, Math.ceil(d3.max(clean, d => d.value)));
     } else {
         const rawMax = d3.max(clean, d => d.value) || 0.1;
         yMax = Math.max(0.05, Math.ceil(rawMax * 1.1 * 20) / 20);
@@ -82,7 +82,6 @@ function plotOverlap(data, containerId, options = {}) {
         .domain([0, yMax])
         .range([innerHeight, 0]);
 
-    // y tick spacing heuristic
     let tickSpacing;
     if (isCount) {
         if (yMax <= 5) tickSpacing = 1;
@@ -101,11 +100,15 @@ function plotOverlap(data, containerId, options = {}) {
         .y(d => yScale(d.value))
         .curve(d3.curveMonotoneX);
 
+    const gridTicks = isCount
+        ? d3.range(0, yMax + 1).filter(v => v % tickSpacing === 0)
+        : d3.range(0, yMax + tickSpacing / 2, tickSpacing);
+
     // grid
     g.append("g")
         .attr("class", "grid")
         .selectAll("line")
-        .data(d3.range(0, yMax + tickSpacing / 2, tickSpacing))
+        .data(gridTicks)
         .enter().append("line")
         .attr("x1", 0).attr("x2", innerWidth)
         .attr("y1", d => yScale(d)).attr("y2", d => yScale(d))
@@ -166,11 +169,13 @@ function plotOverlap(data, containerId, options = {}) {
     }
 
     // axes
-    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(Math.min(years.length, 10));
+    const maxXTicks = Math.min(years.length, Math.max(4, Math.floor(innerWidth / 60)));
+    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(maxXTicks);
     let yAxis;
     if (isCount) {
+        const intTicks = d3.range(0, yMax + 1).filter(v => v % tickSpacing === 0);
         yAxis = d3.axisLeft(yScale)
-            .tickValues(d3.range(0, yMax + tickSpacing / 2, tickSpacing))
+            .tickValues(intTicks)
             .tickFormat(d3.format("d"));
     } else {
         yAxis = d3.axisLeft(yScale)

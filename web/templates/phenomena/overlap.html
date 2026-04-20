@@ -16,13 +16,16 @@
   <h1 class="mb-3">{{ title }}</h1>
 
   <p class="text-muted">
-    This page shows the overlap between male and female names &mdash;
-    names that appear in the top-N for both genders in a given year.
+    This page shows the overlap between male and female names &mdash; names used for
+    both genders in a given year. This is conceptually the same as androgyny (see the
+    <a href="{{ url_for('androgyny') }}">Androgyny</a> page), but here we restrict attention
+    to the top-<em>N</em> most popular names, which allows comparison across all data sources
+    including Meiji Yasuda (which only publishes rankings).
     Two measures are shown:
   </p>
   <ul class="text-muted">
-    <li><b>Overlap Count</b> &mdash; the number of names shared between the
-      top-N male and top-N female names.</li>
+    <li><b>Overlap Count</b> &mdash; the number of names (integer) shared between the
+      top-<em>N</em> male and top-<em>N</em> female names.</li>
     <li><b>Proportion Overlap</b> &mdash; the proportion of babies with
       overlapping names, weighted by frequency.</li>
   </ul>
@@ -102,9 +105,9 @@
               {% for row in ds.data %}
               <tr>
                 <td>{{ row.year }}</td>
-                <td class="text-end">{{ row.overlap_count }}</td>
-                <td class="text-end">{{ row.overlap_freq }}</td>
-                <td class="text-end">{{ row.total_babies }}</td>
+                <td class="text-end">{{ row.overlap_count | int }}</td>
+                <td class="text-end">{{ "{:,}".format(row.overlap_freq | int) }}</td>
+                <td class="text-end">{{ "{:,}".format(row.total_babies | int) }}</td>
                 <td class="text-end">{{ "%.2f%%"|format(row.weighted_proportion * 100) }}</td>
               </tr>
               {% endfor %}
@@ -160,7 +163,7 @@
 
 <script>
   const datasets = {{ datasets | tojson }};
-  const overlapColor = '#1f77b4';
+  const overlapColor = '#2ca02c';
 
   function renderAll() {
     datasets.forEach((ds, i) => {
