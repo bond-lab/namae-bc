@@ -228,7 +228,6 @@ class TestJinmei:
 
 
 class TestProportion:
-    @pytest.mark.xfail(reason="Template phenomena/proportion.html does not exist yet")
     def test_proportion_page(self, client):
         resp = client.get('/phenomena/proportion.html')
         assert_html_ok(resp)

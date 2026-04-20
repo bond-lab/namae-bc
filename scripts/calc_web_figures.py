@@ -3,11 +3,12 @@
 Reads pre-computed JSON data and writes CSS-variable-aware SVGs to
 web/static/plot/web_*.svg.  Run during makedb.sh analysis phase.
 
-Pages covered: irregular, genderedness, overlap, androgyny, diversity.
+Pages covered: irregular, genderedness, overlap, androgyny, diversity, proportion.
 (rankings/topnames stays D3.js — it is genuinely interactive.)
 """
 
 import json
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -15,6 +16,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from plot_proportion import generate_web_svgs as _gen_proportion_svgs
 from plot_web_charts import (
     plot_irregular,
     plot_genderedness_dataset, load_genderedness,
@@ -101,6 +103,14 @@ def build_diversity() -> None:
             print(f"  diversity {key} {group_name} → {out}.svg")
 
 
+def build_proportion() -> None:
+    """Generate one SVG per group × period combination for the proportion page."""
+    db = Path(__file__).parent / ".." / "web" / "db" / "namae.db"
+    conn = sqlite3.connect(str(db))
+    _gen_proportion_svgs(conn, OUT_DIR)
+    conn.close()
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -118,6 +128,9 @@ def main() -> None:
 
     print("Building diversity figures...")
     build_diversity()
+
+    print("Building proportion figures...")
+    build_proportion()
 
     print("Done.")
 

@@ -22,7 +22,7 @@ import markdown
 from markupsafe import Markup
 from web.utils import whichScript, mora_hiragana, syllable_hiragana
 import regex
-from typing import Any
+from typing import Any, Dict, Optional
 
 def _is_hiragana(text):
     """Check if text is entirely hiragana."""
@@ -64,10 +64,10 @@ repo_root = os.path.dirname(current_directory)
 
 # Module-level cache for pre-computed JSON files.  Populated on first access,
 # persists for the lifetime of the worker process (cleared on Apache restart).
-_json_cache: dict[str, Any] = {}
+_json_cache: Dict[str, Any] = {}
 
 
-def _load_data_json(filename: str) -> Any | None:
+def _load_data_json(filename: str) -> Optional[Any]:
     """Load and cache a pre-computed JSON file from static/data/.
 
     Returns None if the file does not exist.
@@ -83,7 +83,7 @@ def _load_data_json(filename: str) -> Any | None:
 
 # Hex equivalents of the CSS color names stored in the session.
 # Must match MALE_COLOR / FEMALE_COLOR in scripts/web_plot_style.py.
-_COLOR_HEX: dict[str, str] = {
+_COLOR_HEX: Dict[str, str] = {
     'orange': '#ff7f0e',
     'purple': '#9467bd',
     'blue':   '#1f77b4',
@@ -93,16 +93,19 @@ _COLOR_HEX: dict[str, str] = {
 threshold = 2
 
 
-def _load_plot_svg(filename: str) -> Any | None:
-    """Read a pre-generated SVG from static/plot/ and return as Markup.
+def _load_plot_svg(filename: str) -> Optional[Any]:
+    """Read a pre-generated SVG from static/plot/, cache, and return as Markup.
 
     Returns None if the file has not been built yet.
     """
     path = os.path.join(current_directory, "static", "plot", filename)
-    if not os.path.exists(path):
-        return None
-    with open(path, encoding="utf-8") as f:
-        return Markup(f.read())
+    if path not in _json_cache:
+        try:
+            with open(path, encoding="utf-8") as f:
+                _json_cache[path] = Markup(f.read())
+        except FileNotFoundError:
+            _json_cache[path] = None
+    return _json_cache[path]
 
 
 def get_db_settings():
@@ -297,8 +300,6 @@ def namae():
             mfname=mfname_entry,
             kindex={orth: kindex_entry},
             hindex={pron: hindex_entry},
-            male_color=session.get('male_color', 'orange'),
-            female_color=session.get('female_color', 'purple')
         )
     elif pron:
         hindex_entry, mfname_entry = get_name_for_pron(conn, pron, qsrc, table)
@@ -310,8 +311,6 @@ def namae():
             syll=syll,
             hindex={pron: hindex_entry},
             data=data,
-            male_color=session.get('male_color', 'orange'),
-            female_color=session.get('female_color', 'purple')
         )
     elif orth:
         kindex_entry, mfname_entry = get_name_for_orth(conn, orth, qsrc, table)
@@ -322,13 +321,9 @@ def namae():
             kindex={orth: kindex_entry},
             data=data,
             script=whichScript(orth),
-            male_color=session.get('male_color', 'orange'),
-            female_color=session.get('female_color', 'purple')
         )
     else:
-        return render_template(
-            f"namae-nasi.html",
-        )
+        return render_template("namae-nasi.html")
     
 @app.route("/names.html")
 def names():
@@ -544,16 +539,36 @@ def redup():
         stats=stats
     )
 
+_PROPORTION_GROUPS = [
+    ('name_full', 'Full name'),
+    ('pron',      'Pronunciation'),
+    ('orth',      'Orthography'),
+]
+_PROPORTION_PERIODS = [
+    ('2008_2013', '2008\u20132013'),
+    ('2014_2022', '2014\u20132022'),
+    ('2008_2022', '2008\u20132022'),
+]
+
+
 @app.route("/phenomena/proportion.html")
 def proportion():
-    """
-    show examples of reduplication
-    """
-    data ={}
+    """Show gender-distribution histograms (U-shaped, by group and period)."""
+    groups = []
+    for group_slug, group_label in _PROPORTION_GROUPS:
+        charts = []
+        for period_slug, period_label in _PROPORTION_PERIODS:
+            key = f"proportion_{group_slug}_{period_slug}"
+            charts.append({
+                'key': key,
+                'period_label': period_label,
+                'svg': _load_plot_svg(f"{key}.svg"),
+            })
+        groups.append({'slug': group_slug, 'label': group_label, 'charts': charts})
     return render_template(
-        f"phenomena/proportion.html",
-        data=data,
-        title='Gender Proportion',
+        "phenomena/proportion.html",
+        groups=groups,
+        title='Gender Distribution of Names',
     )
 
 
