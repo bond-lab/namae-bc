@@ -1,12 +1,14 @@
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from matplotlib.patches import Rectangle
 import matplotlib.patches as mpatches
 
-def create_japanese_names_chart(data_list, output_filename='japanese_names_coverage.png', 
-                                figsize=(14, 10), dpi=300, use_log_scale=False, title=False):
+def create_japanese_names_chart(data_list, output_filename='japanese_names_coverage.png',
+                                figsize=(14, 10), dpi=300, use_log_scale=False, title=False,
+                                formats=('png',)):
     """
     Create a publication-ready chart showing Japanese names data coverage vs births.
     
@@ -142,9 +144,10 @@ m    -----------
     plt.tight_layout()
     plt.subplots_adjust(top=0.92, bottom=0.1)
     
-    # Save as high-quality PNG
-    plt.savefig(output_filename, dpi=dpi, bbox_inches='tight', 
-               facecolor='white', edgecolor='none')
+    stem = str(Path(str(output_filename)).with_suffix(''))
+    for fmt in formats:
+        plt.savefig(f'{stem}.{fmt}', dpi=dpi, bbox_inches='tight',
+                    facecolor='white', edgecolor='none')
     #plt.show()
     
     # Print summary statistics for the book
@@ -212,17 +215,20 @@ def get_data(db_path):
     
     return data
 
-# Example usage:
-if __name__ == "__main__":
-    # Method 1: Load from database
-    db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+_default_db_path = os.path.join(os.path.dirname(__file__), '../web/db/namae.db')
+_default_plot_dir = os.path.join(os.path.dirname(__file__), '../web/static/plot')
+
+
+def main(db_path=_default_db_path, plot_dir=_default_plot_dir, formats=('png',)):
+    """Regenerate book overview coverage charts."""
     data = get_data(db_path)
-    outdir =  os.path.join(os.path.dirname(__file__), '../web/static/plot')
+    create_japanese_names_chart(
+        data, os.path.join(plot_dir, 'book_overview.png'), formats=formats)
+    create_japanese_names_chart(
+        data, os.path.join(plot_dir, 'book_overview_log.png'),
+        use_log_scale=True, formats=formats)
 
-    figpath = os.path.join(outdir, 'book_overview.png')
-    create_japanese_names_chart(data, figpath)
 
-    figpath = os.path.join(outdir, 'book_overview_log.png')
-    create_japanese_names_chart(data, figpath,
-                                use_log_scale=True)
+if __name__ == "__main__":
+    main()
     

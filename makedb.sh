@@ -25,6 +25,16 @@ else
     uv pip install -r requirements-build.txt
 fi
 
+# playwright requires browser binaries beyond the pip package; install once
+if ! python -c "
+from playwright.sync_api import sync_playwright
+p = sync_playwright().start()
+p.stop()
+" 2>/dev/null; then
+    echo "Installing Playwright browser binaries..."
+    playwright install chromium
+fi
+
 ## location of database
 mkdir -p web/db
 

@@ -1,9 +1,11 @@
 import os
 import sqlite3
+from pathlib import Path
 from collections import defaultdict as dd, Counter
 import numpy as np
 from scipy import stats
 from scipy.stats import pearsonr
+from scipy.interpolate import PchipInterpolator
 import pandas as pd
 
 from db import db_options, get_name_year, get_name_count_year
@@ -14,17 +16,15 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(current_directory, "../web/db/namae.db")
 plot_dir = os.path.join(current_directory, "../web/static/plot")
 
-conn = sqlite3.connect(db_path)
-
-c = conn.cursor()
-
-def get_bp(top_n, dtype='orth', src='meiji', start=1989, end=2024):
-    assert dtype in ('orth', 'pron'), f"Unknown data {dtype}, should be orth or list"
-    assert src in ('meiji', 'hs'), f"Unknown data {dtype}, should be orth or list"
-    if src == 'meiji':
-        total_src = 'totals'
-    else:
-        total_src = src
+def get_bp(top_n, dtype='orth', src='meiji', start=1989, end=2024, conn=None):
+    """Return Berger-Parker proportions by year/gender for *top_n* names."""
+    assert dtype in ('orth', 'pron'), f"Unknown dtype {dtype}"
+    assert src in ('meiji', 'hs'), f"Unknown src {src}"
+    _own_conn = conn is None
+    if _own_conn:
+        conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    total_src = 'totals' if src == 'meiji' else src
     c.execute(f"""
 WITH top_names AS (
   SELECT 
@@ -50,7 +50,9 @@ GROUP BY t.year, t.gender, c.count
 ORDER BY t.year, t.gender""", (src, start, end, top_n, total_src, start, end))
     byyear = dd(dict)
     for (year, gender, count, sample, proportion) in c:
-        byyear[gender][year] =  (proportion, count, sample)
+        byyear[gender][year] = (proportion, count, sample)
+    if _own_conn:
+        conn.close()
     return byyear
 
 
@@ -234,8 +236,9 @@ def format_trend_text(trend_stats, metric, gender, significance_level=0.05):
     return f"{r_text}, {change_text}, {mean_text}"
 
 def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
-                                      filename, confidence_intervals=None, 
-                                      trend_stats=None, show_stats=True):
+                                      filename, confidence_intervals=None,
+                                      trend_stats=None, show_stats=True,
+                                      formats=('png',)):
     """
     Enhanced plotting function that includes trend statistics.
     
@@ -286,8 +289,12 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
             
             # Only plot if we have valid data
             if valid_years and valid_values:
-                ax.plot(valid_years, valid_values, marker=marker, linestyle=':', 
-                        color=color, linewidth=2, markersize=6)
+                ax.scatter(valid_years, valid_values, marker=marker,
+                           color=color, s=36, zorder=5)
+                if len(valid_years) >= 3:
+                    interp = PchipInterpolator(valid_years, valid_values)
+                    xs = np.linspace(valid_years[0], valid_years[-1], 300)
+                    ax.plot(xs, interp(xs), color=color, linewidth=2)
                 
                 # Add trend line if statistics are significant
                 if trend_stats and show_stats:
@@ -364,51 +371,58 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
     plt.tight_layout()
     if title:
         plt.suptitle(title, y=0.98, fontsize=14, fontweight='bold')
-    
-    # Save plot to a file
-    plt.savefig(filename, dpi=300, bbox_inches='tight')
+
+    stem = str(Path(str(filename)).with_suffix(''))
+    for fmt in formats:
+        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
     plt.close(fig)
 
-both = dict()
-outfile='BP_data.tsv'
-out = open(outfile, 'w')
-all_metrics = {'M': {}, 'F': {}}
-for src in ('meiji', 'hs'):
-    for dtype in ('orth', 'pron'):
-        if src == 'hs' and dtype == 'pron':
-            continue
-        plot_data = dd(lambda: dd(dict))
-        both[dtype] = plot_data
-        if dtype == 'orth':
-            n_range = [1, 10, 50, 100]
-        else:
-            n_range = [1, 5, 10, 50]
-        selected_metrics =  [f"Berger-Parker ({n})" for n in n_range]
-        
-        for top_n in n_range:
-            byyear = get_bp(top_n, dtype, src)
-            for gender in ['M', 'F']:
-                print(f"#\n# Top {top_n} counts and ratios for {gender}: {src} ({dtype})\n#", file = out)
-                print("rank\tgender\tyear\tproportion\tcount\tsample", file = out)      
-                for year in byyear[gender]:
-                    if not byyear[gender][year][0]:
-                        continue
-                    plot_data[gender][year][f'Berger-Parker ({top_n})'] = 1 - byyear[gender][year][0]
-                    print(top_n, gender, year, \
-                          byyear[gender][year][0],
-                          byyear[gender][year][1],
-                          byyear[gender][year][2],
-                          sep='\t', file = out)
 
-        plot_path = os.path.join(plot_dir, f"diversity_{src}_{dtype}_BP_all.png")
-        plot_multi_panel_trends(plot_data, selected_metrics,
-                                "Berger-Parker Index at Different N Values",
-                                plot_path )
+def main(db_path=db_path, plot_dir=plot_dir, formats=('png',)):
+    """Regenerate all Berger-Parker index plots."""
+    conn = sqlite3.connect(db_path)
+    outfile = os.path.join(os.path.dirname(__file__), 'BP_data.tsv')
+    with open(outfile, 'w') as out:
+        for src in ('meiji', 'hs'):
+            for dtype in ('orth', 'pron'):
+                if src == 'hs' and dtype == 'pron':
+                    continue
+                plot_data = dd(lambda: dd(dict))
+                if dtype == 'orth':
+                    n_range = [1, 10, 50, 100]
+                else:
+                    n_range = [1, 5, 10, 50]
+                selected_metrics = [f"Berger-Parker ({n})" for n in n_range]
+
+                for top_n in n_range:
+                    byyear = get_bp(top_n, dtype, src, conn=conn)
+                    for gender in ['M', 'F']:
+                        print(f"#\n# Top {top_n} for {gender}: {src} ({dtype})\n#", file=out)
+                        print("rank\tgender\tyear\tproportion\tcount\tsample", file=out)
+                        for year in byyear[gender]:
+                            if not byyear[gender][year][0]:
+                                continue
+                            plot_data[gender][year][f'Berger-Parker ({top_n})'] = \
+                                1 - byyear[gender][year][0]
+                            print(top_n, gender, year,
+                                  byyear[gender][year][0],
+                                  byyear[gender][year][1],
+                                  byyear[gender][year][2],
+                                  sep='\t', file=out)
+
+                plot_path = os.path.join(plot_dir, f"diversity_{src}_{dtype}_BP_all.png")
+                plot_multi_panel_trends(plot_data, selected_metrics,
+                                        "Berger-Parker Index at Different N Values",
+                                        plot_path, formats=formats)
+
+                plot_path = os.path.join(plot_dir, f"diversity_{src}_{dtype}_BP_slope.png")
+                trend_stats = calculate_trend_statistics(plot_data, selected_metrics)
+                plot_multi_panel_trends_with_stats(plot_data, selected_metrics,
+                                                   None, plot_path,
+                                                   trend_stats=trend_stats,
+                                                   formats=formats)
+    conn.close()
 
 
-        plot_path = os.path.join(plot_dir, f"diversity_{src}_{dtype}_BP_slope.png")
-
-        trend_stats = calculate_trend_statistics(plot_data, selected_metrics)
-        plot_multi_panel_trends_with_stats(plot_data, selected_metrics,
-                                           None, 
-                                           plot_path, trend_stats=trend_stats)
+if __name__ == "__main__":
+    main()

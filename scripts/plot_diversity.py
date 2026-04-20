@@ -263,11 +263,13 @@ def get_db_connection(db_path):
 
 
 
-conn = get_db_connection(db_path)
+def main(db_path=db_path, plot_dir=plot_dir, json_dir=json_dir, formats=('png',)):
+    """Regenerate all diversity plots."""
+    conn = get_db_connection(db_path)
 
-types = ['orth', 'pron', 'both']
+    types = ['orth', 'pron', 'both']
 
-for src in db_options:
+    for src in db_options:
 #    if src != 'hs': #'hs' not in src:
 #        continue
     for data_type in types:
@@ -339,47 +341,46 @@ for src in db_options:
 
         print("\nDiversity analysis completed with adaptive sampling including Number, Evenness, Gini-Simpson and Berger-parker.")
         # Plot diversity measures and save to JSON
-        if all_metrics['M']:  # Check if there are metrics to plot
-            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_Var.png") 
+        if all_metrics['M']:
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_Var.png")
             plot_multi_panel_trends(all_metrics, ["Shannon-Wiener", "Evenness",
                                                   "Gini-Simpson", "Berger-Parker (1)"],
                                     "Diversity Measures",
                                     plot_path,
-                                    confidence_intervals=confidence_intervals)
-            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_BP.png") 
+                                    confidence_intervals=confidence_intervals,
+                                    formats=formats)
+            plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_BP.png")
             plot_multi_panel_trends(all_metrics, ["Berger-Parker (5)",
                                                   "Berger-Parker (10)",
                                                   "Berger-Parker (50)",
                                                   "Berger-Parker (100)"],
                                     "Berger-Parker Index at Different N Values",
-                                   plot_path )
-        # Plot new diversity measures
-        if all_metrics['M']:
+                                    plot_path, formats=formats)
+
             plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_TTR_Newness.png")
             plot_multi_panel_trends(all_metrics, ["TTR", "Newness", "Char TTR", "Char Newness"],
                                     "TTR and Newness Measures",
-                                    plot_path)
+                                    plot_path, formats=formats)
 
-        # plot for book
-        if all_metrics['M']:
             plot_path = os.path.join(plot_dir, f"diversity_{src}_{data_type}_diversity.png")
-            selected_metrics= ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
+            selected_metrics = ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
             trend_stats = calculate_trend_statistics(all_metrics, selected_metrics)
             plot_multi_panel_trends_with_stats(all_metrics, selected_metrics,
-                                               "", # "Diversity Measures",
+                                               "",
                                                plot_path,
                                                trend_stats=trend_stats,
-                                               confidence_intervals=None)
-
-            # Save diversity metrics to JSON
-            diversity_data = {
-                "metrics": all_metrics
-            }
+                                               confidence_intervals=None,
+                                               formats=formats)
 
             output_path = os.path.join(json_dir, f"diversity_data_{src}_{data_type}.json")
             with open(output_path, 'w') as f:
-                json.dump(diversity_data, f)
-
+                json.dump({"metrics": all_metrics}, f)
             print(f"Diversity data saved to {output_path}")
         else:
             print(f"No data for {src} with {data_type}, skipping")
+
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()

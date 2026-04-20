@@ -252,9 +252,9 @@ if __name__ == "__main__":
     tables = {}
 
     for (src, dtype) in [
-#        ('meiji', 'orth'),
+        ('meiji', 'orth'),
         ('hs', 'orth'),
-#        ('meiji', 'pron'),
+        ('meiji', 'pron'),
     ]:
         feats = features[dtype]
         table = run_experiment(

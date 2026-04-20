@@ -153,7 +153,8 @@ def create_details_json(details_data, src, data_type):
 
 import matplotlib.pyplot as plt
 
-def _plot_single_graph(years, values, ylabel, title, marker, output_file, with_title=True):
+def _plot_single_graph(years, values, ylabel, title, marker, output_stem,
+                       formats=('png',), with_title=True):
     """Helper to plot and save a single graph."""
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(years, values, marker=marker, color='blue', linewidth=2, markersize=6)
@@ -168,12 +169,14 @@ def _plot_single_graph(years, values, ylabel, title, marker, output_file, with_t
     ax.set_xticks(range(min(years), max(years) + 1,
                         max(1, (max(years) - min(years)) // 10)))
     plt.tight_layout()
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    for fmt in formats:
+        plt.savefig(f'{output_stem}.{fmt}', dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"Graph saved: {output_file}")
+    print(f"Graph saved: {output_stem}")
 
 
-def create_graph(data, src, data_type, output_dir, n_top=50, with_title=True):
+def create_graph(data, src, data_type, output_dir, n_top=50, with_title=True,
+                 formats=('png',)):
     """Create and save overlap graphs separately (count & weighted)."""
     if not data:
         print(f"No data available for {src} {data_type}")
@@ -183,23 +186,23 @@ def create_graph(data, src, data_type, output_dir, n_top=50, with_title=True):
     overlap_counts = [row[1] for row in data]
     weighted_overlaps = [row[2] for row in data]
 
-    # Overlap count graph
     _plot_single_graph(
         years, overlap_counts,
         ylabel="Number of Overlapping Names",
         title=f"{src.upper()} - {data_type.title()} Overlap Count Over Time",
         marker="o",
-        output_file=output_dir / f"{src}_{data_type}_{n_top}_overlap_count.png",
+        output_stem=str(output_dir / f"{src}_{data_type}_{n_top}_overlap_count"),
+        formats=formats,
         with_title=with_title,
     )
 
-    # Weighted overlap graph
     _plot_single_graph(
         years, weighted_overlaps,
         ylabel="Proportion of Overlapping Names",
         title=f"{src.upper()} - {data_type.title()} Weighted Overlap Over Time",
         marker="s",
-        output_file=output_dir / f"{src}_{data_type}_{n_top}_overlap_weighted.png",
+        output_stem=str(output_dir / f"{src}_{data_type}_{n_top}_overlap_weighted"),
+        formats=formats,
         with_title=with_title,
     )
 
@@ -361,7 +364,8 @@ def main():
                 all_details[details_key] = create_details_json(details, src, data_type)
                 
                 # Create graph
-                create_graph(data, src, data_type, output_dir, n_top=args.n_top, with_title=False)
+                create_graph(data, src, data_type, output_dir, n_top=args.n_top, with_title=False,
+                             formats=('png',))
             else:
                 print(f"No data found for {src} {data_type} with {args.n_top} top names")
     

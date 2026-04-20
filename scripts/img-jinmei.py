@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import argparse
 import os
+from pathlib import Path
 
-def plot_kanji_usage(output_path=None):
+def plot_kanji_usage(output_path=None, formats=('png', 'svg')):
     # Kanji data
     kanji = {
         1947:(1850, 0),
@@ -64,21 +65,11 @@ def plot_kanji_usage(output_path=None):
     plt.legend(frameon=False)
     plt.tight_layout()
 
-    # Save or display
     if output_path:
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
-        # Save as PNG
-         # --- Save without title (PNG) ---
-        plt.title("")  # remove title
-        book_name = os.path.join(os.path.dirname(output_path),
-                                 f"book_{os.path.basename(output_path)}")
-        plt.savefig(f"{book_name}.png", dpi=300)
-        
-        # Save as SVG
-        plt.savefig(f'{output_path}.svg')
-        
+        os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+        stem = str(Path(str(output_path)).with_suffix(''))
+        for fmt in formats:
+            plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
         plt.close()
     else:
         plt.show()

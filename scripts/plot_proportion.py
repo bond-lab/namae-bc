@@ -19,12 +19,6 @@ current_directory = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(current_directory, "../web/db/namae.db")
 plot_dir = os.path.join(current_directory, "../web/static/plot")
 
-conn = sqlite3.connect(db_path)
-
-c = conn.cursor()
-
-
-
 def calculate_proportion(male_names, female_names, ratio=0.2):
  
     # Count the occurrences of each name in both lists
@@ -234,7 +228,7 @@ female_color = 'purple'  # or (0.5, 0, 0.5)
 male_color = 'orange'    # or (1, 0.65, 0)
 
 
-def graph_proportion2(data, gname, title=True, plot_dir='proportion'):
+def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',)):
     xlabel = {0:'0',
                1:'0-10',
                2:'10-20',
@@ -296,12 +290,10 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion'):
 
     #plt.legend()
 
-    out_path = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}.png')
-    print(f"Saving  {out_path}")
-    plt.savefig(out_path,
-                dpi=300, bbox_inches='tight')
-    
-    #plt.show()# Plot
+    stem = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}')
+    print(f"Saving  {stem}")
+    for fmt in formats:
+        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
     plt.close()
 
     
@@ -364,88 +356,49 @@ def sample_androgyny(male_names, female_names,
            sample_size=400, num_runs=1000)
 
 
-#names = get_name_year(conn)
+def main(db_path=db_path, plot_dir=plot_dir, formats=('png',)):
+    """Regenerate all gender-proportion histogram plots."""
+    conn = sqlite3.connect(db_path)
 
-src = 'bc'
-data_type = 'both'
-table_name = db_options[src][0]
-names = get_name_year(conn, src=src,
-                      table=table_name, dtype=data_type)
+    src = 'bc'
+    data_type = 'both'
+    table_name = db_options[src][0]
+    names = get_name_year(conn, src=src, table=table_name, dtype=data_type)
 
-for y in list(names.keys()):
-    names[2099]['F'] += names[y]['F']
-    names[2099]['M'] += names[y]['M']
-    if y < 2014: # first half
-        names[2090]['F'] += names[y]['F']
-        names[2090]['M'] += names[y]['M']
-    else: #last half
-        names[2095]['F'] += names[y]['F']
-        names[2095]['M'] += names[y]['M']
+    for y in list(names.keys()):
+        names[2099]['F'] += names[y]['F']
+        names[2099]['M'] += names[y]['M']
+        if y < 2014:
+            names[2090]['F'] += names[y]['F']
+            names[2090]['M'] += names[y]['M']
+        else:
+            names[2095]['F'] += names[y]['F']
+            names[2095]['M'] += names[y]['M']
        
         
 
 
-###
-### make some special years!
-###
-#names[2015.5]['F'] = names[2015]['F'] + names[2016]['F']
-#names[2015.5]['M'] = names[2015]['M'] + names[2016]['M']
-#names[2021.5]['F'] = names[2021]['F'] + names[2022]['F']
-#names[2021.5]['M'] = names[2021]['M'] + names[2022]['M']
+    title = {2090: '2008-2013', 2095: '2008-2022', 2099: '2014-2022'}
+
+    for year in sorted(names.keys()):
+        if len(names[year]['F']) < 1000:
+            continue
+        mn = names[year]['M']
+        fn = names[year]['F']
+        mo = [o for (o, p) in names[year]['M']]
+        fo = [o for (o, p) in names[year]['F']]
+        mp = [p for (o, p) in names[year]['M']]
+        fp = [p for (o, p) in names[year]['F']]
+        for (group, male, female) in [('Name (full)', mn, fn),
+                                      ('Pronunciation', mp, fp),
+                                      ('Orthography', mo, fo)]:
+            gname = f"{group} ({title[year]})"
+            stats, total_names = calculate_distribution(male, female, f"{year}")
+            graph_proportion2(stats, gname, title=False, plot_dir=plot_dir,
+                              formats=formats)
+
+    conn.close()
 
 
-
-
-
-stats = dd(lambda: dd(int))
-
-print('year',
-      'F', 'M',
-      '%A.2', '%A.2o', '%A.2p',
-      '%A', '%Ao', '%Ap',
-      '%A-L', '%A-Lo', '%A-Lp',
-      sep='\t')
-
-title = {2090:'2008-2013', 2095:'2008-2022', 2099:'2014-2022'}
-
-
-for year in sorted(names.keys()):
-    if len(names[year]['F']) < 1000:
-        continue
-    mn = names[year]['M']
-    fn = names[year]['F']
-    mo = [o for (o, p) in names[year]['M']]
-    fo = [o for (o, p) in names[year]['F']]
-    mp = [p for (o, p) in names[year]['M']]
-    fp = [p for (o, p) in names[year]['F']]
-    print (year,
-           len(fn), len(mn),
-           ### androgynous by proportion
-           f'{calculate_proportion(mn, fn):.3f}',
-           f'{calculate_proportion(mo, fo):.3f}',
-           f'{calculate_proportion(mp, fp):.3f}',
-           #f'{sample_proportion(mn, fn):.3f}',
-           #f'{sample_proportion(mo, fo):.3f}',
-           #f'{sample_proportion(mp, fp):.3f}',
-           f'{androgyny(mn, fn):.3f}',
-           f'{androgyny(mo, fo):.3f}',
-           f'{androgyny(mp, fp):.3f}',
-           #f'{sample_androgyny(mn, fn):.3f}',
-           #f'{sample_androgyny(mo, fo):.3f}',
-           #f'{sample_androgyny(mp, fp):.3f}',
-
-            sep='\t')
-    for (group, male, female) in [('Name (full)', mn, fn),
-                                  ('Pronunciation', mp, fp),
-                                  ('Orthography', mo, fo),
-                                  ]:
-        gname = f"{group} ({title[year]})"
-        stats, total_names = calculate_distribution(male, female, f"{year}")
-        graph_proportion2(stats, gname, title=False, plot_dir=plot_dir)
-        tabulate_proportion(stats, total_names,  gname)
-        #print(stats)
-
-
-
-
-    
+if __name__ == "__main__":
+    main()
