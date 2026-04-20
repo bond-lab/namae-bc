@@ -6,7 +6,9 @@ so the browser color-theme switcher can override them in inlined SVGs.
 """
 
 import io
+import re
 from pathlib import Path
+from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,8 +54,6 @@ def inject_css_vars(svg: str) -> str:
     """Replace M/F sentinel hex values with CSS vars; make SVG scale to container."""
     svg = svg.replace(MALE_COLOR, f"var(--color-male,{MALE_COLOR})")
     svg = svg.replace(FEMALE_COLOR, f"var(--color-female,{FEMALE_COLOR})")
-    # Remove fixed pt dimensions so the SVG scales to 100% of its container.
-    import re
     svg = re.sub(
         r'(<svg[^>]*?)\s+width="[^"]*pt"\s+height="[^"]*pt"',
         r'\1 style="width:100%;height:auto"',
@@ -62,7 +62,7 @@ def inject_css_vars(svg: str) -> str:
     return svg
 
 
-def save_web_svg(fig: plt.Figure, path: str | Path) -> None:
+def save_web_svg(fig: plt.Figure, path: Union[str, Path]) -> None:
     """Save a matplotlib figure as a CSS-variable-aware SVG for the web."""
     buf = io.StringIO()
     fig.savefig(buf, format="svg", bbox_inches="tight")

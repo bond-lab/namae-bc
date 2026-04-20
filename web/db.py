@@ -820,44 +820,43 @@ def cache_years(db_path, src):
     conn.close()
     
 def get_kanji_distribution(conn, kanji, gender, src):
+    """Get kanji position distribution data.
+
+    Returns dict where data[year] = [solo, initial, middle, end, count].
     """
-    Get kanji position distribution data.
-    Returns dict where data[year] = [solo, initial, middle, end, count]
-    """
-    # Validate: must be exactly one character, no GLOB special chars
     if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']'):
         return {}
     c = conn.cursor()
     data = dd(lambda: [0, 0, 0, 0, 0])
 
-    # Get solo, initial, middle, end for each year
-    c.execute(f"""
-SELECT 
-    year,
-    sum(CASE WHEN orth GLOB '{kanji}*' AND length(orth) > 1 THEN freq ELSE 0 END) AS initial,
-    sum(CASE WHEN orth GLOB '*{kanji}*' AND orth NOT GLOB '{kanji}*' AND orth NOT GLOB '*{kanji}' AND length(orth) > 2 THEN freq ELSE 0 END) AS middle,
-    sum(CASE WHEN orth GLOB '*{kanji}' AND length(orth) > 1 THEN freq ELSE 0 END) AS end,
-    sum(CASE WHEN orth = '{kanji}' THEN freq ELSE 0 END) AS solo
+    # Bind GLOB patterns as parameters — never interpolate into SQL.
+    pat_any = f"*{kanji}*"
+    pat_initial = f"{kanji}*"
+    pat_end = f"*{kanji}"
+    c.execute("""
+SELECT year,
+    sum(CASE WHEN orth GLOB ? AND length(orth) > 1 THEN freq ELSE 0 END) AS initial,
+    sum(CASE WHEN orth GLOB ? AND orth NOT GLOB ? AND orth NOT GLOB ?
+             AND length(orth) > 2 THEN freq ELSE 0 END) AS middle,
+    sum(CASE WHEN orth GLOB ? AND length(orth) > 1 THEN freq ELSE 0 END) AS end,
+    sum(CASE WHEN orth = ? THEN freq ELSE 0 END) AS solo
 FROM nrank
-WHERE (orth GLOB '*{kanji}*') 
-  AND gender = ? 
-  AND src=?
-  AND freq IS NOT NULL
+WHERE orth GLOB ? AND gender = ? AND src = ? AND freq IS NOT NULL
 GROUP BY year""",
-              (gender, src))
-    
+              (pat_initial, pat_any, pat_initial, pat_end,
+               pat_end, kanji, pat_any, gender, src))
+
     for year, initial, middle, end, solo in c:
         data[year] = [solo, initial, middle, end]
-    
-    # Get total names for each year (use orth since kanji is orthographic)
-    c.execute(f"""
-    SELECT year, count FROM name_year_cache
-    WHERE gender = ? AND src = ? AND dtype = 'orth'""",
+
+    c.execute("""
+SELECT year, count FROM name_year_cache
+WHERE gender = ? AND src = ? AND dtype = 'orth'""",
               (gender, src))
-    
+
     for year, count in c:
         data[year].append(count)
-    
+
     return dict(data)
 
 def get_kanji_page_data(conn, kanji, src):
@@ -877,25 +876,29 @@ def get_kanji_page_data(conn, kanji, src):
         the same dicts as get_kanji_distribution(), and names is a list
         of {orth, pron, gender} dicts ordered by gender then orth.
     """
-    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']', "'"):
+    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']'):
         return {}, {}, []
 
     c = conn.cursor()
     male: dict = dd(lambda: [0, 0, 0, 0])
     female: dict = dd(lambda: [0, 0, 0, 0])
 
+    pat_any = f"*{kanji}*"
+    pat_initial = f"{kanji}*"
+    pat_end = f"*{kanji}"
+
     # Single nrank pass for position distribution (both genders at once)
-    c.execute(f"""
+    c.execute("""
         SELECT gender, year,
-            sum(CASE WHEN orth GLOB '{kanji}*' AND length(orth)>1 THEN freq ELSE 0 END),
-            sum(CASE WHEN orth GLOB '*{kanji}*' AND orth NOT GLOB '{kanji}*'
-                      AND orth NOT GLOB '*{kanji}' AND length(orth)>2 THEN freq ELSE 0 END),
-            sum(CASE WHEN orth GLOB '*{kanji}' AND length(orth)>1 THEN freq ELSE 0 END),
-            sum(CASE WHEN orth = '{kanji}' THEN freq ELSE 0 END)
+            sum(CASE WHEN orth GLOB ? AND length(orth)>1 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth GLOB ? AND orth NOT GLOB ?
+                      AND orth NOT GLOB ? AND length(orth)>2 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth GLOB ? AND length(orth)>1 THEN freq ELSE 0 END),
+            sum(CASE WHEN orth = ? THEN freq ELSE 0 END)
         FROM nrank
-        WHERE orth GLOB '*{kanji}*' AND src=? AND freq IS NOT NULL
+        WHERE orth GLOB ? AND src=? AND freq IS NOT NULL
         GROUP BY gender, year""",
-        (src,))
+        (pat_initial, pat_any, pat_initial, pat_end, pat_end, kanji, pat_any, src))
     for gender, year, initial, middle, end, solo in c:
         bucket = male if gender == 'M' else female
         bucket[year] = [solo, initial, middle, end]

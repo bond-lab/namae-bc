@@ -12,6 +12,7 @@ import os
 import json
 import gzip
 import sqlite3
+from typing import Dict
 
 from db import db_options, resolve_src, get_names_summary
 
@@ -29,7 +30,7 @@ def main() -> None:
         os.remove(OLD_PATH)
         print(f"Removed old {OLD_PATH}")
 
-    counts: dict[str, int] = {}
+    counts: Dict[str, int] = {}
 
     for src_key in db_options:
         qsrc = resolve_src(src_key)
