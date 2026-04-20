@@ -148,7 +148,7 @@ then measures wall-clock response time.
 
 ### Prerequisites
 
-- Python 3.8+, `uv`, `sqlite3` command-line tool
+- Python 3.9+, `uv`, `sqlite3` command-line tool
 
 ### 1. Clone and check key files
 

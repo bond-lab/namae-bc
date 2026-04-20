@@ -70,22 +70,27 @@ _json_cache: Dict[str, Any] = {}
 def _load_data_json(filename: str) -> Optional[Any]:
     """Load and cache a pre-computed JSON file from static/data/.
 
-    Returns None if the file does not exist.
+    Returns None if the file does not exist (not cached, so a subsequent
+    call after analysis completes will pick it up without a server restart).
     """
     path = os.path.join(current_directory, "static", "data", filename)
-    if path not in _json_cache:
-        try:
-            with open(path, encoding="utf-8") as f:
-                _json_cache[path] = json.load(f)
-        except FileNotFoundError:
-            _json_cache[path] = None
-    return _json_cache[path]
+    if path in _json_cache:
+        return _json_cache[path]
+    try:
+        with open(path, encoding="utf-8") as f:
+            result = json.load(f)
+        _json_cache[path] = result
+        return result
+    except FileNotFoundError:
+        return None
 
 # Hex equivalents of the CSS color names stored in the session.
 # Must match MALE_COLOR / FEMALE_COLOR in scripts/web_plot_style.py.
+_DEFAULT_MALE_HEX = '#ff7f0e'
+_DEFAULT_FEMALE_HEX = '#9467bd'
 _COLOR_HEX: Dict[str, str] = {
-    'orange': '#ff7f0e',
-    'purple': '#9467bd',
+    'orange': _DEFAULT_MALE_HEX,
+    'purple': _DEFAULT_FEMALE_HEX,
     'blue':   '#1f77b4',
     'red':    '#d62728',
 }
@@ -96,16 +101,19 @@ threshold = 2
 def _load_plot_svg(filename: str) -> Optional[Any]:
     """Read a pre-generated SVG from static/plot/, cache, and return as Markup.
 
-    Returns None if the file has not been built yet.
+    Returns None if the file has not been built yet (not cached, so the file
+    will be found on a subsequent call without a server restart).
     """
     path = os.path.join(current_directory, "static", "plot", filename)
-    if path not in _json_cache:
-        try:
-            with open(path, encoding="utf-8") as f:
-                _json_cache[path] = Markup(f.read())
-        except FileNotFoundError:
-            _json_cache[path] = None
-    return _json_cache[path]
+    if path in _json_cache:
+        return _json_cache[path]
+    try:
+        with open(path, encoding="utf-8") as f:
+            result = Markup(f.read())
+        _json_cache[path] = result
+        return result
+    except FileNotFoundError:
+        return None
 
 
 def get_db_settings():
@@ -146,8 +154,8 @@ def inject_common_variables():
         'show_book': session.get('show_book', False),
         'male_color': male_color,
         'female_color': female_color,
-        'male_color_hex': _COLOR_HEX.get(male_color, '#ff7f0e'),
-        'female_color_hex': _COLOR_HEX.get(female_color, '#9467bd'),
+        'male_color_hex': _COLOR_HEX.get(male_color, _DEFAULT_MALE_HEX),
+        'female_color_hex': _COLOR_HEX.get(female_color, _DEFAULT_FEMALE_HEX),
     }
 
 @app.route("/", methods=["GET", "POST"])
@@ -302,7 +310,16 @@ def namae():
 
     if pron and orth:
         kindex_entry, mfname_entry = get_name_for_orth(conn, orth, qsrc, table)
-        hindex_entry, _ = get_name_for_pron(conn, pron, qsrc, table)
+        hindex_entry, mfname_pron = get_name_for_pron(conn, pron, qsrc, table)
+        # Merge pron-query mfname into orth-query mfname so the template
+        # sees the full year list for (orth, pron) regardless of which
+        # query returned it first.
+        for key, genders in mfname_pron.items():
+            for gender, years in genders.items():
+                existing = set(mfname_entry[key][gender])
+                mfname_entry[key][gender].extend(
+                    y for y in years if y not in existing
+                )
         mapp = get_mapping(conn, orth, pron)
         return render_template(
             "namae-both.html",
@@ -579,7 +596,8 @@ def proportion():
                 'period_label': period_label,
                 'svg': _load_plot_svg(f"{key}.svg"),
             })
-        groups.append({'slug': group_slug, 'label': group_label, 'charts': charts})
+        if any(c['svg'] for c in charts):
+            groups.append({'slug': group_slug, 'label': group_label, 'charts': charts})
     return render_template(
         "phenomena/proportion.html",
         groups=groups,

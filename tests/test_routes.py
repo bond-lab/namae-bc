@@ -5,6 +5,7 @@ Requires:  web/db/namae.db (built via makedb.sh)
 """
 
 import json
+import re
 import pytest
 
 from web.db import db_options
@@ -15,13 +16,18 @@ from web.settings import features, overall
 # Per-model metadata
 # ---------------------------------------------------------------------------
 
-#: What each db option supports for search.
-DB_CAPS = {
-    'bc':      {'orth': True,  'pron': True,  'kanji': True},
-    'hs':      {'orth': True,  'pron': False, 'kanji': True},
-    'meiji':   {'orth': True,  'pron': False, 'kanji': True},
-    'meiji_p': {'orth': False, 'pron': True,  'kanji': False},
-}
+def _make_db_caps():
+    """Derive search capabilities from db_options so new sources stay in sync."""
+    caps = {}
+    for k, v in db_options.items():
+        dtype = v[2]
+        has_orth = isinstance(dtype, tuple) or dtype == 'orth'
+        has_pron = isinstance(dtype, tuple) or dtype == 'pron'
+        caps[k] = {'orth': has_orth, 'pron': has_pron, 'kanji': has_orth}
+    return caps
+
+
+DB_CAPS = _make_db_caps()
 
 #: A name that exists in every orth-supporting source.
 SAMPLE_ORTH = '花'
@@ -32,7 +38,11 @@ SAMPLE_KANJI = '花'
 
 
 def _switch_db(client, db: str) -> None:
-    """POST to /settings to switch the active database."""
+    """POST to /settings to switch the active database.
+
+    Only safe on a per-test client — do NOT call on the session-scoped
+    ``client`` fixture, as it will affect all subsequent tests.
+    """
     client.post('/settings', data={'color_palette': 'purple_orange', 'db_option': db})
 
 
@@ -396,7 +406,6 @@ class TestNavigation:
 
 def _extract_datasets(html):
     """Extract the datasets JSON array from page HTML."""
-    import re
     m = re.search(r'const datasets = (\[.*?\]);\s*$', html,
                   re.MULTILINE | re.DOTALL)
     assert m, "Could not find datasets JSON in page"
@@ -482,6 +491,7 @@ class TestNameSearchAllModels:
         _switch_db(self.client, db)
         resp = self._get(f'/namae?pron={SAMPLE_PRON}')
         assert resp.status_code == 200
+        assert SAMPLE_PRON.encode() in resp.data
 
     # bc only: combined orth+pron search (愛/あい verified to exist in bc)
     def test_orth_and_pron_search_bc(self):
@@ -555,7 +565,7 @@ def _all_feature_params():
     params = []
     for f1, f2, name, possible in features:
         for db in possible:
-            params.append(pytest.param(db, f1, f2, id=f"{db}/{name}"))
+            params.append(pytest.param(db, f1, f2, id=f"{db}-{name}"))
     return params
 
 
@@ -563,7 +573,7 @@ def _all_overall_params():
     params = []
     for f1, f2, name, possible in overall:
         for db in possible:
-            params.append(pytest.param(db, f1, f2, id=f"{db}/{name}"))
+            params.append(pytest.param(db, f1, f2, id=f"{db}-{name}"))
     return params
 
 
