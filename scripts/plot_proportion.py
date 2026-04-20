@@ -1,18 +1,33 @@
 import os
-from collections import Counter, defaultdict as dd 
 import sqlite3
-import random
-import matplotlib.pyplot as plt
+from collections import Counter, defaultdict as dd
+from pathlib import Path
+
 import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
 import numpy as np
 from tabulate import tabulate
-# Try to do something like this
-# https://familyinequality.wordpress.com/2023/05/15/us-name-androgyny-hit-record-high-again-in-2022/
-# https://familyinequality.wordpress.com/tag/names/page/3/
-# more discussion here
-# https://www.npr.org/transcripts/92621093?storyId=92621093
-# https://inequalitybyinteriordesign.wordpress.com/2016/02/25/why-popular-boy-names-are-more-popular-than-popular-girl-names/
+
 from db import db_options, get_name_year
+from web_plot_style import FEMALE_COLOR, MALE_COLOR, WEB_FIGSIZE, save_web_svg
+
+GROUP_META = [
+    ('name_full', 'Full name',      'Orthography and reading combined'),
+    ('pron',      'Pronunciation',  'Reading only (hiragana)'),
+    ('orth',      'Orthography',    'Written form only (kanji)'),
+]
+
+PERIOD_META = [
+    (2090, '2008_2013', '2008\u20132013'),
+    (2095, '2014_2022', '2014\u20132022'),
+    (2099, '2008_2022', '2008\u20132022'),
+]
+
+BIN_LABELS = (
+    ['100% \u2642'] +
+    [f'{i * 10}\u2013{(i + 1) * 10}%' for i in range(10)] +
+    ['100% \u2640']
+)
 
 current_directory = os.path.abspath(os.path.dirname(__file__))
 
@@ -223,9 +238,6 @@ def blend_colors(color1, color2, blend_ratio):
     )
     return blended
 
-# Define your colors
-female_color = 'purple'  # or (0.5, 0, 0.5)
-male_color = 'orange'    # or (1, 0.65, 0)
 
 
 def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',)):
@@ -259,7 +271,7 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('
 
     # Bar plot with mixed colors and transparency
     for i, bin in enumerate(bins):
-        blended_color = blend_colors(female_color, male_color, male_percentages[i])
+        blended_color = blend_colors(FEMALE_COLOR, MALE_COLOR, male_percentages[i])
         plt.bar(bin, totals[i], color=blended_color, alpha=0.6)
 
     # Line plots for M and F
@@ -356,6 +368,97 @@ def sample_androgyny(male_names, female_names,
            sample_size=400, num_runs=1000)
 
 
+def compute_data(conn: sqlite3.Connection) -> dict:
+    """Return {(group_slug, period_slug): stats} for all group × period combos.
+
+    Args:
+        conn: Open SQLite connection to namae.db.
+
+    Returns:
+        Dict keyed by (group_slug, period_slug) with the 12-bin stats dict
+        from calculate_distribution as values.
+    """
+    raw = get_name_year(conn, src='bc', table=db_options['bc'][0], dtype='both')
+
+    buckets: dict = {key: dd(list) for key, _, _ in PERIOD_META}
+    for y, by_gender in raw.items():
+        for g in ('M', 'F'):
+            buckets[2099][g].extend(by_gender[g])
+            target = 2090 if y < 2014 else 2095
+            buckets[target][g].extend(by_gender[g])
+
+    result = {}
+    for period_key, period_slug, _ in PERIOD_META:
+        bkt = buckets[period_key]
+        if len(bkt['F']) < 1000:
+            continue
+        for group_slug, _, _ in GROUP_META:
+            if group_slug == 'name_full':
+                m, f = bkt['M'], bkt['F']
+            elif group_slug == 'pron':
+                m = [p for _, p in bkt['M']]
+                f = [p for _, p in bkt['F']]
+            else:
+                m = [o for o, _ in bkt['M']]
+                f = [o for o, _ in bkt['F']]
+            stats, _ = calculate_distribution(m, f, f"{period_key}")
+            result[(group_slug, period_slug)] = stats
+    return result
+
+
+def _make_proportion_fig(stats: dict) -> plt.Figure:
+    """Return a U-shaped gender-distribution histogram figure."""
+    bins = sorted(stats.keys())
+    total = sum(stats[b]['M'] + stats[b]['F'] for b in bins)
+    if not total:
+        return None
+
+    bar_heights = [(stats[b]['M'] + stats[b]['F']) / total for b in bins]
+    male_fracs = [
+        stats[b]['M'] / (stats[b]['M'] + stats[b]['F'])
+        if (stats[b]['M'] + stats[b]['F']) > 0 else 0
+        for b in bins
+    ]
+
+    fig, ax = plt.subplots(figsize=WEB_FIGSIZE)
+    for i, b in enumerate(bins):
+        ax.bar(b, bar_heights[i],
+               color=blend_colors(FEMALE_COLOR, MALE_COLOR, male_fracs[i]),
+               alpha=0.85)
+
+    ax.set_xticks(bins)
+    ax.set_xticklabels(BIN_LABELS, rotation=40, ha='right', fontsize=9)
+    ax.set_xlabel('Gender distribution (% female)')
+    ax.set_ylabel('Babies (%)')
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{int(y * 100)}'))
+    ax.set_ylim(0, 0.55)
+    ax.set_yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.grid(axis='y', linestyle='--', linewidth=0.4, alpha=0.3, color='gray')
+    fig.tight_layout()
+    return fig
+
+
+def generate_web_svgs(conn: sqlite3.Connection, out_dir) -> None:
+    """Generate CSS-variable-aware SVGs for each group × period combination.
+
+    Args:
+        conn: Open SQLite connection to namae.db.
+        out_dir: Directory to write SVG files into.
+    """
+    out_dir = Path(out_dir)
+    data = compute_data(conn)
+    for (group_slug, period_slug), stats in data.items():
+        fig = _make_proportion_fig(stats)
+        if fig is None:
+            continue
+        stem = out_dir / f"proportion_{group_slug}_{period_slug}"
+        save_web_svg(fig, f"{stem}.svg")
+        plt.close(fig)
+        print(f"  proportion {group_slug} {period_slug} \u2192 {stem}.svg")
+
+
 def main(db_path=db_path, plot_dir=plot_dir, formats=('png',)):
     """Regenerate all gender-proportion histogram plots."""
     conn = sqlite3.connect(db_path)
@@ -378,7 +481,7 @@ def main(db_path=db_path, plot_dir=plot_dir, formats=('png',)):
         
 
 
-    title = {2090: '2008-2013', 2095: '2008-2022', 2099: '2014-2022'}
+    title = {2090: '2008\u20132013', 2095: '2014\u20132022', 2099: '2008\u20132022'}
 
     for year in sorted(names.keys()):
         if len(names[year]['F']) < 1000:

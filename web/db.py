@@ -81,49 +81,33 @@ def get_name(conn, table='namae', src='bc', dtype=None):
     return mfname, kindex, hindex
 
 
-def get_name_for_orth(conn, orth, src, table='namae'):
-    """Return (kindex_entry, mfname_entry) for a single orthography.
+def _get_name_for(conn, value, src, column, table):
+    """Fetch (index_set, mfname_dict) for a single orth or pron value.
 
-    Replaces a full get_name() call for orth-only lookups.  Only fetches
-    rows for the requested orth — O(matches) instead of O(all names).
-
-    Returns:
-        kindex_entry: set of (orth, pron) pairs for this orth.
-        mfname_entry: {(orth, pron): {gender: [years]}} for this orth.
+    Args:
+        column: 'orth' or 'pron' — the column to filter on.
     """
     c = conn.cursor()
     c.execute(
-        f"SELECT orth, pron, gender, year FROM {table} WHERE orth=? AND src=?",
-        (orth, src),
+        f"SELECT orth, pron, gender, year FROM {table} WHERE {column}=? AND src=?",
+        (value, src),
     )
-    kindex_entry = set()
+    index_entry = set()
     mfname_entry = dd(lambda: dd(list))
-    for row_orth, pron, gender, year in c:
-        kindex_entry.add((row_orth, pron))
-        mfname_entry[(row_orth, pron)][gender].append(year)
-    return kindex_entry, mfname_entry
+    for orth, pron, gender, year in c:
+        index_entry.add((orth, pron))
+        mfname_entry[(orth, pron)][gender].append(year)
+    return index_entry, mfname_entry
+
+
+def get_name_for_orth(conn, orth, src, table='namae'):
+    """Return (kindex_entry, mfname_entry) for a single orthography."""
+    return _get_name_for(conn, orth, src, 'orth', table)
 
 
 def get_name_for_pron(conn, pron, src, table='namae'):
-    """Return (hindex_entry, mfname_entry) for a single pronunciation.
-
-    Replaces a full get_name() call for pron-only lookups.
-
-    Returns:
-        hindex_entry: set of (orth, pron) pairs for this pronunciation.
-        mfname_entry: {(orth, pron): {gender: [years]}} for this pron.
-    """
-    c = conn.cursor()
-    c.execute(
-        f"SELECT orth, pron, gender, year FROM {table} WHERE pron=? AND src=?",
-        (pron, src),
-    )
-    hindex_entry = set()
-    mfname_entry = dd(lambda: dd(list))
-    for orth, row_pron, gender, year in c:
-        hindex_entry.add((orth, row_pron))
-        mfname_entry[(orth, row_pron)][gender].append(year)
-    return hindex_entry, mfname_entry
+    """Return (hindex_entry, mfname_entry) for a single pronunciation."""
+    return _get_name_for(conn, pron, src, 'pron', table)
 
 
 def get_names_summary(conn, src='bc', dtype=None):
@@ -893,7 +877,7 @@ def get_kanji_page_data(conn, kanji, src):
         the same dicts as get_kanji_distribution(), and names is a list
         of {orth, pron, gender} dicts ordered by gender then orth.
     """
-    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']'):
+    if not kanji or len(kanji) != 1 or kanji in ('*', '?', '[', ']', "'"):
         return {}, {}, []
 
     c = conn.cursor()
@@ -916,12 +900,13 @@ def get_kanji_page_data(conn, kanji, src):
         bucket = male if gender == 'M' else female
         bucket[year] = [solo, initial, middle, end]
 
-    # Append year totals from cache
-    c.execute("SELECT gender, year, count FROM name_year_cache WHERE src=? AND dtype='orth'", (src,))
-    for gender, year, count in c:
-        bucket = male if gender == 'M' else female
-        if year in bucket:
-            bucket[year].append(count)
+    if male or female:
+        # Append year totals from cache
+        c.execute("SELECT gender, year, count FROM name_year_cache WHERE src=? AND dtype='orth'", (src,))
+        for gender, year, count in c:
+            bucket = male if gender == 'M' else female
+            if year in bucket:
+                bucket[year].append(count)
 
     # Names list via ntok→namae (avoids re-scanning nrank)
     c.execute("""
