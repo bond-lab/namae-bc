@@ -187,7 +187,7 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
         from bw_style import BW_M, BW_F
         male_color = female_color = 'black'
         male_line  = dict(color='black', linestyle=BW_M['linestyle'],
-                          marker=BW_M['marker'], fillstyle='none')
+                          marker=BW_M['marker'], fillstyle='full')
         female_line = dict(color='black', linestyle=BW_F['linestyle'],
                            marker=BW_F['marker'], fillstyle='full')
     else:
@@ -220,7 +220,7 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     # Plot 1: Common Names Count
     _smooth(ax1, years, male_common_names,   male_color,   'Boys',
             male_line['linestyle'],   male_line['marker'],
-            'none' if male_line['fillstyle'] == 'none' else male_color)
+            male_color)
     _smooth(ax1, years, female_common_names, female_color, 'Girls',
             female_line['linestyle'], female_line['marker'], female_color)
     
@@ -237,7 +237,7 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     # Plot 2: JS Divergence
     _smooth(ax2, years, male_js_divergence,   male_color,   'Boys',
             male_line['linestyle'],   male_line['marker'],
-            'none' if male_line['fillstyle'] == 'none' else male_color)
+            male_color)
     _smooth(ax2, years, female_js_divergence, female_color, 'Girls',
             female_line['linestyle'], female_line['marker'], female_color)
     

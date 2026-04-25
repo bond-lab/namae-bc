@@ -1,8 +1,8 @@
 """Black-and-white style constants for publication figures.
 
 Line-style convention:
-  -.  dash-dot  Female data
-  :   dotted    Male data
+  -.  dash-dot + filled circles   Female data
+  :   dotted   + solid diamonds   Male data
   -   solid     Significant regression line   } shared by both genders,
   --  dashed    Non-significant regression    } distinguished by marker
 
@@ -16,10 +16,9 @@ import matplotlib as mpl
 BW_F = dict(color='black', linestyle='-.', marker='o', markersize=5,
             linewidth=2.0, label='Girls')
 
-# Male: dotted, open squares
-BW_M = dict(color='black', linestyle=':', marker='s', markersize=5,
-            linewidth=2.0, label='Boys', fillstyle='none',
-            markeredgewidth=1.5)
+# Male: dotted, solid diamonds
+BW_M = dict(color='black', linestyle=':', marker='D', markersize=5,
+            linewidth=2.0, label='Boys')
 
 # Single-series (no gender): black solid, no marker by default
 BW_SINGLE = dict(color='black', linestyle='-', linewidth=2.0)

@@ -25,7 +25,7 @@ When `--bw` is used, all figures follow these conventions:
 | Element | Style |
 |---|---|
 | Girls data line | dash-dot `-.`, filled circle markers |
-| Boys data line | dotted `:`, open square markers |
+| Boys data line | dotted `:`, solid diamond markers |
 | Significant regression | solid line `-` |
 | Non-significant regression | dashed line `--` |
 | Stacked area fills | four gray levels (0.90 → 0.22) with hatching (`////`, `\\`, `xxxx`, `----`) |
