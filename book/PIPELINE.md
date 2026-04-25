@@ -18,6 +18,25 @@ uv run --python .venv-build/bin/python scripts/build_book_figures.py [OPTIONS]
 | `--figures 1,7a,9` | all | Build only the listed figure IDs |
 | `--bw` | off | Build black-and-white versions (output: `Figure_X.bw.svg`) |
 
+### Black-and-white style conventions
+
+When `--bw` is used, all figures follow these conventions:
+
+| Element | Style |
+|---|---|
+| Girls data line | dash-dot `-.`, filled circle markers |
+| Boys data line | dotted `:`, open square markers |
+| Significant regression | solid line `-` |
+| Non-significant regression | dashed line `--` |
+| Stacked area fills | four gray levels (0.90 → 0.22) with hatching (`////`, `\\`, `xxxx`, `----`) |
+| Dataset coverage bars (Figs 3–4) | four gray levels; existing hatch patterns retained |
+| Hatch line width | 1.5 pt (coarser than screen default for legibility in print) |
+| Base font size | 12 pt (bumped from 10–11 pt for A5 readability) |
+
+Girls are the primary (dash-dot) series and Boys the secondary (dotted) throughout.
+Solid and dashed lines are reserved for regression significance so they remain
+unambiguous regardless of which gender is being shown.
+
 ### Examples
 
 ```bash
