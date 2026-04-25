@@ -183,33 +183,28 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     """
     setup_tufte_style()
     
-    # Get colors from session or use defaults
-    female_color = session.get('female_color', 'purple') if session else 'purple'
-    male_color = session.get('male_color', 'orange') if session else 'orange'
-    
-    # Extract years (should be 2006-2009)
-    years = list(data_dict['F'].keys())
-    
-    # Extract data for plotting
-    male_common_names = [data_dict['M'][year]['common_names_count'] for year in years]
-    male_js_divergence = [data_dict['M'][year]['js_divergence'] for year in years]
-    
-    female_common_names = [data_dict['F'][year]['common_names_count'] for year in years]
-    female_js_divergence = [data_dict['F'][year]['js_divergence'] for year in years]
-    
-    # Create the figure and subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
-    
     if bw:
         from bw_style import BW_M, BW_F
-        _m_ls, _f_ls = BW_M['linestyle'], BW_F['linestyle']
-        _m_mk, _f_mk = BW_M['marker'], BW_F['marker']
-        _m_fc, _f_fc = 'none', male_color
+        male_color = female_color = 'black'
+        male_line  = dict(color='black', linestyle=BW_M['linestyle'],
+                          marker=BW_M['marker'], fillstyle='none')
+        female_line = dict(color='black', linestyle=BW_F['linestyle'],
+                           marker=BW_F['marker'], fillstyle='full')
     else:
-        _m_ls = _f_ls = '-'
-        _m_mk = _f_mk = 'o'
-        _m_fc = male_color
-        _f_fc = female_color
+        female_color = session.get('female_color', 'purple') if session else 'purple'
+        male_color   = session.get('male_color',   'orange') if session else 'orange'
+        male_line   = dict(color=male_color,   linestyle='-', marker='o', fillstyle='full')
+        female_line = dict(color=female_color, linestyle='-', marker='o', fillstyle='full')
+
+    # Extract years (should be 2006-2009)
+    years = list(data_dict['F'].keys())
+
+    male_common_names   = [data_dict['M'][year]['common_names_count'] for year in years]
+    male_js_divergence  = [data_dict['M'][year]['js_divergence']      for year in years]
+    female_common_names = [data_dict['F'][year]['common_names_count'] for year in years]
+    female_js_divergence= [data_dict['F'][year]['js_divergence']      for year in years]
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
 
     def _smooth(ax, xs, ys, color, label, ls, mkr, fc):
         if len(xs) >= 3:
@@ -223,10 +218,11 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
                    facecolors=fc, edgecolors=color, linewidths=2)
 
     # Plot 1: Common Names Count
-    _smooth(ax1, years, male_common_names, male_color, 'Boys',
-            _m_ls, _m_mk, _m_fc)
+    _smooth(ax1, years, male_common_names,   male_color,   'Boys',
+            male_line['linestyle'],   male_line['marker'],
+            'none' if male_line['fillstyle'] == 'none' else male_color)
     _smooth(ax1, years, female_common_names, female_color, 'Girls',
-            _f_ls, _f_mk, _f_fc)
+            female_line['linestyle'], female_line['marker'], female_color)
     
     ax1.set_title('Common Names Count Over Time', fontsize=14, fontweight='bold', pad=25)
     ax1.set_xlabel('Year', fontsize=12)
@@ -239,10 +235,11 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     ax1.spines['right'].set_visible(False)
     
     # Plot 2: JS Divergence
-    _smooth(ax2, years, male_js_divergence, male_color, 'Boys',
-            _m_ls, _m_mk, _m_fc)
+    _smooth(ax2, years, male_js_divergence,   male_color,   'Boys',
+            male_line['linestyle'],   male_line['marker'],
+            'none' if male_line['fillstyle'] == 'none' else male_color)
     _smooth(ax2, years, female_js_divergence, female_color, 'Girls',
-            _f_ls, _f_mk, _f_fc)
+            female_line['linestyle'], female_line['marker'], female_color)
     
     ax2.set_title('JS Divergence Over Time', fontsize=14, fontweight='bold', pad=25)
     ax2.set_xlabel('Year', fontsize=12)

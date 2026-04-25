@@ -1,15 +1,7 @@
 # Book Figures Index
 
-## Figure 5A
+## Figure 1: Similarity of the Meiji Yasuda data and Heisei Namae Jiten data
 
-![Figure 5A](Figure_5a.png)
-
-![Figure 5A](Figure_5a.pdf)
-
-
-## Figure 5B
-
-![Figure 5B](Figure_5b.png)
-
-![Figure 5B](Figure_5b.pdf)
-
+| Manuscript | SVG |
+| --- | --- |
+| ![manuscript](manuscript/Figure_1_manuscript.png) | ![svg](Figure_1.svg) |

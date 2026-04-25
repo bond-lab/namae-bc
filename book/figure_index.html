@@ -3,15 +3,14 @@
 <head>
 <meta charset='UTF-8'>
 <title>Book Figures</title>
-<style>body{font-family:sans-serif;max-width:900px;margin:2em auto} h2{margin-top:2em} img{border:1px solid #ccc;margin-top:.5em}</style>
+<style>body{font-family:sans-serif;max-width:1400px;margin:2em auto;padding:0 1em} h2{margin-top:2em} figure img{display:block} figcaption{margin-bottom:.25em;font-weight:bold}</style>
 </head>
 <body>
 <h1>Book Figures</h1>
-  <h2>Figure 5A</h2>
-  <img src="Figure_5a.png" alt="Figure 5A" style="max-width:100%;"><br>
-  <a href="Figure_5a.pdf">Figure_5a.pdf</a><br>
-  <h2>Figure 5B</h2>
-  <img src="Figure_5b.png" alt="Figure 5B" style="max-width:100%;"><br>
-  <a href="Figure_5b.pdf">Figure_5b.pdf</a><br>
+  <h2>Figure 1: Similarity of the Meiji Yasuda data and Heisei Namae Jiten data</h2>
+  <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+    <figure style="flex:1;min-width:200px;margin:0"><figcaption style="font-size:.85em;color:#555">Manuscript</figcaption><img src="manuscript/Figure_1_manuscript.png" style="max-width:100%;border:1px solid #ccc"></figure>
+    <figure style="flex:1;min-width:200px;margin:0"><figcaption style="font-size:.85em;color:#555">SVG</figcaption><img src="Figure_1.svg" style="max-width:100%;border:1px solid #ccc"></figure>
+  </div>
 </body>
 </html>

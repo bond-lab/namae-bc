@@ -72,9 +72,8 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
 
     if output_path:
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-        stem = str(Path(str(output_path)).with_suffix(''))
         for fmt in formats:
-            plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
+            plt.savefig(f'{output_path}.{fmt}', dpi=300, bbox_inches='tight')
         plt.close()
     else:
         plt.show()

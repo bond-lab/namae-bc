@@ -642,6 +642,7 @@ BUILDERS: dict[str, object] = {
     '7c':  build_figure_7c,
     '8':   build_figure_8,
     '9':   build_figure_9,
+    '10':  build_figure_10,
     '11a': build_figure_11a,
     '11b': build_figure_11b,
     '11c': build_figure_11c,

@@ -144,9 +144,8 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     
     plt.tight_layout()
     if output_path is not None:
-        stem = str(Path(str(output_path)).with_suffix(''))
         for fmt in formats:
-            fig.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
+            fig.savefig(f'{output_path}.{fmt}', dpi=300, bbox_inches='tight')
         plt.close(fig)
     return fig, ax
 
