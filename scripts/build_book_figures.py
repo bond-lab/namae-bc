@@ -834,6 +834,10 @@ def main():
         requested = {f.strip() for f in args.figures.split(",")}
         all_ids = [fid for fid in all_ids if fid in requested]
 
+    # Browser screenshots can't be B&W-ified via matplotlib — skip them in --bw mode
+    if args.bw:
+        all_ids = [fid for fid in all_ids if fid not in FLASK_FIGURES]
+
     needs_flask = bool(set(all_ids) & FLASK_FIGURES)
 
     def _build_all(errors):
