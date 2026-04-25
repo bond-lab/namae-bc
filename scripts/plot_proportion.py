@@ -258,7 +258,7 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('
     plt.figure(figsize=(10, 6))
 
     _fc = 'black' if bw else female_color
-    _mc = 'white' if bw else male_color
+    _mc = '#888888' if bw else male_color   # mid-gray so white gridlines are readable on all bars
     _alpha = 1.0 if bw else 0.6
     for i, bin in enumerate(bins):
         blended_color = blend_colors(_fc, _mc, male_percentages[i])
@@ -287,7 +287,6 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    # Horizontal gridlines every 5%
     ax.grid(axis='y', color='white', linewidth=1, alpha=0.7)
 
 
