@@ -262,7 +262,8 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('
     _alpha = 1.0 if bw else 0.6
     for i, bin in enumerate(bins):
         blended_color = blend_colors(_fc, _mc, male_percentages[i])
-        plt.bar(bin, totals[i], color=blended_color, alpha=_alpha)
+        plt.bar(bin, totals[i], color=blended_color, alpha=_alpha,
+                edgecolor='black', linewidth=0.5)
 
     # Line plots for M and F
     #plt.plot(bins, male_values, color='blue', marker='o', label='M')
