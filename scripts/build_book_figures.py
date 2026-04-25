@@ -136,7 +136,7 @@ def extract_captions(docx_path: Path) -> dict[str, str]:
 # The callable is responsible for writing <output_stem>.png / .svg
 # 'screenshot' entries are skipped with a note.
 
-def build_figure_1(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_1(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     import pandas as pd
     m = _load_script("pub-agreement")
     conn = sqlite3.connect(str(DB_PATH))
@@ -156,31 +156,31 @@ def build_figure_1(output_stem: Path, formats: tuple[str, ...]) -> None:
     session = {'female_color': 'purple', 'male_color': 'orange'}
     m.plot_gender_names_analysis(results, session,
                                  output_filename=f"{output_stem}.png",
-                                 formats=formats)
+                                 formats=formats, bw=bw)
 
 
-def build_figure_2(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_2(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     import tempfile
     m = _load_script("plot-years")
     with tempfile.TemporaryDirectory() as tmp:
-        m.create_gender_plot('births', str(DB_PATH), tmp, formats=formats)
+        m.create_gender_plot('births', str(DB_PATH), tmp, formats=formats, bw=bw)
         for fmt in formats:
             src = Path(tmp) / f'years_births.{fmt}'
             if src.exists():
                 shutil.copy2(src, Path(f"{output_stem}.{fmt}"))
 
 
-def build_figure_3(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_3(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("pub-years")
     data = m.get_data(str(DB_PATH))
-    m.create_japanese_names_chart(data, f"{output_stem}.png", formats=formats)
+    m.create_japanese_names_chart(data, f"{output_stem}.png", formats=formats, bw=bw)
 
 
-def build_figure_4(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_4(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("pub-years")
     data = m.get_data(str(DB_PATH))
     m.create_japanese_names_chart(data, f"{output_stem}.png",
-                                  use_log_scale=True, formats=formats)
+                                  use_log_scale=True, formats=formats, bw=bw)
 
 
 def _playwright_capture(url: str, output_stem: Path, formats: tuple[str, ...]) -> None:
@@ -212,26 +212,26 @@ def _playwright_capture(url: str, output_stem: Path, formats: tuple[str, ...]) -
         browser.close()
 
 
-def build_figure_5a(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_5a(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """蓮 (れん /ren/) pronunciation page."""
     _playwright_capture(
         "http://127.0.0.1:5100/namae?pron=%E3%82%8C%E3%82%93",
         output_stem, formats)
 
 
-def build_figure_5b(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_5b(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """蓮 (はす /hasu/) pronunciation page."""
     _playwright_capture(
         "http://127.0.0.1:5100/namae?pron=%E3%81%AF%E3%81%99",
         output_stem, formats)
 
 
-def build_figure_6(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_6(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("img-jinmei")
-    m.plot_kanji_usage(output_path=str(output_stem), formats=formats)
+    m.plot_kanji_usage(output_path=str(output_stem), formats=formats, bw=bw)
 
 
-def _bp_plot(src: str, dtype: str, output_stem: Path, formats: tuple[str, ...]) -> None:
+def _bp_plot(src: str, dtype: str, output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     from collections import defaultdict as dd
     m = _load_script("plot_meiji")
     conn = sqlite3.connect(str(DB_PATH))
@@ -252,20 +252,21 @@ def _bp_plot(src: str, dtype: str, output_stem: Path, formats: tuple[str, ...]) 
         f"{output_stem}.png",
         trend_stats=trend_stats,
         formats=formats,
+        bw=bw,
     )
 
 
-def build_figure_7a(output_stem, formats):
-    _bp_plot('hs', 'orth', output_stem, formats)
+def build_figure_7a(output_stem, formats, bw=False):
+    _bp_plot('hs', 'orth', output_stem, formats, bw)
 
-def build_figure_7b(output_stem, formats):
-    _bp_plot('meiji', 'orth', output_stem, formats)
+def build_figure_7b(output_stem, formats, bw=False):
+    _bp_plot('meiji', 'orth', output_stem, formats, bw)
 
-def build_figure_7c(output_stem, formats):
-    _bp_plot('meiji', 'pron', output_stem, formats)
+def build_figure_7c(output_stem, formats, bw=False):
+    _bp_plot('meiji', 'pron', output_stem, formats, bw)
 
 
-def build_figure_8(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_8(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """Diversity measures for Heisei (hs orth diversity panel)."""
     import math
     from collections import Counter, defaultdict as dd
@@ -317,16 +318,17 @@ def build_figure_8(output_stem: Path, formats: tuple[str, ...]) -> None:
         f"{output_stem}.png",
         trend_stats=trend_stats,
         formats=formats,
+        bw=bw,
     )
 
 
-def build_figure_9(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_9(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_web_charts")
-    m.plot_irregular(output_stem=str(output_stem), formats=formats)
+    m.plot_irregular(output_stem=str(output_stem), formats=formats, bw=bw)
 
 
 def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
-                   output_stem: Path, formats: tuple[str, ...]) -> None:
+                   output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_overlap")
     get_overlap_details = m.get_overlap_details
     details, totals = get_overlap_details(str(DB_PATH), src, dtype, n_top)
@@ -353,17 +355,20 @@ def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
     from scipy.stats import linregress
     from scipy.interpolate import PchipInterpolator
 
+    color = 'black' if bw else '#1f77b4'
+
     fig, ax = plt.subplots(figsize=(8, 5))
     marker = 'o' if kind == 'count' else 's'
-    ax.scatter(years, values, marker=marker, color='#1f77b4', s=25, zorder=5,
+    ax.scatter(years, values, marker=marker, color=color, s=25, zorder=5,
                label='Overlap')
     if len(years) >= 3:
         interp = PchipInterpolator(years, values)
         xs = np.linspace(years[0], years[-1], 300)
-        ax.plot(xs, interp(xs), color='#1f77b4', linewidth=1.5)
+        ax.plot(xs, interp(xs), color=color, linewidth=1.5)
     slope, intercept, _, p_value, _ = linregress(years, values)
     reg_x = np.array([min(years), max(years)])
-    ax.plot(reg_x, slope * reg_x + intercept, color='#1f77b4', linewidth=1.5)
+    ax.plot(reg_x, slope * reg_x + intercept, color=color,
+            linewidth=1.5, linestyle='-' if p_value < 0.05 else '--')
     ax.set_xlabel('Year')
     ax.set_ylabel(ylabel)
     if kind == 'weighted':
@@ -380,28 +385,26 @@ def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
     plt.close(fig)
 
 
-def build_figure_10(output_stem, formats):
-    # "Phonological and graphic overlap in boys' and girls' names"
-    # Represented by BC orthographic overlap (count)
-    _overlap_graph('bc', 'orth', 50, 'count', output_stem, formats)
+def build_figure_10(output_stem, formats, bw=False):
+    _overlap_graph('bc', 'orth', 50, 'count', output_stem, formats, bw)
 
-def build_figure_11a(output_stem, formats):
-    _proportion_graph('Pronunciation (2008-2022)', output_stem, formats)
+def build_figure_11a(output_stem, formats, bw=False):
+    _proportion_graph('Pronunciation (2008-2022)', output_stem, formats, bw)
 
-def build_figure_11b(output_stem, formats):
-    _proportion_graph('Orthography (2008-2022)', output_stem, formats)
+def build_figure_11b(output_stem, formats, bw=False):
+    _proportion_graph('Orthography (2008-2022)', output_stem, formats, bw)
 
-def build_figure_11c(output_stem, formats):
-    _proportion_graph('Name (full) (2008-2022)', output_stem, formats)
+def build_figure_11c(output_stem, formats, bw=False):
+    _proportion_graph('Name (full) (2008-2022)', output_stem, formats, bw)
 
-def build_figure_12a(output_stem, formats):
-    _proportion_graph('Pronunciation (2008-2013)', output_stem, formats)
+def build_figure_12a(output_stem, formats, bw=False):
+    _proportion_graph('Pronunciation (2008-2013)', output_stem, formats, bw)
 
-def build_figure_12b(output_stem, formats):
-    _proportion_graph('Pronunciation (2014-2022)', output_stem, formats)
+def build_figure_12b(output_stem, formats, bw=False):
+    _proportion_graph('Pronunciation (2014-2022)', output_stem, formats, bw)
 
 
-def _proportion_graph(gname: str, output_stem: Path, formats: tuple[str, ...]) -> None:
+def _proportion_graph(gname: str, output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """Copy or regenerate a proportion histogram."""
     src_png = PLOT_DIR / f"pron_gender_proportion_histogram_{gname}.png"
     if src_png.exists() and 'svg' not in formats:
@@ -445,33 +448,33 @@ def _proportion_graph(gname: str, output_stem: Path, formats: tuple[str, ...]) -
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         stats, _ = mp.calculate_distribution(male_f, female_f, period_str or 'all')
-        mp.graph_proportion2(stats, gname, title=False, plot_dir=tmp, formats=formats)
+        mp.graph_proportion2(stats, gname, title=False, plot_dir=tmp, formats=formats, bw=bw)
         for fmt in formats:
             src = Path(tmp) / f'pron_gender_proportion_histogram_{gname}.{fmt}'
             if src.exists():
                 shutil.copy2(src, Path(f"{output_stem}.{fmt}"))
 
 
-def build_figure_13a(output_stem, formats):
-    _overlap_graph('meiji', 'pron', 50, 'count', output_stem, formats)
+def build_figure_13a(output_stem, formats, bw=False):
+    _overlap_graph('meiji', 'pron', 50, 'count', output_stem, formats, bw)
 
-def build_figure_13b(output_stem, formats):
-    _overlap_graph('meiji', 'pron', 50, 'weighted', output_stem, formats)
+def build_figure_13b(output_stem, formats, bw=False):
+    _overlap_graph('meiji', 'pron', 50, 'weighted', output_stem, formats, bw)
 
-def build_figure_14a(output_stem, formats):
-    _overlap_graph('meiji', 'orth', 100, 'count', output_stem, formats)
+def build_figure_14a(output_stem, formats, bw=False):
+    _overlap_graph('meiji', 'orth', 100, 'count', output_stem, formats, bw)
 
-def build_figure_14b(output_stem, formats):
-    _overlap_graph('meiji', 'orth', 100, 'weighted', output_stem, formats)
+def build_figure_14b(output_stem, formats, bw=False):
+    _overlap_graph('meiji', 'orth', 100, 'weighted', output_stem, formats, bw)
 
-def build_figure_15a(output_stem, formats):
-    _overlap_graph('hs', 'orth', 500, 'count', output_stem, formats)
+def build_figure_15a(output_stem, formats, bw=False):
+    _overlap_graph('hs', 'orth', 500, 'count', output_stem, formats, bw)
 
-def build_figure_15b(output_stem, formats):
-    _overlap_graph('hs', 'orth', 500, 'weighted', output_stem, formats)
+def build_figure_15b(output_stem, formats, bw=False):
+    _overlap_graph('hs', 'orth', 500, 'weighted', output_stem, formats, bw)
 
 
-def build_figure_16(output_stem: Path, formats: tuple[str, ...]) -> None:
+def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """Proportion of androgynous names over time in Heisei Namae data."""
     from scipy.interpolate import PchipInterpolator
     from scipy.stats import linregress
@@ -486,18 +489,20 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...]) -> None:
     proportions = [r["proportion"] for r in rows]
     reg = ds["regression"]
 
+    color = 'black' if bw else '#2ca02c'
+    reg_ls = '-' if reg.get('p_value', 1) < 0.05 else '--'
+
     fig, ax = plt.subplots(figsize=(10, 5))
 
     interp = PchipInterpolator(years, proportions)
     xs = np.linspace(min(years), max(years), 300)
-    ax.plot(xs, interp(xs), color="#2ca02c", linewidth=2.5,
-            label="Androgynous")
-    ax.scatter(years, proportions, color="#2ca02c", s=18, zorder=5,
-               edgecolors="white", linewidths=1.2)
+    ax.plot(xs, interp(xs), color=color, linewidth=2.5, label="Androgynous")
+    ax.scatter(years, proportions, color=color, s=18, zorder=5,
+               edgecolors="white" if not bw else color, linewidths=1.2)
 
     reg_x = np.array([min(years), max(years)])
     ax.plot(reg_x, reg["slope"] * reg_x + reg["intercept"],
-            color="#2ca02c", linewidth=1.5, alpha=0.7)
+            color=color, linewidth=1.5, linestyle=reg_ls, alpha=0.7)
 
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
@@ -521,7 +526,7 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...]) -> None:
 
 
 def _kanji_pos(kanji: str, gender: str, src: str,
-               output_stem: Path, formats: tuple[str, ...]) -> None:
+               output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_kanji_position")
     conn = sqlite3.connect(str(DB_PATH))
     c = conn.cursor()
@@ -530,43 +535,43 @@ def _kanji_pos(kanji: str, gender: str, src: str,
     conn.close()
     m.plot_kanji_positions(data, meta, title=False,
                            output_path=str(output_stem),
-                           formats=formats)
+                           formats=formats, bw=bw)
 
 
-def build_figure_17(output_stem, formats):
-    _kanji_pos('斗', 'M', 'hs', output_stem, formats)
+def build_figure_17(output_stem, formats, bw=False):
+    _kanji_pos('斗', 'M', 'hs', output_stem, formats, bw)
 
-def build_figure_18(output_stem, formats):
-    _kanji_pos('翔', 'M', 'hs', output_stem, formats)
+def build_figure_18(output_stem, formats, bw=False):
+    _kanji_pos('翔', 'M', 'hs', output_stem, formats, bw)
 
-def build_figure_19a(output_stem, formats):
-    _kanji_pos('陽', 'M', 'meiji', output_stem, formats)
+def build_figure_19a(output_stem, formats, bw=False):
+    _kanji_pos('陽', 'M', 'meiji', output_stem, formats, bw)
 
-def build_figure_19b(output_stem, formats):
-    _kanji_pos('陽', 'F', 'meiji', output_stem, formats)
+def build_figure_19b(output_stem, formats, bw=False):
+    _kanji_pos('陽', 'F', 'meiji', output_stem, formats, bw)
 
-def build_figure_20a(output_stem, formats):
-    _kanji_pos('凛', 'M', 'hs', output_stem, formats)
+def build_figure_20a(output_stem, formats, bw=False):
+    _kanji_pos('凛', 'M', 'hs', output_stem, formats, bw)
 
-def build_figure_20b(output_stem, formats):
-    _kanji_pos('凛', 'F', 'hs', output_stem, formats)
+def build_figure_20b(output_stem, formats, bw=False):
+    _kanji_pos('凛', 'F', 'hs', output_stem, formats, bw)
 
 
 def _genderedness_chart(dataset_key: str,
-                         output_stem: Path, formats: tuple[str, ...]) -> None:
+                         output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_web_charts")
     datasets = m.load_genderedness()
     for ds in datasets:
         if ds['key'] == dataset_key:
             m.plot_genderedness_dataset(
                 ds['data'], ds['regression_stats'], ds['caption'],
-                output_stem=str(output_stem), formats=formats)
+                output_stem=str(output_stem), formats=formats, bw=bw)
             return
     if datasets:
         ds = datasets[0]
         m.plot_genderedness_dataset(
             ds['data'], ds['regression_stats'], ds['caption'],
-            output_stem=str(output_stem), formats=formats)
+            output_stem=str(output_stem), formats=formats, bw=bw)
     else:
         print(f"  No genderedness data found for key: {dataset_key}")
 
@@ -581,21 +586,21 @@ def _find_genderedness_key(pattern: str) -> str:
     return next(iter(blob))  # fallback to first
 
 
-def build_figure_21a(output_stem, formats):
+def build_figure_21a(output_stem, formats, bw=False):
     key = _find_genderedness_key('hs_orth')
-    _genderedness_chart(key, output_stem, formats)
+    _genderedness_chart(key, output_stem, formats, bw)
 
-def build_figure_21b(output_stem, formats):
+def build_figure_21b(output_stem, formats, bw=False):
     key = _find_genderedness_key('meiji_orth') if \
         any('meiji_orth' in k for k in json.load(open(DATA_DIR / "genderedness.json")).keys()) \
         else _find_genderedness_key('meiji')
-    _genderedness_chart(key, output_stem, formats)
+    _genderedness_chart(key, output_stem, formats, bw)
 
-def build_figure_21c(output_stem, formats):
+def build_figure_21c(output_stem, formats, bw=False):
     key = _find_genderedness_key('meiji_pron') if \
         any('meiji_pron' in k for k in json.load(open(DATA_DIR / "genderedness.json")).keys()) \
         else _find_genderedness_key('meiji')
-    _genderedness_chart(key, output_stem, formats)
+    _genderedness_chart(key, output_stem, formats, bw)
 
 
 # Free-text notes shown in the index alongside each figure
@@ -803,6 +808,8 @@ def main():
                         help="Skip figures whose PNG already exists in book/")
     parser.add_argument("--figures", default="",
                         help="Comma-separated subset of figure IDs to build (e.g. 1,7a,9)")
+    parser.add_argument("--bw", action="store_true",
+                        help="Build black-and-white SVG versions (output: Figure_X.bw.svg)")
     parser.add_argument("--index-only", action="store_true",
                         help="Regenerate index files without rebuilding any figures")
     args = parser.parse_args()
@@ -830,28 +837,41 @@ def main():
     needs_flask = bool(set(all_ids) & FLASK_FIGURES)
 
     def _build_all(errors):
-        for fig_id in all_ids:
-            builder = BUILDERS.get(fig_id)
-            label = _figure_label(fig_id)
-            output_stem = BOOK_DIR / f"Figure_{fig_id}"
+        bw_ctx = None
+        if args.bw:
+            from bw_style import apply_bw_rcparams
+            bw_ctx = apply_bw_rcparams()
+            bw_ctx.__enter__()
 
-            if builder is None:
-                print(f"  {label}: no builder defined — skipped")
-                continue
+        try:
+            for fig_id in all_ids:
+                builder = BUILDERS.get(fig_id)
+                label = _figure_label(fig_id)
+                stem_name = f"Figure_{fig_id}.bw" if args.bw else f"Figure_{fig_id}"
+                output_stem = BOOK_DIR / stem_name
 
-            if args.skip_existing:
-                existing = [Path(f"{output_stem}.{fmt}") for fmt in formats]
-                if all(p.exists() for p in existing):
-                    print(f"  {label}: already exists — skipped")
+                if builder is None:
+                    print(f"  {label}: no builder defined — skipped")
                     continue
 
-            title = captions.get(fig_id, "")
-            print(f"Building {label}{': ' + title[:60] if title else ''}...")
-            try:
-                builder(output_stem, formats)
-            except Exception as exc:
-                print(f"  ERROR building {label}: {exc}")
-                errors.append((fig_id, exc))
+                if args.skip_existing:
+                    existing = [Path(f"{output_stem}.{fmt}") for fmt in formats]
+                    if all(p.exists() for p in existing):
+                        print(f"  {label}: already exists — skipped")
+                        continue
+
+                title = captions.get(fig_id, "")
+                suffix = " [B&W]" if args.bw else ""
+                print(f"Building {label}{suffix}"
+                      f"{': ' + title[:60] if title else ''}...")
+                try:
+                    builder(output_stem, formats, bw=args.bw)
+                except Exception as exc:
+                    print(f"  ERROR building {label}: {exc}")
+                    errors.append((fig_id, exc))
+        finally:
+            if bw_ctx is not None:
+                bw_ctx.__exit__(None, None, None)
 
     errors = []
     if needs_flask:

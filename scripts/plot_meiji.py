@@ -238,7 +238,7 @@ def format_trend_text(trend_stats, metric, gender, significance_level=0.05):
 def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                                       filename, confidence_intervals=None,
                                       trend_stats=None, show_stats=True,
-                                      formats=('png',)):
+                                      formats=('png',), bw=False):
     """
     Enhanced plotting function that includes trend statistics.
     
@@ -273,11 +273,20 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
         # Store info for combined legend+stats box
         legend_stats_info = []
         
-        # For each gender, collect valid data points
-        for gender, color, marker, label in [
-            ('M', 'orange', 'o', 'Boys'), 
-            ('F', 'purple', 's', 'Girls')
-        ]:
+        if bw:
+            from bw_style import BW_M, BW_F
+            _gstyles = [
+                ('M', 'black', BW_M['marker'], 'Boys',
+                 BW_M['linestyle'], False),
+                ('F', 'black', BW_F['marker'], 'Girls',
+                 BW_F['linestyle'], True),
+            ]
+        else:
+            _gstyles = [
+                ('M', 'orange', 'o', 'Boys', '-', True),
+                ('F', 'purple', 's', 'Girls', '-', True),
+            ]
+        for gender, color, marker, label, data_ls, filled in _gstyles:
             # Get years where this metric exists for this gender
             valid_years = []
             valid_values = []
@@ -289,12 +298,14 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
             
             # Only plot if we have valid data
             if valid_years and valid_values:
+                fc = color if filled else 'none'
                 ax.scatter(valid_years, valid_values, marker=marker,
-                           color=color, s=36, zorder=5)
+                           facecolors=fc, edgecolors=color, s=36, zorder=5)
                 if len(valid_years) >= 3:
                     interp = PchipInterpolator(valid_years, valid_values)
                     xs = np.linspace(valid_years[0], valid_years[-1], 300)
-                    ax.plot(xs, interp(xs), color=color, linewidth=2)
+                    ax.plot(xs, interp(xs), color=color,
+                            linestyle=data_ls, linewidth=2)
                 
                 # Add trend line if statistics are significant
                 if trend_stats and show_stats:
@@ -334,9 +345,9 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                 # Collect info for combined legend+stats
                 if trend_stats and show_stats:
                     stat_text = format_trend_text(trend_stats, metric, gender)
-                    legend_stats_info.append((color, marker, label, stat_text))
+                    legend_stats_info.append((color, marker, label, stat_text, data_ls, filled))
                 else:
-                    legend_stats_info.append((color, marker, label, None))
+                    legend_stats_info.append((color, marker, label, None, data_ls, filled))
         
         # Force x-axis ticks to be integers only
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
@@ -353,9 +364,11 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
             # Build custom legend handles with stats text
             handles = []
             labels = []
-            for color, marker, label, stat_text in legend_stats_info:
-                handle = mlines.Line2D([], [], color=color, marker=marker, 
-                                       linestyle=':', linewidth=2, markersize=6)
+            for color, marker, label, stat_text, data_ls, filled in legend_stats_info:
+                mfc = color if filled else 'none'
+                handle = mlines.Line2D([], [], color=color, marker=marker,
+                                       markerfacecolor=mfc,
+                                       linestyle=data_ls, linewidth=2, markersize=6)
                 handles.append(handle)
                 if stat_text and show_stats:
                     labels.append(f"{label}: {stat_text}")

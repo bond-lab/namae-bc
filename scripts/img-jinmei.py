@@ -3,7 +3,7 @@ import argparse
 import os
 from pathlib import Path
 
-def plot_kanji_usage(output_path=None, formats=('png', 'svg')):
+def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
     # Kanji data
     kanji = {
         1947:(1850, 0),
@@ -27,9 +27,18 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg')):
     # Create figure with Tufte-inspired design
     plt.figure(figsize=(10, 6), facecolor='white')
 
-    # Plot lines with minimal styling
-    plt.plot(years, name_kanji, color='#1f77b4', linewidth=2, label='Name-only Kanji')
-    plt.plot(years, total_kanji, color='#d62728', linewidth=2, linestyle='--', label='Total Kanji')
+    if bw:
+        from bw_style import BW_LINE_1, BW_LINE_2
+        _l1 = dict(**BW_LINE_1, label='Name-only Kanji')
+        _l2 = dict(**BW_LINE_2, label='Total Kanji')
+        _ann_color = 'black'
+    else:
+        _l1 = dict(color='#1f77b4', linewidth=2, label='Name-only Kanji')
+        _l2 = dict(color='#d62728', linewidth=2, linestyle='--', label='Total Kanji')
+        _ann_color = None  # set per-line below
+
+    plt.plot(years, name_kanji, **_l1)
+    plt.plot(years, total_kanji, **_l2)
 
     # Minimalist design elements
     plt.title('Number of Kanji allowed in Names', fontsize=14, fontweight='bold')
@@ -47,20 +56,16 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg')):
     for i, year in enumerate(years):
         if year in  [1947, 1951, 1976, 1990, 1997, 2004, 2010, 2017]:
             # Annotate name-only kanji
-            plt.annotate(f'{name_kanji[i]}', 
-                         (year, name_kanji[i]), 
-                         xytext=(5, 5), 
-                         textcoords='offset points',
+            plt.annotate(f'{name_kanji[i]}',
+                         (year, name_kanji[i]),
+                         xytext=(5, 5), textcoords='offset points',
                          fontsize=8,
-                         color='#1f77b4')
-            
-            # Annotate total kanji
-            plt.annotate(f'{total_kanji[i]}', 
-                         (year, total_kanji[i]), 
-                         xytext=(5, -10), 
-                         textcoords='offset points',
+                         color=_ann_color or '#1f77b4')
+            plt.annotate(f'{total_kanji[i]}',
+                         (year, total_kanji[i]),
+                         xytext=(5, -10), textcoords='offset points',
                          fontsize=8,
-                         color='#d62728')
+                         color=_ann_color or '#d62728')
 
     plt.legend(frameon=False)
     plt.tight_layout()

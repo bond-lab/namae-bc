@@ -48,7 +48,7 @@ def _add_trend_lines(ax, regression_stats, xscale, yscale, male_color, female_co
 
 
 def plot_irregular(data_path=None, output_stem=None, formats=("png",),
-                   width_in=10, height_in=5):
+                   width_in=10, height_in=5, bw=False):
     """Plot proportion of irregular name readings over time (M vs F).
 
     Args:
@@ -93,19 +93,36 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
             reg[g] = {"slope": slope, "intercept": intercept,
                       "p_value": p_value, "years": yrs.tolist()}
 
+    if bw:
+        from bw_style import BW_M, BW_F, apply_bw_rcparams as _bw_rc
+        _gender_styles = [
+            ("M", "black", "Boys", BW_M['linestyle'], BW_M['marker'], False),
+            ("F", "black", "Girls", BW_F['linestyle'], BW_F['marker'], True),
+        ]
+        _reg_colors = ("black", "black")
+    else:
+        _gender_styles = [
+            ("M", MALE_COLOR, "Boys", "-", None, True),
+            ("F", FEMALE_COLOR, "Girls", "-", None, True),
+        ]
+        _reg_colors = (MALE_COLOR, FEMALE_COLOR)
+
     fig, ax = plt.subplots(figsize=(width_in, height_in))
 
-    for g, color, label in (("M", MALE_COLOR, "Male"), ("F", FEMALE_COLOR, "Female")):
+    for g, color, label, lstyle, mkr, filled in _gender_styles:
         pts = series[g]
         if not pts:
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5, label=label)
-        ax.scatter(yrs, vals, color=color, s=18, zorder=5,
-                   edgecolors="white", linewidths=1.2)
+        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5,
+                     linestyle=lstyle, label=label)
+        fc = color if filled else 'none'
+        ax.scatter(yrs, vals, s=18, zorder=5,
+                   marker=mkr or 'o', facecolors=fc,
+                   edgecolors=color, linewidths=1.2)
 
-    _add_trend_lines(ax, reg, None, None, MALE_COLOR, FEMALE_COLOR)
+    _add_trend_lines(ax, reg, None, None, *_reg_colors)
 
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.set_xlabel("Year", fontsize=11)
@@ -119,7 +136,7 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
     # Summary stats annotation (overall totals across all years)
     totals = {g: (sum(p[2] for p in pts), sum(p[3] for p in pts))
               for g, pts in series.items() if pts}
-    label_map = {"M": "Male", "F": "Female"}
+    label_map = {"M": "Boys", "F": "Girls"}
     parts = [f"{label_map[g]} {irr/n*100:.1f}% ({irr:,}/{n:,})"
              for g, (irr, n) in sorted(totals.items())]
     ax.text(0.02, 0.04, "Overall: " + "; ".join(parts),
@@ -136,7 +153,7 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
 
 def plot_genderedness_dataset(data, regression_stats, caption,
                               output_stem=None, formats=("png",),
-                              width_in=10, height_in=5):
+                              width_in=10, height_in=5, bw=False):
     """Plot a single genderedness dataset (M vs F over time).
 
     Args:
@@ -154,19 +171,36 @@ def plot_genderedness_dataset(data, regression_stats, caption,
     for g in series:
         series[g].sort(key=lambda x: x[0])
 
+    if bw:
+        from bw_style import BW_M, BW_F
+        _gender_styles = [
+            ("M", "black", "Boys", BW_M['linestyle'], BW_M['marker'], False),
+            ("F", "black", "Girls", BW_F['linestyle'], BW_F['marker'], True),
+        ]
+        _reg_colors = ("black", "black")
+    else:
+        _gender_styles = [
+            ("M", MALE_COLOR, "Boys", "-", None, True),
+            ("F", FEMALE_COLOR, "Girls", "-", None, True),
+        ]
+        _reg_colors = (MALE_COLOR, FEMALE_COLOR)
+
     fig, ax = plt.subplots(figsize=(width_in, height_in))
 
-    for g, color, label in (("M", MALE_COLOR, "Male"), ("F", FEMALE_COLOR, "Female")):
+    for g, color, label, lstyle, mkr, filled in _gender_styles:
         pts = series[g]
         if not pts:
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5, label=label)
-        ax.scatter(yrs, vals, color=color, s=18, zorder=5,
-                   edgecolors="white", linewidths=1.2)
+        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5,
+                     linestyle=lstyle, label=label)
+        fc = color if filled else 'none'
+        ax.scatter(yrs, vals, s=18, zorder=5,
+                   marker=mkr or 'o', facecolors=fc,
+                   edgecolors=color, linewidths=1.2)
 
-    _add_trend_lines(ax, regression_stats, None, None, MALE_COLOR, FEMALE_COLOR)
+    _add_trend_lines(ax, regression_stats, None, None, *_reg_colors)
 
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
     ax.set_xlabel("Year", fontsize=11)

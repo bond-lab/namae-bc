@@ -8,7 +8,7 @@ import matplotlib.patches as mpatches
 
 def create_japanese_names_chart(data_list, output_filename='japanese_names_coverage.png',
                                 figsize=(14, 10), dpi=300, use_log_scale=False, title=False,
-                                formats=('png',)):
+                                formats=('png',), bw=False):
     """
     Create a publication-ready chart showing Japanese names data coverage vs births.
     
@@ -52,13 +52,16 @@ m    -----------
     # Create figure with subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize, sharex=True)
     
-    # Define colors and patterns
-    colors = {
-        'births': '#808080',     # Gray for births baseline
-        'hs': '#3498db',         # Blue for Heisei
-        'totals': '#e74c3c',      # Red for Meiji  
-        'bc': '#2ecc71'          # Green for Baby Calendar
-    }
+    if bw:
+        from bw_style import BW_COVERAGE_COLORS
+        colors = BW_COVERAGE_COLORS
+    else:
+        colors = {
+            'births': '#808080',
+            'hs':     '#3498db',
+            'totals': '#e74c3c',
+            'bc':     '#2ecc71',
+        }
     
     # Bar width and positioning
     bar_width = 0.6
@@ -124,10 +127,13 @@ m    -----------
     
     # Create custom legend
     legend_elements = [
-        mpatches.Patch(color=colors['births'], alpha=0.4, label='Total Births'),
-        mpatches.Patch(color=colors['hs'], hatch='///', alpha=0.8, label='Heisei Data'),
-        mpatches.Patch(color=colors['totals'], hatch='\\\\\\', alpha=0.8, label='Meiji Data'),
-        mpatches.Patch(color=colors['bc'], hatch='...', alpha=0.8, label='Baby Calendar Data')
+        mpatches.Patch(facecolor=colors['births'], alpha=0.4, label='Total Births'),
+        mpatches.Patch(facecolor=colors['hs'], hatch='///', alpha=0.8,
+                       edgecolor='black', label='Heisei Data'),
+        mpatches.Patch(facecolor=colors['totals'], hatch='\\\\\\', alpha=0.8,
+                       edgecolor='black', label='Meiji Data'),
+        mpatches.Patch(facecolor=colors['bc'], hatch='...', alpha=0.8,
+                       edgecolor='black', label='Baby Calendar Data'),
     ]
     
     # Add legend to the figure

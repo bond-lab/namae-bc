@@ -228,7 +228,7 @@ female_color = 'purple'  # or (0.5, 0, 0.5)
 male_color = 'orange'    # or (1, 0.65, 0)
 
 
-def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',)):
+def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',), bw=False):
     xlabel = {0:'0',
                1:'0-10',
                2:'10-20',
@@ -257,10 +257,12 @@ def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('
     # Plot with transparent bars
     plt.figure(figsize=(10, 6))
 
-    # Bar plot with mixed colors and transparency
+    _fc = 'black' if bw else female_color
+    _mc = 'white' if bw else male_color
+    _alpha = 1.0 if bw else 0.6
     for i, bin in enumerate(bins):
-        blended_color = blend_colors(female_color, male_color, male_percentages[i])
-        plt.bar(bin, totals[i], color=blended_color, alpha=0.6)
+        blended_color = blend_colors(_fc, _mc, male_percentages[i])
+        plt.bar(bin, totals[i], color=blended_color, alpha=_alpha)
 
     # Line plots for M and F
     #plt.plot(bins, male_values, color='blue', marker='o', label='M')

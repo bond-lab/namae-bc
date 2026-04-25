@@ -47,7 +47,7 @@ GROUP BY year""",
 
     return data
 
-def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png',)):
+def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png',), bw=False):
     """
     Plot proportions of kanji positions over time.
     
@@ -87,10 +87,20 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     else:
         xs, s_s, s_i, s_m, s_e = years, solo, initial, middle, end
 
-    ax.fill_between(xs, 0, s_s, alpha=0.7, label='Solo', color='#d62728')
-    ax.fill_between(xs, s_s, s_s + s_i, alpha=0.7, label='Initial', color='#1f77b4')
-    ax.fill_between(xs, s_s + s_i, s_s + s_i + s_m, alpha=0.7, label='Middle', color='#2ca02c')
-    ax.fill_between(xs, s_s + s_i + s_m, s_s + s_i + s_m + s_e, alpha=0.7, label='End', color='#ff7f0e')
+    if bw:
+        from bw_style import BW_FILLS
+        _fills = BW_FILLS
+    else:
+        _fills = [
+            dict(alpha=0.7, label='Solo',    color='#d62728'),
+            dict(alpha=0.7, label='Initial', color='#1f77b4'),
+            dict(alpha=0.7, label='Middle',  color='#2ca02c'),
+            dict(alpha=0.7, label='End',     color='#ff7f0e'),
+        ]
+    ax.fill_between(xs, 0,             s_s,                   **_fills[0])
+    ax.fill_between(xs, s_s,           s_s + s_i,             **_fills[1])
+    ax.fill_between(xs, s_s + s_i,     s_s + s_i + s_m,       **_fills[2])
+    ax.fill_between(xs, s_s + s_i + s_m, s_s + s_i + s_m + s_e, **_fills[3])
     
     # Tufte styling
     ax.spines['top'].set_visible(False)

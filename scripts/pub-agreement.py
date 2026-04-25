@@ -155,7 +155,7 @@ def _interpret_chi_square_results(chi2, p, cramers_v):
     return f"{significance}, {effect} (Cramer's V = {cramers_v:.4f})"
 
 
-def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_names_analysis.png', figsize=(14, 6), formats=('png',)):
+def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_names_analysis.png', figsize=(14, 6), formats=('png',), bw=False):
     """
     Create a two-subplot visualization of common names count and JS divergence by gender over time.
     
@@ -200,19 +200,33 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     # Create the figure and subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
     
-    def _smooth(ax, xs, ys, color, label):
+    if bw:
+        from bw_style import BW_M, BW_F
+        _m_ls, _f_ls = BW_M['linestyle'], BW_F['linestyle']
+        _m_mk, _f_mk = BW_M['marker'], BW_F['marker']
+        _m_fc, _f_fc = 'none', male_color
+    else:
+        _m_ls = _f_ls = '-'
+        _m_mk = _f_mk = 'o'
+        _m_fc = male_color
+        _f_fc = female_color
+
+    def _smooth(ax, xs, ys, color, label, ls, mkr, fc):
         if len(xs) >= 3:
             interp = PchipInterpolator(xs, ys)
             x_fine = np.linspace(xs[0], xs[-1], 300)
-            ax.plot(x_fine, interp(x_fine), color=color, linewidth=3, label=label)
+            ax.plot(x_fine, interp(x_fine), color=color, linewidth=3,
+                    linestyle=ls, label=label)
         else:
-            ax.plot(xs, ys, color=color, linewidth=3, label=label)
-        ax.scatter(xs, ys, color=color, s=50, zorder=5,
-                   edgecolors='white', linewidths=2)
+            ax.plot(xs, ys, color=color, linewidth=3, linestyle=ls, label=label)
+        ax.scatter(xs, ys, s=50, zorder=5, marker=mkr,
+                   facecolors=fc, edgecolors=color, linewidths=2)
 
     # Plot 1: Common Names Count
-    _smooth(ax1, years, male_common_names, male_color, 'Male')
-    _smooth(ax1, years, female_common_names, female_color, 'Female')
+    _smooth(ax1, years, male_common_names, male_color, 'Boys',
+            _m_ls, _m_mk, _m_fc)
+    _smooth(ax1, years, female_common_names, female_color, 'Girls',
+            _f_ls, _f_mk, _f_fc)
     
     ax1.set_title('Common Names Count Over Time', fontsize=14, fontweight='bold', pad=25)
     ax1.set_xlabel('Year', fontsize=12)
@@ -225,8 +239,10 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
     ax1.spines['right'].set_visible(False)
     
     # Plot 2: JS Divergence
-    _smooth(ax2, years, male_js_divergence, male_color, 'Male')
-    _smooth(ax2, years, female_js_divergence, female_color, 'Female')
+    _smooth(ax2, years, male_js_divergence, male_color, 'Boys',
+            _m_ls, _m_mk, _m_fc)
+    _smooth(ax2, years, female_js_divergence, female_color, 'Girls',
+            _f_ls, _f_mk, _f_fc)
     
     ax2.set_title('JS Divergence Over Time', fontsize=14, fontweight='bold', pad=25)
     ax2.set_xlabel('Year', fontsize=12)

@@ -12,7 +12,7 @@ import numpy as np
 from db import db_options, get_name_count_year, resolve_src
 
 
-def create_gender_plot(src, db_path, plot_dir, formats=('png',)):
+def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False):
     """
     Create and save a bar plot showing the number of names per year divided by gender.
 
@@ -55,9 +55,14 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',)):
     filename = f'years_{src}'
     plot_stem = os.path.join(plot_dir, filename)
      
-    # Plot male and female counts
-    ax.bar(years, female_counts, color='purple', label='Women', alpha=0.6)
-    ax.bar(years, [-x for x in male_counts], color='orange', label='Men', alpha=0.6)
+    if bw:
+        ax.bar(years, female_counts, facecolor='0.75', edgecolor='black',
+               linewidth=0.3, label='Girls')
+        ax.bar(years, [-x for x in male_counts], facecolor='0.30',
+               edgecolor='black', linewidth=0.3, label='Boys')
+    else:
+        ax.bar(years, female_counts, color='purple', label='Girls', alpha=0.6)
+        ax.bar(years, [-x for x in male_counts], color='orange', label='Boys', alpha=0.6)
 
     # Function to format numbers based on bar width
     def format_number(num, bar_width):

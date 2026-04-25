@@ -16,12 +16,17 @@ uv run --python .venv-build/bin/python scripts/build_book_figures.py [OPTIONS]
 | `--formats png,svg` | `png,svg` | Output formats (comma-separated) |
 | `--skip-existing` | off | Skip figures whose output files already exist |
 | `--figures 1,7a,9` | all | Build only the listed figure IDs |
+| `--bw` | off | Build black-and-white versions (output: `Figure_X.bw.svg`) |
 
 ### Examples
 
 ```bash
-# Rebuild everything as PNG + SVG
+# Rebuild everything as PNG + SVG (colour)
 uv run --python .venv-build/bin/python scripts/build_book_figures.py
+
+# Build black-and-white SVG versions for the publisher
+uv run --python .venv-build/bin/python scripts/build_book_figures.py \
+    --formats svg --bw
 
 # Quick PNG-only pass, skipping already-built figures
 uv run --python .venv-build/bin/python scripts/build_book_figures.py \
