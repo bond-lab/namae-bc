@@ -22,9 +22,13 @@ bash makedb.sh           # full build: DB + analysis
 bash makedb.sh db        # DB only (~5 min)
 bash makedb.sh analysis  # analysis only — requires existing DB (~10-15 min)
 
-# Build book figures
+# Build book figures (web/screen size, colour)
 uv run --python .venv-build/bin/python scripts/build_book_figures.py
 uv run --python .venv-build/bin/python scripts/build_book_figures.py --figures 10,13a --formats png,svg
+
+# Build book figures (print-ready, 111 mm, Roboto Condensed)
+uv run --python .venv-build/bin/python scripts/build_book_figures.py --book --formats svg,png
+uv run --python .venv-build/bin/python scripts/build_book_figures.py --book --bw --formats svg,png
 
 # Deploy to production
 bash deploy.sh       # rsync to compling.upol.cz + Apache restart (needs SSH)
@@ -107,7 +111,15 @@ For CSS gradients (which can't use CSS variables with hex alpha), use `{{ male_c
 
 ## Book Figures
 
-Scripts in `scripts/plot_*.py` generate matplotlib figures for both the web (`web/static/plot/`) and book (`book/`). The book pipeline (`scripts/build_book_figures.py`) selects publication style via `scripts/web_plot_style.py`. SVGs embed text as paths (`svg.fonttype = "path"`) so CJK glyphs render without font installation. See `book/PIPELINE.md` for the full figure inventory and rebuild instructions.
+Scripts in `scripts/plot_*.py` generate matplotlib figures for both the web (`web/static/plot/`) and book (`book/`). The book pipeline (`scripts/build_book_figures.py`) has two modes:
+
+- **Default** (`--formats png,svg`): web/screen-size colour figures.
+- **`--book`**: print-ready figures at 111 mm wide, Roboto Condensed font, 7 pt body, 150 DPI PNG. Multi-panel figures are split into individual sub-figure files (e.g. Figure 1 → 1a/1b, Figure 7a → 7Aa–7Ad, Figure 8 → 8a–8d).
+- Add `--bw` to either mode for B&W output (Girls = dash-dot/circles, Boys = dotted/diamonds).
+
+Style constants live in `scripts/bw_style.py` (`BW_M`, `BW_F`, `BW_FILLS`, `BOOK_RCPARAMS`).
+SVGs embed text as paths (`svg.fonttype = "path"`) so CJK glyphs render without font installation.
+See `book/PIPELINE.md` for the full figure inventory and rebuild instructions.
 
 ## Deployment
 
