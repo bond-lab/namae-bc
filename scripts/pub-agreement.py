@@ -182,83 +182,117 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
         Path to the saved PNG file
     """
     setup_tufte_style()
-    
+
     if bw:
         from bw_style import BW_M, BW_F
         male_color = female_color = 'black'
-        male_line  = dict(color='black', linestyle=BW_M['linestyle'],
-                          marker=BW_M['marker'], fillstyle='full')
-        female_line = dict(color='black', linestyle=BW_F['linestyle'],
-                           marker=BW_F['marker'], fillstyle='full')
+        male_line   = dict(color='black', linestyle=BW_M['linestyle'], marker=BW_M['marker'])
+        female_line = dict(color='black', linestyle=BW_F['linestyle'], marker=BW_F['marker'])
     else:
         female_color = session.get('female_color', 'purple') if session else 'purple'
         male_color   = session.get('male_color',   'orange') if session else 'orange'
-        male_line   = dict(color=male_color,   linestyle='-', marker='o', fillstyle='full')
-        female_line = dict(color=female_color, linestyle='-', marker='o', fillstyle='full')
+        male_line   = dict(color=male_color,   linestyle='-', marker='o')
+        female_line = dict(color=female_color, linestyle='-', marker='o')
 
-    # Extract years (should be 2006-2009)
     years = list(data_dict['F'].keys())
+    male_common_names    = [data_dict['M'][year]['common_names_count'] for year in years]
+    male_js_divergence   = [data_dict['M'][year]['js_divergence']      for year in years]
+    female_common_names  = [data_dict['F'][year]['common_names_count'] for year in years]
+    female_js_divergence = [data_dict['F'][year]['js_divergence']      for year in years]
 
-    male_common_names   = [data_dict['M'][year]['common_names_count'] for year in years]
-    male_js_divergence  = [data_dict['M'][year]['js_divergence']      for year in years]
-    female_common_names = [data_dict['F'][year]['common_names_count'] for year in years]
-    female_js_divergence= [data_dict['F'][year]['js_divergence']      for year in years]
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
-
-    def _smooth(ax, xs, ys, color, label, ls, mkr, fc):
+    def _smooth(ax, xs, ys, color, label, ls, mkr):
         if len(xs) >= 3:
             interp = PchipInterpolator(xs, ys)
             x_fine = np.linspace(xs[0], xs[-1], 300)
-            ax.plot(x_fine, interp(x_fine), color=color, linewidth=3,
-                    linestyle=ls, label=label)
+            ax.plot(x_fine, interp(x_fine), color=color, linestyle=ls, label=label)
         else:
-            ax.plot(xs, ys, color=color, linewidth=3, linestyle=ls, label=label)
-        ax.scatter(xs, ys, s=50, zorder=5, marker=mkr,
-                   facecolors=fc, edgecolors=color, linewidths=2)
+            ax.plot(xs, ys, color=color, linestyle=ls, label=label)
+        ms = plt.rcParams.get('lines.markersize', 4)
+        ax.scatter(xs, ys, s=ms**2, zorder=5, marker=mkr,
+                   facecolors=color, edgecolors=color)
 
-    # Plot 1: Common Names Count
-    _smooth(ax1, years, male_common_names,   male_color,   'Boys',
-            male_line['linestyle'],   male_line['marker'],
-            male_color)
-    _smooth(ax1, years, female_common_names, female_color, 'Girls',
-            female_line['linestyle'], female_line['marker'], female_color)
-    
-    ax1.set_title('Common Names Count Over Time', fontsize=14, fontweight='bold', pad=25)
-    ax1.set_xlabel('Year', fontsize=12)
-    ax1.set_ylabel('Common Names Count', fontsize=12)
-    ax1.legend(fontsize=11, frameon=True, fancybox=True, shadow=True)
-    ax1.grid(True, alpha=0.3, linestyle='--')
-    ax1.set_xticks(years)
-    ax1.set_ylim(bottom=0)
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    
-    # Plot 2: JS Divergence
-    _smooth(ax2, years, male_js_divergence,   male_color,   'Boys',
-            male_line['linestyle'],   male_line['marker'],
-            male_color)
-    _smooth(ax2, years, female_js_divergence, female_color, 'Girls',
-            female_line['linestyle'], female_line['marker'], female_color)
-    
-    ax2.set_title('JS Divergence Over Time', fontsize=14, fontweight='bold', pad=25)
-    ax2.set_xlabel('Year', fontsize=12)
-    ax2.set_ylabel('JS Divergence', fontsize=12)
-    ax2.legend(fontsize=11, frameon=True, fancybox=True, shadow=True)
-    ax2.grid(True, alpha=0.3, linestyle='--')
-    ax2.set_xticks(years)
-    ax2.set_ylim(bottom=0)
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    
+    def _draw_panel(ax, title, ylabel, male_vals, female_vals):
+        _smooth(ax, years, male_vals,   male_color,   'Boys',
+                male_line['linestyle'],   male_line['marker'])
+        _smooth(ax, years, female_vals, female_color, 'Girls',
+                female_line['linestyle'], female_line['marker'])
+        ax.set_title(title, fontweight='bold')
+        ax.set_xlabel('Year')
+        ax.set_ylabel(ylabel)
+        ax.legend(frameon=False)
+        ax.grid(True, alpha=0.3, linestyle='--')
+        ax.set_xticks(years)
+        ax.set_ylim(bottom=0)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
+    _draw_panel(ax1, 'Common Names Count Over Time', 'Common Names Count',
+                male_common_names, female_common_names)
+    _draw_panel(ax2, 'JS Divergence Over Time', 'JS Divergence',
+                male_js_divergence, female_js_divergence)
+
     plt.tight_layout()
-    plt.subplots_adjust(top=0.85)
     stem = str(Path(str(output_filename)).with_suffix(''))
+    dpi = plt.rcParams.get('savefig.dpi', 300)
     for fmt in formats:
-        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
+        plt.savefig(f'{stem}.{fmt}', dpi=dpi, bbox_inches='tight')
     plt.close()
-
     return output_filename
+
+
+def draw_agreement_panel(ax, data_dict, panel: str, session=None, bw=False):
+    """Draw a single panel of the agreement plot into existing axes.
+
+    Args:
+        panel: 'a' for common names count, 'b' for JS divergence.
+    """
+    if bw:
+        from bw_style import BW_M, BW_F
+        male_color = female_color = 'black'
+        male_line   = dict(color='black', linestyle=BW_M['linestyle'], marker=BW_M['marker'])
+        female_line = dict(color='black', linestyle=BW_F['linestyle'], marker=BW_F['marker'])
+    else:
+        female_color = session.get('female_color', 'purple') if session else 'purple'
+        male_color   = session.get('male_color',   'orange') if session else 'orange'
+        male_line   = dict(color=male_color,   linestyle='-', marker='o')
+        female_line = dict(color=female_color, linestyle='-', marker='o')
+
+    years = list(data_dict['F'].keys())
+    if panel == 'a':
+        male_vals   = [data_dict['M'][y]['common_names_count'] for y in years]
+        female_vals = [data_dict['F'][y]['common_names_count'] for y in years]
+        title  = 'Common Names Count Over Time'
+        ylabel = 'Common Names Count'
+    else:
+        male_vals   = [data_dict['M'][y]['js_divergence'] for y in years]
+        female_vals = [data_dict['F'][y]['js_divergence'] for y in years]
+        title  = 'JS Divergence Over Time'
+        ylabel = 'JS Divergence'
+
+    for color, label, vals, line in (
+        (male_color,   'Boys',  male_vals,   male_line),
+        (female_color, 'Girls', female_vals, female_line),
+    ):
+        if len(years) >= 3:
+            interp = PchipInterpolator(years, vals)
+            xf = np.linspace(years[0], years[-1], 300)
+            ax.plot(xf, interp(xf), color=color, linestyle=line['linestyle'], label=label)
+        else:
+            ax.plot(years, vals, color=color, linestyle=line['linestyle'], label=label)
+        ms = plt.rcParams.get('lines.markersize', 4)
+        ax.scatter(years, vals, s=ms**2, zorder=5, marker=line['marker'],
+                   facecolors=color, edgecolors=color)
+
+    ax.set_title(title, fontweight='bold')
+    ax.set_xlabel('Year')
+    ax.set_ylabel(ylabel)
+    ax.legend(frameon=False)
+    ax.grid(True, alpha=0.3, linestyle='--')
+    ax.set_xticks(years)
+    ax.set_ylim(bottom=0)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
 
 
 def get_meiji(conn):

@@ -228,75 +228,57 @@ female_color = 'purple'  # or (0.5, 0, 0.5)
 male_color = 'orange'    # or (1, 0.65, 0)
 
 
-def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',), bw=False):
-    xlabel = {0:'0',
-               1:'0-10',
-               2:'10-20',
-               3:'20-30',
-               4:'30-40',
-               5:'40-50',
-               6:'50-60',
-               7:'60-70',
-               8:'70-80',
-               9:'80-90',
-               10:'90-100',
-               11:'100',
-    }
+def graph_proportion2(data, gname, title=True, plot_dir='proportion', formats=('png',),
+                      bw=False, ax=None, figsize=None):
+    xlabel = {0: '0', 1: '0-10', 2: '10-20', 3: '20-30', 4: '30-40',
+              5: '40-50', 6: '50-60', 7: '60-70', 8: '70-80',
+              9: '80-90', 10: '90-100', 11: '100'}
 
-    # Prepare the data
     bins = list(data.keys())
-    total_names = sum(data[bin]['M'] + data[bin]['F'] for bin in data)
+    total_names = sum(data[b]['M'] + data[b]['F'] for b in data)
+    totals = [data[b]['M'] + data[b]['F'] for b in bins]
+    male_percentages = [data[b]['M'] / t if t != 0 else 0
+                        for b, t in zip(bins, totals)]
+    totals = [t / total_names for t in totals]
 
-    totals = [data[bin]['M'] + data[bin]['F'] for bin in bins]
-    male_percentages = [data[bin]['M'] / total if total != 0 else 0 for bin, total in zip(bins, totals)]
-
-    totals = [t/total_names for t in totals]
-    male_values = [data[bin]['M'] /total_names for bin in bins]
-    female_values = [data[bin]['F'] /total_names for bin in bins]
-
-    # Plot with transparent bars
-    plt.figure(figsize=(10, 6))
+    own_fig = ax is None
+    if own_fig:
+        if figsize is None:
+            figsize = (10, 6)
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        fig = ax.get_figure()
 
     _fc = 'black' if bw else female_color
-    _mc = '#888888' if bw else male_color   # mid-gray so white gridlines are readable on all bars
+    _mc = '#888888' if bw else male_color
     _alpha = 1.0 if bw else 0.6
-    for i, bin in enumerate(bins):
+    for i, b in enumerate(bins):
         blended_color = blend_colors(_fc, _mc, male_percentages[i])
-        plt.bar(bin, totals[i], color=blended_color, alpha=_alpha,
-                edgecolor='black', linewidth=0.5)
+        ax.bar(b, totals[i], color=blended_color, alpha=_alpha,
+               edgecolor='black', linewidth=0.5)
 
-    # Line plots for M and F
-    #plt.plot(bins, male_values, color='blue', marker='o', label='M')
-    #plt.plot(bins, female_values, color='red', marker='o', label='F')
-
-    # Add labels, title, and legend
-    plt.xlabel('Gender distribution of names (% female)')
-    plt.ylabel('Percentage of babies (%)')
+    ax.set_xlabel('Gender distribution of names (% female)')
+    ax.set_ylabel('Percentage of babies (%)')
     if title:
-        plt.title(f'Gender distribution of names (% female): {gname}')
-    plt.xticks(bins, [xlabel[b] for b in bins])
-
-    # Format y-axis as percentages
-    ax = plt.gca()
+        ax.set_title(f'Gender distribution of names (% female): {gname}')
+    ax.set_xticks(bins)
+    ax.set_xticklabels([xlabel[b] for b in bins], rotation=45, ha='right')
     ax.set_ylim(0, 0.5)
-   
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{int(y*100)}'))
     ax.set_yticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
-    
-    # Remove spines
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-
     ax.grid(axis='y', color='white', linewidth=1, alpha=0.7)
 
+    if own_fig and plot_dir is not None:
+        stem = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}')
+        print(f"Saving  {stem}")
+        dpi = plt.rcParams.get('savefig.dpi', 300)
+        for fmt in formats:
+            fig.savefig(f'{stem}.{fmt}', dpi=dpi, bbox_inches='tight')
+        plt.close(fig)
 
-    #plt.legend()
-
-    stem = os.path.join(plot_dir, f'pron_gender_proportion_histogram_{gname}')
-    print(f"Saving  {stem}")
-    for fmt in formats:
-        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
-    plt.close()
+    return ax
 
     
 

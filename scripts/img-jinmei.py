@@ -3,7 +3,7 @@ import argparse
 import os
 from pathlib import Path
 
-def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
+def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False, figsize=None):
     # Kanji data
     kanji = {
         1947:(1850, 0),
@@ -24,8 +24,7 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
     name_kanji = [k[1] for k in kanji.values()]
     total_kanji = [sum(k) for k in kanji.values()]
 
-    # Create figure with Tufte-inspired design
-    plt.figure(figsize=(10, 6), facecolor='white')
+    plt.figure(figsize=figsize or (10, 6), facecolor='white')
 
     if bw:
         from bw_style import BW_LINE_1, BW_LINE_2
@@ -53,18 +52,21 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
     plt.gca().spines['right'].set_visible(False)
 
     # Annotations for key points
+    # For narrow figures use a sparser set of annotations to avoid overlap
+    narrow = figsize is not None and figsize[0] < 6
+    ann_years = [1947, 1976, 1990, 2004, 2010, 2017] if narrow else \
+                [1947, 1951, 1976, 1990, 1997, 2004, 2010, 2017]
     for i, year in enumerate(years):
-        if year in  [1947, 1951, 1976, 1990, 1997, 2004, 2010, 2017]:
-            # Annotate name-only kanji
+        if year in ann_years:
             plt.annotate(f'{name_kanji[i]}',
                          (year, name_kanji[i]),
                          xytext=(5, 5), textcoords='offset points',
-                         fontsize=8,
+                         fontsize=7 if narrow else 8,
                          color=_ann_color or '#1f77b4')
             plt.annotate(f'{total_kanji[i]}',
                          (year, total_kanji[i]),
                          xytext=(5, -10), textcoords='offset points',
-                         fontsize=8,
+                         fontsize=7 if narrow else 8,
                          color=_ann_color or '#d62728')
 
     plt.legend(frameon=False)
@@ -72,8 +74,9 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False):
 
     if output_path:
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+        dpi = plt.rcParams.get('savefig.dpi', 300)
         for fmt in formats:
-            plt.savefig(f'{output_path}.{fmt}', dpi=300, bbox_inches='tight')
+            plt.savefig(f'{output_path}.{fmt}', dpi=dpi, bbox_inches='tight')
         plt.close()
     else:
         plt.show()

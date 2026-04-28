@@ -47,24 +47,19 @@ GROUP BY year""",
 
     return data
 
-def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png',), bw=False):
+def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png',),
+                         bw=False, ax=None, figsize=None):
     """
     Plot proportions of kanji positions over time.
-    
+
     Args:
         data: dict where data[year] = [solo, initial, middle, end, count]
-        meta: kanji, gender, source
+        meta: (kanji, gender, source) tuple
+        ax: Optional axes to draw into; caller is responsible for saving.
+        figsize: Figure size when creating a new figure (default (10, 6)).
     """
     kanji, gender, src = meta
-    # Set Tufte-like style with CJK font support
-    rcParams['font.family'] = 'sans-serif'
-    rcParams['font.sans-serif'] = ['Noto Sans CJK JP', 'Noto Sans CJK SC', 'DejaVu Sans']
-    rcParams['font.size'] = 10
-    rcParams['axes.linewidth'] = 0.5
-    rcParams['axes.edgecolor'] = 'gray'
-    rcParams['axes.unicode_minus'] = False
-    
-    # Extract and sort data
+
     years = sorted(data.keys())
     solo = np.array([data[y][0] / data[y][4] if data[y][4] > 0 else 0 for y in years])
     initial = np.array([data[y][1] / data[y][4] if data[y][4] > 0 else 0 for y in years])
@@ -75,8 +70,13 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     total = solo + initial + middle + end
     max_prop = np.max(total) if len(total) > 0 else 0.1
     
-    # Create stacked area chart with PCHIP smoothing
-    fig, ax = plt.subplots(figsize=(10, 6))
+    own_fig = ax is None
+    if own_fig:
+        if figsize is None:
+            figsize = (10, 6)
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        fig = ax.get_figure()
 
     if len(years) >= 3:
         xs = np.linspace(years[0], years[-1], 300)
@@ -142,11 +142,13 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     # Force x-axis to show only integer years
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     
-    plt.tight_layout()
-    if output_path is not None:
-        for fmt in formats:
-            fig.savefig(f'{output_path}.{fmt}', dpi=300, bbox_inches='tight')
-        plt.close(fig)
+    if own_fig:
+        plt.tight_layout()
+        if output_path is not None:
+            dpi = plt.rcParams.get('savefig.dpi', 300)
+            for fmt in formats:
+                fig.savefig(f'{output_path}.{fmt}', dpi=dpi, bbox_inches='tight')
+            plt.close(fig)
     return fig, ax
 
 # Example usage:

@@ -238,7 +238,8 @@ def format_trend_text(trend_stats, metric, gender, significance_level=0.05):
 def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                                       filename, confidence_intervals=None,
                                       trend_stats=None, show_stats=True,
-                                      formats=('png',), bw=False):
+                                      formats=('png',), bw=False, figsize=None,
+                                      panel_idx=None):
     """
     Enhanced plotting function that includes trend statistics.
     
@@ -262,12 +263,22 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
     import matplotlib.pyplot as plt
     import matplotlib.lines as mlines
     
-    # Get all years from both genders
     all_years = sorted(set(list(all_metrics['M'].keys()) + list(all_metrics['F'].keys())))
+
+    if figsize is None:
+        figsize = (14, 12)
+    compact = figsize[0] < 6
+
+    if panel_idx is not None:
+        # Single-panel mode for book subfigure splitting
+        metrics_to_draw = [selected_metrics[panel_idx]]
+        fig, ax_single = plt.subplots(1, 1, figsize=figsize)
+        axes = np.array([[ax_single, ax_single], [ax_single, ax_single]])
+    else:
+        metrics_to_draw = selected_metrics
+        fig, axes = plt.subplots(2, 2, figsize=figsize)
     
-    fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-    
-    for idx, metric in enumerate(selected_metrics):
+    for idx, metric in enumerate(metrics_to_draw):
         ax = axes[idx // 2, idx % 2]
         
         # Store info for combined legend+stats box
@@ -352,7 +363,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
         # Force x-axis ticks to be integers only
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         
-        ax.set_title(metric, fontsize=12, fontweight='bold')
+        ax.set_title(metric, fontweight='bold')
         ax.grid(False)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
@@ -370,15 +381,14 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                                        markerfacecolor=mfc,
                                        linestyle=data_ls, linewidth=2, markersize=6)
                 handles.append(handle)
-                if stat_text and show_stats:
+                if stat_text and show_stats and not compact:
                     labels.append(f"{label}: {stat_text}")
                 else:
                     labels.append(label)
-            
-            # Place legend at top left with stats included
+
             legend = ax.legend(handles, labels, loc='upper left', frameon=True,
-                              fontsize=10, handlelength=2.5,
-                              fancybox=True, framealpha=0.8, edgecolor='none')
+                               handlelength=2.5,
+                               fancybox=False, framealpha=0.8, edgecolor='none')
             legend.get_frame().set_facecolor('white')
     
     plt.tight_layout()
@@ -386,8 +396,9 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
         plt.suptitle(title, y=0.98, fontsize=14, fontweight='bold')
 
     stem = str(Path(str(filename)).with_suffix(''))
+    dpi = plt.rcParams.get('savefig.dpi', 300)
     for fmt in formats:
-        plt.savefig(f'{stem}.{fmt}', dpi=300, bbox_inches='tight')
+        plt.savefig(f'{stem}.{fmt}', dpi=dpi, bbox_inches='tight')
     plt.close(fig)
 
 

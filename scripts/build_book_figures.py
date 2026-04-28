@@ -54,6 +54,33 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams["svg.fonttype"] = "path"
 
+# Book-print constants (set here so builders can reference them without importing bw_style)
+_BOOK_MODE = False          # set True by --book flag
+_BOOK_BW   = False          # set True by --bw flag when combined with --book
+BOOK_FIG_W  = 111 / 25.4   # 4.370" = 111 mm
+BOOK_FIG_H1 = 3.0           # single-panel height
+BOOK_FIG_HN = 2.5           # height per panel in stacked multi-panel figures
+BOOK_DPI    = 150            # PNG DPI for ebook
+
+
+def _figsize(h=None):
+    """Return (width, height) using book dimensions when in book mode."""
+    if _BOOK_MODE:
+        return (BOOK_FIG_W, h or BOOK_FIG_H1)
+    return None  # caller uses its own default
+
+
+def _dpi():
+    return plt.rcParams.get('savefig.dpi', 300)
+
+
+def _label_subfigs(axes):
+    """Add bold (a), (b), (c) … labels to upper-left corner of each axes."""
+    for i, ax in enumerate(axes):
+        ax.text(0.03, 0.97, f'({chr(97 + i)})',
+                transform=ax.transAxes, fontsize=10, fontweight='bold',
+                va='top', ha='left')
+
 
 # ---------------------------------------------------------------------------
 # Flask server lifecycle
@@ -154,16 +181,19 @@ def build_figure_1(output_stem: Path, formats: tuple[str, ...], bw: bool = False
             )
     conn.close()
     session = {'female_color': 'purple', 'male_color': 'orange'}
+    fs = _figsize(3.0) or (14, 6)
     m.plot_gender_names_analysis(results, session,
                                  output_filename=f"{output_stem}.png",
-                                 formats=formats, bw=bw)
+                                 figsize=fs, formats=formats, bw=bw)
 
 
 def build_figure_2(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     import tempfile
     m = _load_script("plot-years")
+    fs = _figsize() or (10, 6)
     with tempfile.TemporaryDirectory() as tmp:
-        m.create_gender_plot('births', str(DB_PATH), tmp, formats=formats, bw=bw)
+        m.create_gender_plot('births', str(DB_PATH), tmp, formats=formats, bw=bw,
+                             figsize=fs)
         for fmt in formats:
             src = Path(tmp) / f'years_births.{fmt}'
             if src.exists():
@@ -173,14 +203,17 @@ def build_figure_2(output_stem: Path, formats: tuple[str, ...], bw: bool = False
 def build_figure_3(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("pub-years")
     data = m.get_data(str(DB_PATH))
-    m.create_japanese_names_chart(data, f"{output_stem}.png", formats=formats, bw=bw)
+    fs = _figsize(5.5) or (14, 10)
+    m.create_japanese_names_chart(data, f"{output_stem}.png",
+                                  figsize=fs, formats=formats, bw=bw)
 
 
 def build_figure_4(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("pub-years")
     data = m.get_data(str(DB_PATH))
+    fs = _figsize(5.5) or (14, 10)
     m.create_japanese_names_chart(data, f"{output_stem}.png",
-                                  use_log_scale=True, formats=formats, bw=bw)
+                                  figsize=fs, use_log_scale=True, formats=formats, bw=bw)
 
 
 def _playwright_capture(url: str, output_stem: Path, formats: tuple[str, ...]) -> None:
@@ -228,7 +261,8 @@ def build_figure_5b(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
 
 def build_figure_6(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("img-jinmei")
-    m.plot_kanji_usage(output_path=str(output_stem), formats=formats, bw=bw)
+    fs = _figsize() or (10, 6)
+    m.plot_kanji_usage(output_path=str(output_stem), formats=formats, bw=bw, figsize=fs)
 
 
 def _bp_plot(src: str, dtype: str, output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
@@ -247,12 +281,14 @@ def _bp_plot(src: str, dtype: str, output_stem: Path, formats: tuple[str, ...], 
                         1 - byyear[gender][year][0]
     conn.close()
     trend_stats = m.calculate_trend_statistics(plot_data, selected_metrics)
+    fs = _figsize(4.5) or (14, 12)
     m.plot_multi_panel_trends_with_stats(
         plot_data, selected_metrics, None,
         f"{output_stem}.png",
         trend_stats=trend_stats,
         formats=formats,
         bw=bw,
+        figsize=fs,
     )
 
 
@@ -313,54 +349,58 @@ def build_figure_8(output_stem: Path, formats: tuple[str, ...], bw: bool = False
 
     selected = ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
     trend_stats = m.calculate_trend_statistics(all_metrics, selected)
+    fs = _figsize(4.5) or (14, 12)
     m.plot_multi_panel_trends_with_stats(
         all_metrics, selected, "",
         f"{output_stem}.png",
         trend_stats=trend_stats,
         formats=formats,
         bw=bw,
+        figsize=fs,
     )
 
 
 def build_figure_9(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_web_charts")
-    m.plot_irregular(output_stem=str(output_stem), formats=formats, bw=bw)
+    w = BOOK_FIG_W if _BOOK_MODE else 10
+    h = BOOK_FIG_H1 if _BOOK_MODE else 5
+    m.plot_irregular(output_stem=str(output_stem), formats=formats, bw=bw,
+                     width_in=w, height_in=h,
+                     show_overall=not _BOOK_MODE)
 
 
-def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
-                   output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
+def _overlap_data(src: str, dtype: str, n_top: int):
+    """Return (years, count_values, weighted_values) for an overlap series."""
     m = _load_script("plot_overlap")
-    get_overlap_details = m.get_overlap_details
-    details, totals = get_overlap_details(str(DB_PATH), src, dtype, n_top)
-    data = []
+    details, totals = m.get_overlap_details(str(DB_PATH), src, dtype, n_top)
+    rows = []
     for year in details:
         total = totals[year]
         if total == 0:
             continue
-        data.append((year, len(details[year]),
+        rows.append((year, len(details[year]),
                      2 * sum(x[3] for x in details[year]) / total))
-    if not data:
-        print(f"  No overlap data for {src} {dtype} n={n_top}")
-        return
-    data.sort()
-    years = [r[0] for r in data]
-    if kind == 'count':
-        values = [r[1] for r in data]
-        ylabel = "Number of Overlapping Names"
-    else:
-        values = [r[2] * 100 for r in data]
-        ylabel = "Weighted Overlap (%)"
+    rows.sort()
+    years   = [r[0] for r in rows]
+    counts  = [r[1] for r in rows]
+    weights = [r[2] * 100 for r in rows]
+    return years, counts, weights
 
+
+def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
+    """Draw an overlap trend into an existing axes."""
     import numpy as np
     from scipy.stats import linregress
     from scipy.interpolate import PchipInterpolator
 
-    color = 'black' if bw else '#1f77b4'
+    if not years:
+        return
 
-    fig, ax = plt.subplots(figsize=(8, 5))
+    color  = 'black' if bw else '#1f77b4'
     marker = 'o' if kind == 'count' else 's'
-    ax.scatter(years, values, marker=marker, color=color, s=25, zorder=5,
-               label='Overlap')
+    ylabel = "Number of Overlapping Names" if kind == 'count' else "Weighted Overlap (%)"
+
+    ax.scatter(years, values, marker=marker, color=color, s=25, zorder=5)
     if len(years) >= 3:
         interp = PchipInterpolator(years, values)
         xs = np.linspace(years[0], years[-1], 300)
@@ -377,11 +417,23 @@ def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
     ax.set_ylim(bottom=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.set_xticks(range(min(years), max(years) + 1,
-                        max(1, (max(years) - min(years)) // 10)))
+    step = max(1, (max(years) - min(years)) // 10)
+    ax.set_xticks(range(min(years), max(years) + 1, step))
+
+
+def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
+                   output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
+    years, counts, weights = _overlap_data(src, dtype, n_top)
+    if not years:
+        print(f"  No overlap data for {src} {dtype} n={n_top}")
+        return
+    values = counts if kind == 'count' else weights
+    fs = _figsize() or (8, 5)
+    fig, ax = plt.subplots(figsize=fs)
+    _draw_overlap(ax, years, values, kind, bw)
     plt.tight_layout()
     for fmt in formats:
-        fig.savefig(f"{output_stem}.{fmt}", dpi=300, bbox_inches='tight')
+        fig.savefig(f"{output_stem}.{fmt}", dpi=_dpi(), bbox_inches='tight')
     plt.close(fig)
 
 
@@ -446,9 +498,11 @@ def _proportion_graph(gname: str, output_stem: Path, formats: tuple[str, ...], b
         female_f = [o + p for (o, p) in female]
 
     import tempfile
+    fs = _figsize() or (10, 6)
     with tempfile.TemporaryDirectory() as tmp:
         stats, _ = mp.calculate_distribution(male_f, female_f, period_str or 'all')
-        mp.graph_proportion2(stats, gname, title=False, plot_dir=tmp, formats=formats, bw=bw)
+        mp.graph_proportion2(stats, gname, title=False, plot_dir=tmp,
+                             formats=formats, bw=bw, figsize=fs)
         for fmt in formats:
             src = Path(tmp) / f'pron_gender_proportion_histogram_{gname}.{fmt}'
             if src.exists():
@@ -492,7 +546,8 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
     color = 'black' if bw else '#2ca02c'
     reg_ls = '-' if reg.get('p_value', 1) < 0.05 else '--'
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fs = _figsize() or (10, 5)
+    fig, ax = plt.subplots(figsize=fs)
 
     interp = PchipInterpolator(years, proportions)
     xs = np.linspace(min(years), max(years), 300)
@@ -506,12 +561,12 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
 
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
-    ax.set_xlabel("Year", fontsize=11)
-    ax.set_ylabel("Proportion of Androgynous Names", fontsize=11)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Proportion of Androgynous Names")
     ax.set_ylim(bottom=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, fontsize=10)
+    ax.legend(frameon=False)
     ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
 
     total_a = sum(r["androgynous"] for r in rows)
@@ -521,7 +576,7 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
 
     plt.tight_layout()
     for fmt in formats:
-        fig.savefig(f"{output_stem}.{fmt}", dpi=300, bbox_inches="tight")
+        fig.savefig(f"{output_stem}.{fmt}", dpi=_dpi(), bbox_inches="tight")
     plt.close(fig)
 
 
@@ -533,9 +588,10 @@ def _kanji_pos(kanji: str, gender: str, src: str,
     meta = (kanji, gender, src)
     data = m.get_distribution(c, meta)
     conn.close()
+    fs = _figsize() or (10, 6)
     m.plot_kanji_positions(data, meta, title=False,
                            output_path=str(output_stem),
-                           formats=formats, bw=bw)
+                           formats=formats, bw=bw, figsize=fs)
 
 
 def build_figure_17(output_stem, formats, bw=False):
@@ -561,17 +617,21 @@ def _genderedness_chart(dataset_key: str,
                          output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     m = _load_script("plot_web_charts")
     datasets = m.load_genderedness()
+    w = BOOK_FIG_W if _BOOK_MODE else 10
+    h = BOOK_FIG_H1 if _BOOK_MODE else 5
     for ds in datasets:
         if ds['key'] == dataset_key:
             m.plot_genderedness_dataset(
                 ds['data'], ds['regression_stats'], ds['caption'],
-                output_stem=str(output_stem), formats=formats, bw=bw)
+                output_stem=str(output_stem), formats=formats, bw=bw,
+                width_in=w, height_in=h)
             return
     if datasets:
         ds = datasets[0]
         m.plot_genderedness_dataset(
             ds['data'], ds['regression_stats'], ds['caption'],
-            output_stem=str(output_stem), formats=formats, bw=bw)
+            output_stem=str(output_stem), formats=formats, bw=bw,
+            width_in=w, height_in=h)
     else:
         print(f"  No genderedness data found for key: {dataset_key}")
 
@@ -603,6 +663,155 @@ def build_figure_21c(output_stem, formats, bw=False):
     _genderedness_chart(key, output_stem, formats, bw)
 
 
+# ---------------------------------------------------------------------------
+# Split builders used in book mode
+# ---------------------------------------------------------------------------
+
+def _agreement_data():
+    """Return (results, session, module) for Figure 1."""
+    import pandas as pd
+    m = _load_script("pub-agreement")
+    conn = sqlite3.connect(str(DB_PATH))
+    data_m = m.get_meiji(conn)
+    data = m.get_other(conn, data_m, src='hs')
+    results = {'M': {}, 'F': {}}
+    for year in data:
+        if year not in data_m:
+            continue
+        for gender in data_m[year]:
+            results[gender][year] = m._single_comparison(
+                pd.Series(data_m[year][gender]),
+                pd.Series(data[year][gender]),
+                f'{year} {gender}'
+            )
+    conn.close()
+    session = {'female_color': 'purple', 'male_color': 'orange'}
+    return results, session, m
+
+
+def build_figure_1a(output_stem, formats, bw=False):
+    """Figure 1a: common names count over time."""
+    results, session, m = _agreement_data()
+    fs = _figsize() or (7, 4)
+    fig, ax = plt.subplots(figsize=fs)
+    m.draw_agreement_panel(ax, results, 'a', session=session, bw=bw)
+    plt.tight_layout()
+    for fmt in formats:
+        fig.savefig(f"{output_stem}.{fmt}", dpi=_dpi(), bbox_inches='tight')
+    plt.close(fig)
+
+
+def build_figure_1b(output_stem, formats, bw=False):
+    """Figure 1b: JS divergence over time."""
+    results, session, m = _agreement_data()
+    fs = _figsize() or (7, 4)
+    fig, ax = plt.subplots(figsize=fs)
+    m.draw_agreement_panel(ax, results, 'b', session=session, bw=bw)
+    plt.tight_layout()
+    for fmt in formats:
+        fig.savefig(f"{output_stem}.{fmt}", dpi=_dpi(), bbox_inches='tight')
+    plt.close(fig)
+
+
+def _bp_panel(src, dtype, output_stem, formats, bw, panel_idx):
+    """Build one panel from a Berger-Parker figure."""
+    from collections import defaultdict as dd
+    m = _load_script("plot_meiji")
+    conn = sqlite3.connect(str(DB_PATH))
+    n_range = [1, 10, 50, 100] if dtype == 'orth' else [1, 5, 10, 50]
+    selected_metrics = [f"Berger-Parker ({n})" for n in n_range]
+    plot_data: dict = dd(lambda: dd(dict))
+    for top_n in n_range:
+        byyear = m.get_bp(top_n, dtype, src, conn=conn)
+        for gender in ['M', 'F']:
+            for year in byyear[gender]:
+                if byyear[gender][year][0]:
+                    plot_data[gender][year][f'Berger-Parker ({top_n})'] = \
+                        1 - byyear[gender][year][0]
+    conn.close()
+    trend_stats = m.calculate_trend_statistics(plot_data, selected_metrics)
+    fs = _figsize() or (7, 4)
+    m.plot_multi_panel_trends_with_stats(
+        plot_data, selected_metrics, None,
+        f"{output_stem}.png",
+        trend_stats=trend_stats, formats=formats, bw=bw,
+        figsize=fs, panel_idx=panel_idx,
+    )
+
+
+def _diversity_panel(output_stem, formats, bw, panel_idx):
+    """Build one diversity-metric panel from Figure 8."""
+    import math
+    from collections import Counter, defaultdict as dd
+    m = _load_script("plot_meiji")
+    db = _load_script("db")
+    conn = sqlite3.connect(str(DB_PATH))
+    table_name = db.db_options['hs'][0]
+    byyear_raw = db.get_name_year(conn, src='hs', table=table_name, dtype='orth')
+    conn.close()
+    names: dict = {'M': dd(list), 'F': dd(list)}
+    for year, genders in byyear_raw.items():
+        for gender, name_list in genders.items():
+            names[gender][year] = name_list
+
+    def _shannon(ns):
+        counts = Counter(ns)
+        total = len(ns)
+        return -sum((c/total) * math.log(c/total) for c in counts.values())
+    def _gini_simpson(ns):
+        counts = Counter(ns); total = len(ns)
+        return 1 - sum((c/total)**2 for c in counts.values())
+    def _singleton(ns):
+        counts = Counter(ns)
+        return sum(1 for c in counts.values() if c == 1) / len(ns) if ns else 0
+    def _ttr(ns):
+        return len(set(ns)) / len(ns) if ns else 0
+
+    all_metrics: dict = {'M': {}, 'F': {}}
+    for gender in ('M', 'F'):
+        for year, ns in names[gender].items():
+            if ns:
+                all_metrics[gender][year] = {
+                    'Shannon-Wiener': _shannon(ns), 'Gini-Simpson': _gini_simpson(ns),
+                    'Singleton': _singleton(ns), 'TTR': _ttr(ns),
+                }
+    selected = ["Shannon-Wiener", "Gini-Simpson", "Singleton", "TTR"]
+    trend_stats = m.calculate_trend_statistics(all_metrics, selected)
+    fs = _figsize() or (7, 4)
+    m.plot_multi_panel_trends_with_stats(
+        all_metrics, selected, "",
+        f"{output_stem}.png",
+        trend_stats=trend_stats, formats=formats, bw=bw,
+        figsize=fs, panel_idx=panel_idx,
+    )
+
+
+# Book-mode split versions of Figure 8 (diversity metrics)
+def build_figure_8a(output_stem, formats, bw=False): _diversity_panel(output_stem, formats, bw, 0)
+def build_figure_8b(output_stem, formats, bw=False): _diversity_panel(output_stem, formats, bw, 1)
+def build_figure_8c(output_stem, formats, bw=False): _diversity_panel(output_stem, formats, bw, 2)
+def build_figure_8d(output_stem, formats, bw=False): _diversity_panel(output_stem, formats, bw, 3)
+
+
+# Book-mode split versions of Figures 7a/7b/7c (each 4 BP panels).
+# Naming: 7Aa–7Ad = 7a panels a–d (Heisei orth)
+#         7Ba–7Bd = 7b panels a–d (Meiji orth)
+#         7Ca–7Cd = 7c panels a–d (Meiji pron)
+def build_figure_7Aa(o, f, bw=False): _bp_panel('hs',    'orth', o, f, bw, 0)
+def build_figure_7Ab(o, f, bw=False): _bp_panel('hs',    'orth', o, f, bw, 1)
+def build_figure_7Ac(o, f, bw=False): _bp_panel('hs',    'orth', o, f, bw, 2)
+def build_figure_7Ad(o, f, bw=False): _bp_panel('hs',    'orth', o, f, bw, 3)
+def build_figure_7Ba(o, f, bw=False): _bp_panel('meiji', 'orth', o, f, bw, 0)
+def build_figure_7Bb(o, f, bw=False): _bp_panel('meiji', 'orth', o, f, bw, 1)
+def build_figure_7Bc(o, f, bw=False): _bp_panel('meiji', 'orth', o, f, bw, 2)
+def build_figure_7Bd(o, f, bw=False): _bp_panel('meiji', 'orth', o, f, bw, 3)
+def build_figure_7Ca(o, f, bw=False): _bp_panel('meiji', 'pron', o, f, bw, 0)
+def build_figure_7Cb(o, f, bw=False): _bp_panel('meiji', 'pron', o, f, bw, 1)
+def build_figure_7Cc(o, f, bw=False): _bp_panel('meiji', 'pron', o, f, bw, 2)
+def build_figure_7Cd(o, f, bw=False): _bp_panel('meiji', 'pron', o, f, bw, 3)
+
+
+# ---------------------------------------------------------------------------
 # Free-text notes shown in the index alongside each figure
 FIGURE_NOTES: dict[str, str] = {
     '5a': 'Browser screenshot (web app, not matplotlib)',
@@ -665,6 +874,32 @@ BUILDERS: dict[str, object] = {
     '21b': build_figure_21b,
     '21c': build_figure_21c,
 }
+
+# Book mode: replace multi-panel figures with individual sub-figure builders.
+BOOK_BUILDERS: dict[str, object] = {
+    k: v for k, v in BUILDERS.items()
+    if k not in ('1', '7a', '7b', '7c', '8')
+}
+BOOK_BUILDERS.update({
+    '1a':  build_figure_1a,
+    '1b':  build_figure_1b,
+    '7Aa': build_figure_7Aa,
+    '7Ab': build_figure_7Ab,
+    '7Ac': build_figure_7Ac,
+    '7Ad': build_figure_7Ad,
+    '7Ba': build_figure_7Ba,
+    '7Bb': build_figure_7Bb,
+    '7Bc': build_figure_7Bc,
+    '7Bd': build_figure_7Bd,
+    '7Ca': build_figure_7Ca,
+    '7Cb': build_figure_7Cb,
+    '7Cc': build_figure_7Cc,
+    '7Cd': build_figure_7Cd,
+    '8a':  build_figure_8a,
+    '8b':  build_figure_8b,
+    '8c':  build_figure_8c,
+    '8d':  build_figure_8d,
+})
 
 
 # ---------------------------------------------------------------------------
@@ -796,8 +1031,8 @@ def write_index_html(captions: dict[str, str], figure_ids: list[str],
 
 def _sorted_fig_ids(ids: list[str]) -> list[str]:
     def key(fid):
-        m = re.match(r'(\d+)([a-z]?)', fid)
-        return (int(m.group(1)), m.group(2)) if m else (0, fid)
+        m = re.match(r'(\d+)([A-Za-z]*)', fid)
+        return (int(m.group(1)), m.group(2).lower()) if m else (0, fid)
     return sorted(ids, key=key)
 
 
@@ -806,11 +1041,14 @@ def main():
     parser.add_argument("--formats", default="png,svg",
                         help="Comma-separated list of output formats (default: png,svg)")
     parser.add_argument("--skip-existing", action="store_true",
-                        help="Skip figures whose PNG already exists in book/")
+                        help="Skip figures whose output files already exist in book/")
     parser.add_argument("--figures", default="",
                         help="Comma-separated subset of figure IDs to build (e.g. 1,7a,9)")
     parser.add_argument("--bw", action="store_true",
-                        help="Build black-and-white SVG versions (output: Figure_X.bw.svg)")
+                        help="Build black-and-white versions")
+    parser.add_argument("--book", action="store_true",
+                        help="Build book-print versions: 108 mm wide, Roboto Condensed, 8 pt; "
+                             "a/b/c subfigure variants combined; output: Figure_X.book[.bw].{fmt}")
     parser.add_argument("--index-only", action="store_true",
                         help="Regenerate index files without rebuilding any figures")
     args = parser.parse_args()
@@ -822,7 +1060,8 @@ def main():
     captions = extract_captions(DOC_PATH)
     print(f"  Found {len(captions)} figure captions")
 
-    all_ids = _sorted_fig_ids(list(BUILDERS.keys()))
+    builders = BOOK_BUILDERS if args.book else BUILDERS
+    all_ids = _sorted_fig_ids(list(builders.keys()))
 
     if args.index_only:
         print("\nWriting index files...")
@@ -830,29 +1069,44 @@ def main():
         write_index_html(captions, all_ids, formats)
         return
 
-    # Determine which figures to build
     if args.figures:
         requested = {f.strip() for f in args.figures.split(",")}
         all_ids = [fid for fid in all_ids if fid in requested]
 
-    # Browser screenshots can't be B&W-ified via matplotlib — skip them in --bw mode
-    if args.bw:
+    # Browser screenshots can't be B&W-ified — skip in bw/book mode
+    if args.bw or args.book:
         all_ids = [fid for fid in all_ids if fid not in FLASK_FIGURES]
 
     needs_flask = bool(set(all_ids) & FLASK_FIGURES)
 
     def _build_all(errors):
-        bw_ctx = None
-        if args.bw:
+        global _BOOK_MODE, _BOOK_BW
+        _BOOK_MODE = args.book
+        _BOOK_BW   = args.bw
+
+        ctx = None
+        if args.book:
+            from bw_style import apply_book_rcparams
+            ctx = apply_book_rcparams(bw=args.bw)
+            ctx.__enter__()
+        elif args.bw:
             from bw_style import apply_bw_rcparams
-            bw_ctx = apply_bw_rcparams()
-            bw_ctx.__enter__()
+            ctx = apply_bw_rcparams()
+            ctx.__enter__()
 
         try:
             for fig_id in all_ids:
-                builder = BUILDERS.get(fig_id)
-                label = _figure_label(fig_id)
-                stem_name = f"Figure_{fig_id}.bw" if args.bw else f"Figure_{fig_id}"
+                builder = builders.get(fig_id)
+                label   = _figure_label(fig_id)
+
+                if args.book and args.bw:
+                    stem_name = f"Figure_{fig_id}.book.bw"
+                elif args.book:
+                    stem_name = f"Figure_{fig_id}.book"
+                elif args.bw:
+                    stem_name = f"Figure_{fig_id}.bw"
+                else:
+                    stem_name = f"Figure_{fig_id}"
                 output_stem = BOOK_DIR / stem_name
 
                 if builder is None:
@@ -865,18 +1119,24 @@ def main():
                         print(f"  {label}: already exists — skipped")
                         continue
 
-                title = captions.get(fig_id, "")
-                suffix = " [B&W]" if args.bw else ""
-                print(f"Building {label}{suffix}"
+                title  = captions.get(fig_id, "")
+                tag    = (" [book+B&W]" if (args.book and args.bw) else
+                          " [book]"     if args.book else
+                          " [B&W]"      if args.bw   else "")
+                print(f"Building {label}{tag}"
                       f"{': ' + title[:60] if title else ''}...")
                 try:
                     builder(output_stem, formats, bw=args.bw)
                 except Exception as exc:
+                    import traceback
                     print(f"  ERROR building {label}: {exc}")
+                    traceback.print_exc()
                     errors.append((fig_id, exc))
         finally:
-            if bw_ctx is not None:
-                bw_ctx.__exit__(None, None, None)
+            if ctx is not None:
+                ctx.__exit__(None, None, None)
+            _BOOK_MODE = False
+            _BOOK_BW   = False
 
     errors = []
     if needs_flask:

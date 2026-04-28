@@ -7,7 +7,7 @@ from matplotlib.patches import Rectangle
 import matplotlib.patches as mpatches
 
 def create_japanese_names_chart(data_list, output_filename='japanese_names_coverage.png',
-                                figsize=(14, 10), dpi=300, use_log_scale=False, title=False,
+                                figsize=None, dpi=None, use_log_scale=False, title=False,
                                 formats=('png',), bw=False):
     """
     Create a publication-ready chart showing Japanese names data coverage vs births.
@@ -27,134 +27,110 @@ m    -----------
     
     # Convert to DataFrame and pivot
     df = pd.DataFrame(data_list)
-    
-    # Create pivot table
+
     pivot_data = {}
     for _, row in df.iterrows():
         key = (row['year'], row['gender'])
         if key not in pivot_data:
-            pivot_data[key] = {'year': row['year'], 'gender': row['gender'], 
-                              'births': 0, 'hs': 0, 'totals': 0, 'bc': 0}
-        
+            pivot_data[key] = {'year': row['year'], 'gender': row['gender'],
+                               'births': 0, 'hs': 0, 'totals': 0, 'bc': 0}
         source = 'births' if row['src'] == 'births' else row['src']
         pivot_data[key][source] = row['count']
-    
-    # Convert back to DataFrame
+
     plot_df = pd.DataFrame(list(pivot_data.values()))
-    
-    # Filter to years with name data (not just births)
     name_data = plot_df[(plot_df['hs'] > 0) | (plot_df['totals'] > 0) | (plot_df['bc'] > 0)]
-    
-    # Separate by gender
     female_data = name_data[name_data['gender'] == 'F'].sort_values('year')
-    male_data = name_data[name_data['gender'] == 'M'].sort_values('year')
-    
-    # Create figure with subplots
+    male_data   = name_data[name_data['gender'] == 'M'].sort_values('year')
+
+    if figsize is None:
+        figsize = (14, 10)
+    if dpi is None:
+        import matplotlib.pyplot as _plt
+        dpi = _plt.rcParams.get('savefig.dpi', 300)
+
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize, sharex=True)
-    
+
     if bw:
         from bw_style import BW_COVERAGE_COLORS
         colors = BW_COVERAGE_COLORS
+        alphas = {'births': 0.6, 'hs': 1.0, 'totals': 1.0, 'bc': 1.0}
     else:
         colors = {
-            'births': '#808080',
+            'births': '#b0b0b0',
             'hs':     '#3498db',
             'totals': '#e74c3c',
             'bc':     '#2ecc71',
         }
-    
-    # Bar width and positioning
-    bar_width = 0.6
-    
+        alphas = {'births': 0.4, 'hs': 0.85, 'totals': 0.80, 'bc': 0.90}
+
+    # Overlap order: largest background → smallest foreground so smaller datasets stay visible
+    _src_order = [('births', 'Total Births', 1),
+                  ('hs',     'Heisei',        2),
+                  ('totals', 'Meiji',         3),
+                  ('bc',     'Baby Calendar', 4)]
+
     def plot_gender_data(ax, data, gender_label):
-        years = data['year'].values
-        x_pos = np.arange(len(years))
-        
-        # Plot births as background bars (wider, more transparent)
-        births_bars = ax.bar(x_pos, data['births'], width=bar_width + 0.2, 
-                           color=colors['births'], alpha=0.4, 
-                           label='Total Births', zorder=1)
-        
-        # Plot name data sources (narrower bars, more opaque)
-        hs_mask = data['hs'] > 0
-        meiji_mask = data['totals'] > 0
-        bc_mask = data['bc'] > 0
-        
-        if hs_mask.any():
-            hs_bars = ax.bar(x_pos[hs_mask], data.loc[hs_mask, 'hs'], 
-                           width=bar_width, color=colors['hs'], alpha=0.8,
-                           hatch='///', label='Heisei Data', zorder=3)
-        
-        if meiji_mask.any():
-            meiji_bars = ax.bar(x_pos[meiji_mask], data.loc[meiji_mask, 'totals'], 
-                              width=bar_width, color=colors['totals'], alpha=0.8,
-                              hatch='\\\\\\', label='Meiji Data', zorder=2)
-        
-        if bc_mask.any():
-            bc_bars = ax.bar(x_pos[bc_mask], data.loc[bc_mask, 'bc'], 
-                           width=bar_width, color=colors['bc'], alpha=0.8,
-                           hatch='...', label='Baby Calendar Data', zorder=4)
-        
-        # Formatting
-        ax.set_title(f'{gender_label} Names Data Coverage vs. Total Births', 
-                    fontsize=14, fontweight='bold', pad=20)
-        ax.set_ylabel('Number of Records', fontsize=12)
+        years  = data['year'].values
+        x_pos  = np.arange(len(years))
+
+        for src, lbl, zorder in _src_order:
+            if src not in data.columns:
+                continue
+            mask = data[src] > 0
+            if not mask.any():
+                continue
+            ax.bar(x_pos[mask], data.loc[mask, src],
+                   width=0.7, color=colors[src], alpha=alphas[src],
+                   label=lbl, zorder=zorder)
+
+        ax.set_ylabel(f'{gender_label}\n(records)')
         ax.grid(True, alpha=0.3, axis='y')
-        
-        # Set x-axis
-        ax.set_xticks(x_pos[::2])  # Show every other year to avoid crowding
+        ax.set_xticks(x_pos[::2])
         ax.set_xticklabels(years[::2], rotation=45, ha='right')
-        
-        # Format y-axis with commas
-        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'{int(x):,}'))
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{int(x):,}'))
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
 
         if use_log_scale:
             ax.set_yscale('log')
-            # log scale limits
-            min_val = min(data[data[['hs', 'totals', 'bc']].gt(0).any(axis=1)][['hs', 'totals', 'bc']].replace(0, np.nan).min(skipna=True))
-            max_val = max(data[['births', 'hs', 'totals', 'bc']].max())
+            src_cols = [c for c in ('hs', 'totals', 'bc') if c in data.columns]
+            pos = data[src_cols].replace(0, np.nan)
+            min_val = pos.min(skipna=True).min()
+            max_val = data[['births'] + src_cols].max().max()
             ax.set_ylim(max(1, min_val * 0.5), max_val * 2)
         else:
-            # linear scale limits
-            max_val = max(data[['births', 'hs', 'totals', 'bc']].max())
-            ax.set_ylim(0, max_val * 1.05)
-        
-        return ax
-    
-    # Plot both genders
-    plot_gender_data(ax1, female_data, 'Female')
-    plot_gender_data(ax2, male_data, 'Male')
-    
-    # Create custom legend
+            src_cols = [c for c in ('births', 'hs', 'totals', 'bc') if c in data.columns]
+            ax.set_ylim(0, data[src_cols].max().max() * 1.05)
+
+    plot_gender_data(ax1, female_data, 'Girls')
+    plot_gender_data(ax2, male_data,   'Boys')
+
     legend_elements = [
-        mpatches.Patch(facecolor=colors['births'], alpha=0.4, label='Total Births'),
-        mpatches.Patch(facecolor=colors['hs'], hatch='///', alpha=0.8,
-                       edgecolor='black', label='Heisei Data'),
-        mpatches.Patch(facecolor=colors['totals'], hatch='\\\\\\', alpha=0.8,
-                       edgecolor='black', label='Meiji Data'),
-        mpatches.Patch(facecolor=colors['bc'], hatch='...', alpha=0.8,
-                       edgecolor='black', label='Baby Calendar Data'),
+        mpatches.Patch(facecolor=colors['births'], alpha=alphas['births'],
+                       label='Total Births'),
+        mpatches.Patch(facecolor=colors['totals'], alpha=alphas['totals'],
+                       label='Meiji Data'),
+        mpatches.Patch(facecolor=colors['hs'],     alpha=alphas['hs'],
+                       label='Heisei Data'),
+        mpatches.Patch(facecolor=colors['bc'],     alpha=alphas['bc'],
+                       label='Baby Calendar Data'),
     ]
+    ncol = 2 if figsize[0] < 6 else 4
+    fig.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, 0.0),
+               ncol=ncol, frameon=False)
     
-    # Add legend to the figure
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 0.95), 
-              ncol=4, fontsize=11, frameon=True, fancybox=True, shadow=True)
-    
-    # Overall formatting
-    ax2.set_xlabel('Year', fontsize=12)
+    ax2.set_xlabel('Year')
     if title:
-        plt.suptitle('Japanese Names Dataset Coverage Compared to Total Births', 
-                     fontsize=16, fontweight='bold', y=0.98)
-    
-    # Adjust layout to prevent overlap
+        plt.suptitle('Japanese Names Dataset Coverage Compared to Total Births',
+                     fontweight='bold')
+
     plt.tight_layout()
-    plt.subplots_adjust(top=0.92, bottom=0.1)
-    
+    plt.subplots_adjust(bottom=0.18)
+
     stem = str(Path(str(output_filename)).with_suffix(''))
     for fmt in formats:
         plt.savefig(f'{stem}.{fmt}', dpi=dpi, bbox_inches='tight',
                     facecolor='white', edgecolor='none')
-    #plt.show()
     
     # Print summary statistics for the book
     print(f"\nDataset Coverage Summary:")

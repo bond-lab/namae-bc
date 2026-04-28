@@ -48,7 +48,7 @@ def _add_trend_lines(ax, regression_stats, xscale, yscale, male_color, female_co
 
 
 def plot_irregular(data_path=None, output_stem=None, formats=("png",),
-                   width_in=10, height_in=5, bw=False):
+                   width_in=10, height_in=5, bw=False, show_overall=True):
     """Plot proportion of irregular name readings over time (M vs F).
 
     Args:
@@ -115,7 +115,7 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5,
+        _smooth_plot(ax, yrs, vals, color=color,
                      linestyle=lstyle, label=label)
         fc = color if filled else 'none'
         ax.scatter(yrs, vals, s=18, zorder=5,
@@ -125,35 +125,36 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
     _add_trend_lines(ax, reg, None, None, *_reg_colors)
 
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
-    ax.set_xlabel("Year", fontsize=11)
-    ax.set_ylabel("Irregular Proportion", fontsize=11)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Irregular Proportion")
     ax.set_ylim(bottom=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, fontsize=10)
+    ax.legend(frameon=False)
     ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
 
-    # Summary stats annotation (overall totals across all years)
-    totals = {g: (sum(p[2] for p in pts), sum(p[3] for p in pts))
-              for g, pts in series.items() if pts}
-    label_map = {"M": "Boys", "F": "Girls"}
-    parts = [f"{label_map[g]} {irr/n*100:.1f}% ({irr:,}/{n:,})"
-             for g, (irr, n) in sorted(totals.items())]
-    ax.text(0.02, 0.04, "Overall: " + "; ".join(parts),
-            transform=ax.transAxes, fontsize=8, color="gray", va="bottom")
+    if show_overall:
+        totals = {g: (sum(p[2] for p in pts), sum(p[3] for p in pts))
+                  for g, pts in series.items() if pts}
+        label_map = {"M": "Boys", "F": "Girls"}
+        parts = [f"{label_map[g]} {irr/n*100:.1f}% ({irr:,}/{n:,})"
+                 for g, (irr, n) in sorted(totals.items())]
+        ax.text(0.02, 0.04, "Overall: " + "; ".join(parts),
+                transform=ax.transAxes, fontsize=8, color="gray", va="bottom")
 
     plt.tight_layout()
 
     if output_stem:
+        dpi = plt.rcParams.get('savefig.dpi', 300)
         for fmt in formats:
-            fig.savefig(f"{output_stem}.{fmt}", dpi=300, bbox_inches="tight")
+            fig.savefig(f"{output_stem}.{fmt}", dpi=dpi, bbox_inches="tight")
         plt.close(fig)
     return fig, ax
 
 
 def plot_genderedness_dataset(data, regression_stats, caption,
                               output_stem=None, formats=("png",),
-                              width_in=10, height_in=5, bw=False):
+                              width_in=10, height_in=5, bw=False, ax=None):
     """Plot a single genderedness dataset (M vs F over time).
 
     Args:
@@ -162,6 +163,7 @@ def plot_genderedness_dataset(data, regression_stats, caption,
         caption: Chart title string.
         output_stem: Output path without extension.
         formats: Tuple of formats to save.
+        ax: Optional axes to draw into; if provided the figure is not saved.
     """
     series = {"M": [], "F": []}
     for row in data:
@@ -185,7 +187,11 @@ def plot_genderedness_dataset(data, regression_stats, caption,
         ]
         _reg_colors = (MALE_COLOR, FEMALE_COLOR)
 
-    fig, ax = plt.subplots(figsize=(width_in, height_in))
+    own_fig = ax is None
+    if own_fig:
+        fig, ax = plt.subplots(figsize=(width_in, height_in))
+    else:
+        fig = ax.get_figure()
 
     for g, color, label, lstyle, mkr, filled in _gender_styles:
         pts = series[g]
@@ -193,7 +199,7 @@ def plot_genderedness_dataset(data, regression_stats, caption,
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
-        _smooth_plot(ax, yrs, vals, color=color, linewidth=2.5,
+        _smooth_plot(ax, yrs, vals, color=color,
                      linestyle=lstyle, label=label)
         fc = color if filled else 'none'
         ax.scatter(yrs, vals, s=18, zorder=5,
@@ -203,18 +209,20 @@ def plot_genderedness_dataset(data, regression_stats, caption,
     _add_trend_lines(ax, regression_stats, None, None, *_reg_colors)
 
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
-    ax.set_xlabel("Year", fontsize=11)
-    ax.set_ylabel("Genderedness", fontsize=11)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Genderedness")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, fontsize=10)
+    ax.legend(frameon=False)
     ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
-    plt.tight_layout()
 
-    if output_stem:
-        for fmt in formats:
-            fig.savefig(f"{output_stem}.{fmt}", dpi=300, bbox_inches="tight")
-        plt.close(fig)
+    if own_fig:
+        plt.tight_layout()
+        if output_stem:
+            dpi = plt.rcParams.get('savefig.dpi', 300)
+            for fmt in formats:
+                fig.savefig(f"{output_stem}.{fmt}", dpi=dpi, bbox_inches="tight")
+            plt.close(fig)
     return fig, ax
 
 

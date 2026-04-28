@@ -12,7 +12,7 @@ import numpy as np
 from db import db_options, get_name_count_year, resolve_src
 
 
-def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False):
+def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsize=None):
     """
     Create and save a bar plot showing the number of names per year divided by gender.
 
@@ -49,8 +49,7 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False):
     else:
         db_name = db_options[src][1]
             
-    # Create the figure and axis for plotting
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=figsize or (10, 6))
 
     filename = f'years_{src}'
     plot_stem = os.path.join(plot_dir, filename)
@@ -112,8 +111,9 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False):
     # Add a legend with minimalist styling
     ax.legend(frameon=False)
 
+    dpi = plt.rcParams.get('savefig.dpi', 300)
     for fmt in formats:
-        plt.savefig(f'{plot_stem}.{fmt}', dpi=150)
+        plt.savefig(f'{plot_stem}.{fmt}', dpi=dpi)
     plt.close(fig)
 
 # Iterate over each data source and update year counts and create plots
