@@ -40,7 +40,7 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False, figsize
     plt.plot(years, total_kanji, **_l2)
 
     # Minimalist design elements
-    plt.title('Number of Kanji allowed in Names', fontsize=14, fontweight='bold')
+    plt.title('Number of kanji allowed in names', fontsize=14, fontweight='bold')
     plt.xlabel('Year', fontsize=10)
     plt.ylabel('Number of Kanji', fontsize=10)
 

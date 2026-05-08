@@ -106,7 +106,7 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsi
         ax.set_ylabel('Number of Names (in thousands)', fontsize=12)
     else:
         ax.set_ylabel('Number of Names', fontsize=12)
-    ax.set_title(f'Number of Names per Year, Divided by Gender ({db_name})', fontsize=14, weight='bold')
+    ax.set_title(f'Number of names per year, divided by gender ({db_name})', fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling
     ax.legend(frameon=False)

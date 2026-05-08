@@ -116,7 +116,7 @@ def plot_kanji_positions(data, meta, title=True, output_path=None, formats=('png
     ax.set_xlabel('Year', fontsize=11)
     ax.set_ylabel('Proportion', fontsize=11)
     if title:
-        ax.set_title(f'Position Distribution of 「{kanji}」 in Names for {gender} from {src}', fontsize=12, pad=15)
+        ax.set_title(f'Position distribution of 「{kanji}」 in names for {gender} from {src}', fontsize=12, pad=15)
     
     # Legend
     ax.legend(loc='upper left', frameon=False, fontsize=10)
