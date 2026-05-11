@@ -220,19 +220,18 @@ def format_trend_text(trend_stats, metric, gender, significance_level=0.05):
     sig_marker = "*" if is_significant else ""
     
     # Format correlation
-    if abs(r) < 0.001:
+    if abs(r) < 0.01:
         r_text = f"r≈0{sig_marker}"
     else:
-        r_text = f"r={r:.3f}{sig_marker}"
-    
-    # Format annual change
-    if abs(annual_change) < 0.001:
+        r_text = f"r={r:.2f}{sig_marker}"
+
+    if abs(annual_change) < 0.01:
         change_text = "≈0%/yr"
     else:
-        change_text = f"{annual_change:+.3f}%/yr"
+        change_text = f"{annual_change:+.2f}%/yr"
 
-    mean_text = f"mean = {stats_data['mean']:.3f}"    
-        
+    mean_text = f"x̄={stats_data['mean']:.2f}"
+
     return f"{r_text}, {change_text}, {mean_text}"
 
 def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,

@@ -42,7 +42,7 @@ def plot_kanji_usage(output_path=None, formats=('png', 'svg'), bw=False, figsize
     # Minimalist design elements
     plt.title('Number of kanji allowed in names', fontsize=14, fontweight='bold')
     plt.xlabel('Year', fontsize=10)
-    plt.ylabel('Number of Kanji', fontsize=10)
+    plt.ylabel('Number of kanji', fontsize=10)
 
     # Sparse grid with light lines
     plt.grid(True, linestyle=':', color='lightgray', linewidth=0.5)

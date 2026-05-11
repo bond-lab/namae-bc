@@ -79,9 +79,12 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsi
             return 7
         
 
-    # Add numbers on top of each bar for both male and female counts
-    
+    # Add numbers on top of each bar; skip labels when bars are too dense
+    ny = len(years)
+    step = 1 if ny < 16 else 5 if ny < 40 else 10
     for i, (female, male) in enumerate(zip(female_counts, male_counts)):
+        if years[i] % step != 0:
+            continue
         bar_width = ax.patches[i].get_width()
         ax.text(years[i],  0.98 * female, format_number(female, bar_width),
                 ha='center', va='top', fontsize=font_size(years), color='black')
@@ -103,9 +106,9 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsi
     # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
     if 'hs' in src:
-        ax.set_ylabel('Number of Names (in thousands)', fontsize=12)
+        ax.set_ylabel('Number of names (in thousands)', fontsize=12)
     else:
-        ax.set_ylabel('Number of Names', fontsize=12)
+        ax.set_ylabel('Number of names', fontsize=12)
     ax.set_title(f'Number of names per year, divided by gender ({db_name})', fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling

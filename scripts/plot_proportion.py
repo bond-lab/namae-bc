@@ -189,7 +189,7 @@ def graph_proportion(stats, total_names, gname, plot_dir):
 
     # Add labels and title
     plt.xlabel('Proportion Interval (0: 100% male, 11: 100% female)', fontsize=10)
-    plt.ylabel('Number of Names', fontsize=10)
+    plt.ylabel('Number of names', fontsize=10)
     plt.title(f'Distribution of names by gender proportion ({gname})', fontsize=12, weight='bold')
 
     # Show the plot
