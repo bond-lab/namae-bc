@@ -380,7 +380,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
                                        markerfacecolor=mfc,
                                        linestyle=data_ls, linewidth=2, markersize=6)
                 handles.append(handle)
-                if stat_text and show_stats and not compact:
+                if stat_text and show_stats:
                     labels.append(f"{label}: {stat_text}")
                 else:
                     labels.append(label)
