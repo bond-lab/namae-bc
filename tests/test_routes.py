@@ -108,6 +108,16 @@ class TestNameSearch:
         resp = client.get('/namae?pron=はなこ')
         assert_html_ok(resp)
 
+    def test_namae_orth_and_pron_direct_link(self, client):
+        """Direct links with orthography and pronunciation render first time."""
+        resp = client.get('/namae?orth=蓮&pron=れん')
+        assert_html_ok(resp, must_contain=['蓮'])
+
+    def test_namae_unknown_orth_and_pron_no_divide_by_zero(self, client):
+        """Unknown orthography/pronunciation pairs should not crash."""
+        resp = client.get('/namae?orth=鑢鑢鑢&pron=ぬぬぬ')
+        assert_html_ok(resp, must_contain=['鑢鑢鑢'])
+
     def test_namae_invalid_pron(self, client):
         """Non-hiragana pronunciation → error, not crash."""
         resp = client.get('/namae?pron=abc')

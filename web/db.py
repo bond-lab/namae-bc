@@ -126,6 +126,44 @@ def get_pron(conn, pron, src='bc'):
     GROUP BY gender, year""", (src, pron))
     results = c.fetchall()
     return results
+
+
+def get_orth_prons(conn, orth, src='bc'):
+    """Return known pronunciations for one orthographic form."""
+    c = conn.cursor()
+    c.execute("""
+    SELECT orth, pron
+    FROM nrank
+    WHERE src = ? AND orth = ? AND pron IS NOT NULL
+    GROUP BY orth, pron
+    ORDER BY pron
+    """, (src, orth))
+    return c.fetchall()
+
+
+def get_pron_orths(conn, pron, src='bc'):
+    """Return known orthographic forms for one pronunciation."""
+    c = conn.cursor()
+    c.execute("""
+    SELECT orth, pron
+    FROM nrank
+    WHERE src = ? AND pron = ? AND orth IS NOT NULL
+    GROUP BY orth, pron
+    ORDER BY orth
+    """, (src, pron))
+    return c.fetchall()
+
+
+def get_name_pair_years(conn, orth, pron, src='bc'):
+    """Return per-year counts for one orthography/pronunciation pair."""
+    c = conn.cursor()
+    c.execute("""
+    SELECT year, gender, sum(freq)
+    FROM nrank
+    WHERE src = ? AND orth = ? AND pron = ?
+    GROUP BY gender, year
+    """, (src, orth, pron))
+    return c.fetchall()
    
 
 def get_name_count_year(conn, src='bc',

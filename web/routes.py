@@ -8,9 +8,10 @@ import pathlib
 import sqlite3, os
 from collections import defaultdict as dd
 
-from web.db import get_db, get_name, get_names_summary, \
+from web.db import get_db, get_names_summary, \
                 get_name_year, get_name_count_year, \
                 get_orth, get_pron, \
+                get_orth_prons, get_pron_orths, get_name_pair_years, \
                 get_stats, get_feature, \
                 get_redup, db_options, dtypes, \
                 get_mapping, get_kanji_distribution, \
@@ -81,6 +82,27 @@ def get_db_settings():
         'db_range': db_options[selected_db_option][3],
         'db_dtype': primary_dtype,
     }
+
+
+def _index_for_orth(orth, rows):
+    kindex = dd(set)
+    if orth:
+        kindex[orth].update(rows)
+    return kindex
+
+
+def _index_for_pron(pron, rows):
+    hindex = dd(set)
+    if pron:
+        hindex[pron].update(rows)
+    return hindex
+
+
+def _mfname_from_year_counts(orth, pron, rows):
+    mfname = dd(lambda: dd(list))
+    for year, gender, freq in rows:
+        mfname[(orth, pron)][gender].extend([year] * int(freq or 0))
+    return mfname
 
 @app.context_processor
 def inject_common_variables():
@@ -226,15 +248,16 @@ def namae():
     conn = get_db(current_directory, "namae.db")
     db_settings = get_db_settings()
     qsrc = db_settings['db_query_src']
-    mfname, kindex, hindex = get_name(conn, table=db_settings['db_table'],
-                                       src=qsrc,
-                                       dtype=db_settings['db_dtype'])
     if pron:
         mora = mora_hiragana(pron)
         syll=syllable_hiragana(mora)
 
     if pron and orth:
-        mapp = get_mapping(conn, orth, pron)
+        pair_years = get_name_pair_years(conn, orth, pron, src=qsrc)
+        mfname = _mfname_from_year_counts(orth, pron, pair_years)
+        kindex = _index_for_orth(orth, get_orth_prons(conn, orth, src=qsrc))
+        hindex = _index_for_pron(pron, get_pron_orths(conn, pron, src=qsrc))
+        mapp = get_mapping(conn, orth, pron) or []
         return render_template(
             f"namae-both.html",
             name=orth,
@@ -251,6 +274,7 @@ def namae():
 )
     elif pron:
         data = get_pron(conn, pron, src=qsrc)
+        hindex = _index_for_pron(pron, get_pron_orths(conn, pron, src=qsrc))
         return render_template(
             f"namae-pron.html",
             hira=pron,
@@ -263,6 +287,7 @@ def namae():
         )
     elif orth:
         data = get_orth(conn, orth, src=qsrc)
+        kindex = _index_for_orth(orth, get_orth_prons(conn, orth, src=qsrc))
         return render_template(
             f"namae-orth.html",
             name=orth,
