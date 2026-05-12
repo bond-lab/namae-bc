@@ -1,76 +1,10 @@
 # Book Figures Index
 
-## Figure 1A: Similarity of the Meiji Yasuda data and Heisei Namae Jiten data
+## Figure 10: Phonological and graphic overlap in boys’ and girls’ names
 
-
-## Figure 1B: Similarity of the Meiji Yasuda data and Heisei Namae Jiten data
-
-
-## Figure 2: Number of names per year, divided by gender (Births)
-
-| Manuscript | PNG | SVG |
-| --- | --- | --- |
-| ![manuscript](manuscript/Figure_2_manuscript.png) | ![png](Figure_2.png) | ![svg](Figure_2.svg) |
-
-## Figure 6: The development of kanji permitted for use in names
-
-| Manuscript | PNG | SVG |
-| --- | --- | --- |
-| ![manuscript](manuscript/Figure_6_manuscript.png) | ![png](Figure_6.png) | ![svg](Figure_6.svg) |
-
-## Figure 7AA
-
-
-## Figure 7AB
-
-
-## Figure 7AC
-
-
-## Figure 7AD
-
-
-## Figure 7BA
-
-
-## Figure 7BB
-
-
-## Figure 7BC
-
-
-## Figure 7BD
-
-
-## Figure 7CA
-
-
-## Figure 7CB
-
-
-## Figure 7CC
-
-
-## Figure 7CD
-
-
-## Figure 8A: Diversity measures for the Heisei Namae Jiten data
-
-
-## Figure 8B: Diversity measures for the Heisei Namae Jiten data
-
-
-## Figure 8C: Diversity measures for the Heisei Namae Jiten data
-
-
-## Figure 8D: Diversity measures for the Heisei Namae Jiten data
-
-
-## Figure 9: Distribution of irregular readings in the Baby Calendar database
-
-| Manuscript | PNG | SVG |
-| --- | --- | --- |
-| ![manuscript](manuscript/Figure_9_manuscript.png) | ![png](Figure_9.png) | ![svg](Figure_9.svg) |
+| PNG | SVG |
+| --- | --- |
+| ![png](Figure_10.png) | ![svg](Figure_10.svg) |
 
 ## Figure 13A: Overlap trend in the top 50 Meiji Yasuda names (phonological forms)
 

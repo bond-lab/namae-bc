@@ -387,8 +387,16 @@ def _overlap_data(src: str, dtype: str, n_top: int):
     return years, counts, weights
 
 
-def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
-    """Draw an overlap trend into an existing axes."""
+def _draw_single_trend(ax, years, values, color, ylabel,
+                       axis_fmt=None, xbar_fmt=None) -> None:
+    """Single-series PCHIP trend + linear regression + x̄ annotation.
+
+    Args:
+        axis_fmt: FuncFormatter-style callable ``(value, pos) -> str`` for
+                  y-axis tick labels.  None = default numeric.
+        xbar_fmt: callable ``(mean_value) -> str`` for the x̄ annotation.
+                  None = ``f"{v:.1f}"``.
+    """
     import numpy as np
     from scipy.stats import linregress
     from scipy.interpolate import PchipInterpolator
@@ -396,11 +404,7 @@ def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
     if not years:
         return
 
-    color  = 'black' if bw else '#1f77b4'
-    marker = 'o' if kind == 'count' else 's'
-    ylabel = "Number of overlapping names" if kind == 'count' else "Weighted overlap (%)"
-
-    ax.scatter(years, values, marker=marker, color=color, s=25, zorder=5)
+    ax.scatter(years, values, marker='o', color=color, s=25, zorder=5)
     if len(years) >= 3:
         interp = PchipInterpolator(years, values)
         xs = np.linspace(years[0], years[-1], 300)
@@ -409,20 +413,35 @@ def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
     reg_x = np.array([min(years), max(years)])
     ax.plot(reg_x, slope * reg_x + intercept, color=color,
             linewidth=1.5, linestyle='-' if p_value < 0.05 else '--')
+
     mean_val = np.mean(values)
-    unit = "%" if kind == 'weighted' else " names"
-    ax.text(0.02, 0.96, f"x\u0304={mean_val:.1f}{unit}",
+    mean_str = xbar_fmt(mean_val) if xbar_fmt else f"{mean_val:.1f}"
+    ax.text(0.02, 0.96, f"x\u0304={mean_str}",
             transform=ax.transAxes, fontsize=8, color="gray", va="top")
+
     ax.set_xlabel('Year')
     ax.set_ylabel(ylabel)
-    if kind == 'weighted':
-        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.1f}%"))
+    if axis_fmt:
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(axis_fmt))
     ax.grid(True, alpha=0.3, axis='y')
     ax.set_ylim(bottom=0)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     step = max(1, (max(years) - min(years)) // 10)
     ax.set_xticks(range(min(years), max(years) + 1, step))
+
+
+def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
+    """Draw an overlap trend into an existing axes."""
+    color  = 'black' if bw else '#1f77b4'
+    ylabel = "Number of overlapping names" if kind == 'count' else "Weighted overlap (%)"
+    if kind == 'weighted':
+        axis_fmt = lambda y, _: f"{y:.1f}%"
+        xbar_fmt = lambda v: f"{v:.1f}%"
+    else:
+        axis_fmt = xbar_fmt = None
+    _draw_single_trend(ax, years, values, color, ylabel,
+                       axis_fmt=axis_fmt, xbar_fmt=xbar_fmt)
 
 
 def _overlap_graph(src: str, dtype: str, n_top: int, kind: str,
@@ -534,10 +553,6 @@ def build_figure_15b(output_stem, formats, bw=False):
 
 def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = False) -> None:
     """Proportion of androgynous names over time in Heisei Namae data."""
-    from scipy.interpolate import PchipInterpolator
-    from scipy.stats import linregress
-    import numpy as np
-
     with open(DATA_DIR / "androgyny_data.json", encoding="utf-8") as f:
         blob = json.load(f)
 
@@ -545,39 +560,15 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
     rows = ds["data"]
     years = [r["year"] for r in rows]
     proportions = [r["proportion"] for r in rows]
-    reg = ds["regression"]
 
     color = 'black' if bw else '#2ca02c'
-    reg_ls = '-' if reg.get('p_value', 1) < 0.05 else '--'
-
     fs = _figsize() or (10, 5)
     fig, ax = plt.subplots(figsize=fs)
-
-    interp = PchipInterpolator(years, proportions)
-    xs = np.linspace(min(years), max(years), 300)
-    ax.plot(xs, interp(xs), color=color, linewidth=2.5, label="Androgynous")
-    ax.scatter(years, proportions, color=color, s=18, zorder=5,
-               edgecolors="white" if not bw else color, linewidths=1.2)
-
-    reg_x = np.array([min(years), max(years)])
-    ax.plot(reg_x, reg["slope"] * reg_x + reg["intercept"],
-            color=color, linewidth=1.5, linestyle=reg_ls, alpha=0.7)
-
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
+    _draw_single_trend(ax, years, proportions, color,
+                       "Proportion of androgynous names",
+                       axis_fmt=lambda y, _: f"{y*100:.0f}%",
+                       xbar_fmt=lambda v: f"{v*100:.1f}%")
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
-    ax.set_xlabel("Year")
-    ax.set_ylabel("Proportion of androgynous names")
-    ax.set_ylim(bottom=0)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False)
-    ax.grid(axis="y", linestyle="-", linewidth=0.4, alpha=0.3, color="gray")
-
-    total_a = sum(r["androgynous"] for r in rows)
-    total_n = sum(r["total"] for r in rows)
-    ax.text(0.02, 0.96, f"Overall: {total_a/total_n*100:.1f}% ({total_a:,}/{total_n:,})",
-            transform=ax.transAxes, fontsize=8, color="gray", va="top")
-
     plt.tight_layout()
     for fmt in formats:
         fig.savefig(f"{output_stem}.{fmt}", dpi=_dpi(), bbox_inches="tight")
