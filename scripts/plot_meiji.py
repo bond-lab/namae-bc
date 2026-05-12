@@ -294,7 +294,7 @@ def plot_multi_panel_trends_with_stats(all_metrics, selected_metrics, title,
         else:
             _gstyles = [
                 ('M', 'orange', 'o', 'Boys', '-', True),
-                ('F', 'purple', 's', 'Girls', '-', True),
+                ('F', 'purple', 'o', 'Girls', '-', True),
             ]
         for gender, color, marker, label, data_ls, filled in _gstyles:
             # Get years where this metric exists for this gender

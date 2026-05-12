@@ -33,6 +33,26 @@ def _regression_line(years, slope, intercept):
     return x, slope * x + intercept
 
 
+def _compute_stats(yrs, vals):
+    """Return (r, p_value, annual_change_pct, mean) for a time series."""
+    from scipy.stats import pearsonr
+    yrs_a = np.array(yrs, dtype=float)
+    vals_a = np.array(vals, dtype=float)
+    r, p = pearsonr(yrs_a, vals_a)
+    pct_changes = [(vals_a[i] - vals_a[i-1]) / vals_a[i-1] * 100
+                   for i in range(1, len(vals_a)) if vals_a[i-1] != 0]
+    return r, p, (np.mean(pct_changes) if pct_changes else 0.0), np.mean(vals_a)
+
+
+def _stat_label(label, r, p, annual_change, mean, mean_fn=None):
+    """Format a legend label with trend statistics."""
+    sig = '*' if p < 0.05 else ''
+    r_str = f"r\u22480{sig}" if abs(r) < 0.01 else f"r={r:.2f}{sig}"
+    chg_str = "\u22480%/yr" if abs(annual_change) < 0.01 else f"{annual_change:+.2f}%/yr"
+    m_str = mean_fn(mean) if mean_fn else f"{mean:.2f}"
+    return f"{label}: {r_str}, {chg_str}, x\u0304={m_str}"
+
+
 def _add_trend_lines(ax, regression_stats, xscale, yscale, male_color, female_color):
     """Overlay regression lines onto ax using raw year/value data."""
     for gkey, color in (("M", male_color), ("F", female_color)):
@@ -48,7 +68,8 @@ def _add_trend_lines(ax, regression_stats, xscale, yscale, male_color, female_co
 
 
 def plot_irregular(data_path=None, output_stem=None, formats=("png",),
-                   width_in=10, height_in=5, bw=False, show_overall=True):
+                   width_in=10, height_in=5, bw=False, show_overall=True,
+                   show_stats=False):
     """Plot proportion of irregular name readings over time (M vs F).
 
     Args:
@@ -115,8 +136,14 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
+        if show_stats and len(yrs) >= 3:
+            r, p, chg, mean = _compute_stats(yrs, vals)
+            legend_label = _stat_label(label, r, p, chg, mean,
+                                       mean_fn=lambda v: f"{v*100:.1f}%")
+        else:
+            legend_label = label
         _smooth_plot(ax, yrs, vals, color=color,
-                     linestyle=lstyle, label=label)
+                     linestyle=lstyle, label=legend_label)
         fc = color if filled else 'none'
         ax.scatter(yrs, vals, s=18, zorder=5,
                    marker=mkr or 'o', facecolors=fc,
@@ -154,7 +181,8 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
 
 def plot_genderedness_dataset(data, regression_stats, caption,
                               output_stem=None, formats=("png",),
-                              width_in=10, height_in=5, bw=False, ax=None):
+                              width_in=10, height_in=5, bw=False, ax=None,
+                              show_stats=False):
     """Plot a single genderedness dataset (M vs F over time).
 
     Args:
@@ -199,8 +227,13 @@ def plot_genderedness_dataset(data, regression_stats, caption,
             continue
         yrs = [p[0] for p in pts]
         vals = [p[1] for p in pts]
+        if show_stats and len(yrs) >= 3:
+            r, p, chg, mean = _compute_stats(yrs, vals)
+            legend_label = _stat_label(label, r, p, chg, mean)
+        else:
+            legend_label = label
         _smooth_plot(ax, yrs, vals, color=color,
-                     linestyle=lstyle, label=label)
+                     linestyle=lstyle, label=legend_label)
         fc = color if filled else 'none'
         ax.scatter(yrs, vals, s=18, zorder=5,
                    marker=mkr or 'o', facecolors=fc,

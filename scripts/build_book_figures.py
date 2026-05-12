@@ -366,7 +366,8 @@ def build_figure_9(output_stem: Path, formats: tuple[str, ...], bw: bool = False
     h = BOOK_FIG_H1 if _BOOK_MODE else 5
     m.plot_irregular(output_stem=str(output_stem), formats=formats, bw=bw,
                      width_in=w, height_in=h,
-                     show_overall=not _BOOK_MODE)
+                     show_overall=not _BOOK_MODE,
+                     show_stats=_BOOK_MODE)
 
 
 def _overlap_data(src: str, dtype: str, n_top: int):
@@ -619,14 +620,14 @@ def _genderedness_chart(dataset_key: str,
             m.plot_genderedness_dataset(
                 ds['data'], ds['regression_stats'], ds['caption'],
                 output_stem=str(output_stem), formats=formats, bw=bw,
-                width_in=w, height_in=h)
+                width_in=w, height_in=h, show_stats=_BOOK_MODE)
             return
     if datasets:
         ds = datasets[0]
         m.plot_genderedness_dataset(
             ds['data'], ds['regression_stats'], ds['caption'],
             output_stem=str(output_stem), formats=formats, bw=bw,
-            width_in=w, height_in=h)
+            width_in=w, height_in=h, show_stats=_BOOK_MODE)
     else:
         print(f"  No genderedness data found for key: {dataset_key}")
 
