@@ -126,7 +126,7 @@ def plot_irregular(data_path=None, output_stem=None, formats=("png",),
 
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.set_xlabel("Year")
-    ax.set_ylabel("Irregular Proportion")
+    ax.set_ylabel("Irregular proportion")
     ax.set_ylim(bottom=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)

@@ -121,7 +121,7 @@ m    -----------
     
     ax2.set_xlabel('Year')
     if title:
-        plt.suptitle('Japanese Names Dataset Coverage Compared to Total Births',
+        plt.suptitle('Japanese names dataset coverage compared to total births',
                      fontweight='bold')
 
     plt.tight_layout()

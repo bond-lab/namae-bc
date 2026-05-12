@@ -398,7 +398,7 @@ def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
 
     color  = 'black' if bw else '#1f77b4'
     marker = 'o' if kind == 'count' else 's'
-    ylabel = "Number of Overlapping Names" if kind == 'count' else "Weighted Overlap (%)"
+    ylabel = "Number of overlapping names" if kind == 'count' else "Weighted overlap (%)"
 
     ax.scatter(years, values, marker=marker, color=color, s=25, zorder=5)
     if len(years) >= 3:
@@ -409,6 +409,10 @@ def _draw_overlap(ax, years, values, kind: str, bw: bool) -> None:
     reg_x = np.array([min(years), max(years)])
     ax.plot(reg_x, slope * reg_x + intercept, color=color,
             linewidth=1.5, linestyle='-' if p_value < 0.05 else '--')
+    mean_val = np.mean(values)
+    unit = "%" if kind == 'weighted' else " names"
+    ax.text(0.02, 0.96, f"x\u0304={mean_val:.1f}{unit}",
+            transform=ax.transAxes, fontsize=8, color="gray", va="top")
     ax.set_xlabel('Year')
     ax.set_ylabel(ylabel)
     if kind == 'weighted':
@@ -562,7 +566,7 @@ def build_figure_16(output_stem: Path, formats: tuple[str, ...], bw: bool = Fals
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y*100:.0f}%"))
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x)}"))
     ax.set_xlabel("Year")
-    ax.set_ylabel("Proportion of Androgynous Names")
+    ax.set_ylabel("Proportion of androgynous names")
     ax.set_ylim(bottom=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)

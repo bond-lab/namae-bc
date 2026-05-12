@@ -227,9 +227,9 @@ def plot_gender_names_analysis(data_dict, session=None, output_filename='gender_
         ax.spines['right'].set_visible(False)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
-    _draw_panel(ax1, 'Common Names Count Over Time', 'Common Names Count',
+    _draw_panel(ax1, 'Common names count over time', 'Common names count',
                 male_common_names, female_common_names)
-    _draw_panel(ax2, 'JS Divergence Over Time', 'JS Divergence',
+    _draw_panel(ax2, 'JS divergence over time', 'JS divergence',
                 male_js_divergence, female_js_divergence)
 
     plt.tight_layout()
@@ -262,13 +262,13 @@ def draw_agreement_panel(ax, data_dict, panel: str, session=None, bw=False):
     if panel == 'a':
         male_vals   = [data_dict['M'][y]['common_names_count'] for y in years]
         female_vals = [data_dict['F'][y]['common_names_count'] for y in years]
-        title  = 'Common Names Count Over Time'
-        ylabel = 'Common Names Count'
+        title  = 'Common names count over time'
+        ylabel = 'Common names count'
     else:
         male_vals   = [data_dict['M'][y]['js_divergence'] for y in years]
         female_vals = [data_dict['F'][y]['js_divergence'] for y in years]
-        title  = 'JS Divergence Over Time'
-        ylabel = 'JS Divergence'
+        title  = 'JS divergence over time'
+        ylabel = 'JS divergence'
 
     for color, label, vals, line in (
         (male_color,   'Boys',  male_vals,   male_line),
