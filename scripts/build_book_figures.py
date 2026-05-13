@@ -196,7 +196,7 @@ def build_figure_2(output_stem: Path, formats: tuple[str, ...], bw: bool = False
     fs = _figsize() or (10, 6)
     with tempfile.TemporaryDirectory() as tmp:
         m.create_gender_plot('births', str(DB_PATH), tmp, formats=formats, bw=bw,
-                             figsize=fs)
+                             figsize=fs, show_title=not _BOOK_MODE)
         for fmt in formats:
             src = Path(tmp) / f'years_births.{fmt}'
             if src.exists():

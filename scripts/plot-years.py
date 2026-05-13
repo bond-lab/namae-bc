@@ -12,7 +12,8 @@ import numpy as np
 from db import db_options, get_name_count_year, resolve_src
 
 
-def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsize=None):
+def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsize=None,
+                       show_title=True):
     """
     Create and save a bar plot showing the number of names per year divided by gender.
 
@@ -103,13 +104,14 @@ def create_gender_plot(src, db_path, plot_dir, formats=('png',), bw=False, figsi
     # Ensure x-axis shows only whole numbers for years
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
-    # Add labels and title with subtle text styling
     ax.set_xlabel('Year', fontsize=12)
     if 'hs' in src:
         ax.set_ylabel('Number of names (in thousands)', fontsize=12)
     else:
         ax.set_ylabel('Number of names', fontsize=12)
-    ax.set_title(f'Number of names per year, divided by gender ({db_name})', fontsize=14, weight='bold')
+    if show_title:
+        ax.set_title(f'Number of names per year, divided by gender ({db_name})',
+                     fontsize=14, weight='bold')
 
     # Add a legend with minimalist styling
     ax.legend(frameon=False)
