@@ -50,6 +50,9 @@ FLASK_PORT = 5100
 FLASK_FIGURES = {"5a", "5b"}
 
 import matplotlib
+import numpy as np
+from scipy.interpolate import PchipInterpolator
+from scipy.stats import linregress
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams["svg.fonttype"] = "path"
@@ -398,10 +401,6 @@ def _draw_single_trend(ax, years, values, color, ylabel,
         xbar_fmt: callable ``(mean_value) -> str`` for the x̄ annotation.
                   None = ``f"{v:.1f}"``.
     """
-    import numpy as np
-    from scipy.stats import linregress
-    from scipy.interpolate import PchipInterpolator
-
     if not years:
         return
 
@@ -632,31 +631,25 @@ def _genderedness_chart(dataset_key: str,
         print(f"  No genderedness data found for key: {dataset_key}")
 
 
-def _find_genderedness_key(pattern: str) -> str:
-    """Find first genderedness.json key matching a substring pattern."""
+def _find_genderedness_key(*patterns: str) -> str:
+    """Return the first key matching any of the given substrings, in priority order."""
     with open(DATA_DIR / "genderedness.json", encoding="utf-8") as f:
         blob = json.load(f)
-    for key in blob:
-        if pattern in key:
-            return key
-    return next(iter(blob))  # fallback to first
+    for pattern in patterns:
+        for key in blob:
+            if pattern in key:
+                return key
+    return next(iter(blob))
 
 
 def build_figure_21a(output_stem, formats, bw=False):
-    key = _find_genderedness_key('hs_orth')
-    _genderedness_chart(key, output_stem, formats, bw)
+    _genderedness_chart(_find_genderedness_key('hs_orth'), output_stem, formats, bw)
 
 def build_figure_21b(output_stem, formats, bw=False):
-    key = _find_genderedness_key('meiji_orth') if \
-        any('meiji_orth' in k for k in json.load(open(DATA_DIR / "genderedness.json")).keys()) \
-        else _find_genderedness_key('meiji')
-    _genderedness_chart(key, output_stem, formats, bw)
+    _genderedness_chart(_find_genderedness_key('meiji_orth', 'meiji'), output_stem, formats, bw)
 
 def build_figure_21c(output_stem, formats, bw=False):
-    key = _find_genderedness_key('meiji_pron') if \
-        any('meiji_pron' in k for k in json.load(open(DATA_DIR / "genderedness.json")).keys()) \
-        else _find_genderedness_key('meiji')
-    _genderedness_chart(key, output_stem, formats, bw)
+    _genderedness_chart(_find_genderedness_key('meiji_pron', 'meiji'), output_stem, formats, bw)
 
 
 # ---------------------------------------------------------------------------

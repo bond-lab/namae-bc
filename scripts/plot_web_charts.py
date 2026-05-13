@@ -35,10 +35,9 @@ def _regression_line(years, slope, intercept):
 
 def _compute_stats(yrs, vals):
     """Return (r, p_value, annual_change_pct, mean) for a time series."""
-    from scipy.stats import pearsonr
     yrs_a = np.array(yrs, dtype=float)
     vals_a = np.array(vals, dtype=float)
-    r, p = pearsonr(yrs_a, vals_a)
+    r, p = scipy_stats.pearsonr(yrs_a, vals_a)
     pct_changes = [(vals_a[i] - vals_a[i-1]) / vals_a[i-1] * 100
                    for i in range(1, len(vals_a)) if vals_a[i-1] != 0]
     return r, p, (np.mean(pct_changes) if pct_changes else 0.0), np.mean(vals_a)
