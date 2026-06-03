@@ -24,7 +24,7 @@ Please credit the original compilers when using their data, and cite this Zenodo
 - **Source:** <https://www.meijiyasuda.co.jp/enjoy/ranking/>
 - **Copyright:** © Meiji Yasuda Life Insurance Company
 - **License:** Used under fair use for research and illustration; not for commercial redistribution.
-- **Range:** 1912-2024
+- **Range:** 1912-2025
 
 ---
 

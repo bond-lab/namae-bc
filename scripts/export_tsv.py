@@ -4,8 +4,8 @@ Produces one TSV per data source in data/download/:
   - baby_calendar_names.tsv        (Baby Calendar, orth-only & pron-only, 2008-2022)
   - baby_calendar_names_both.tsv   (Baby Calendar, orth+pron pairs, 2008-2022)
   - heisei_names.tsv               (Heisei Namae Jiten, 1989-2009)
-  - meiji_yasuda_names.tsv         (Meiji Yasuda, 1912-2024)
-  - meiji_yasuda_totals.tsv        (Meiji Yasuda survey totals, 2004-2024)
+  - meiji_yasuda_names.tsv         (Meiji Yasuda, 1912-2025)
+  - meiji_yasuda_totals.tsv        (Meiji Yasuda survey totals, 2004-2025)
   - live_births.tsv                (Annual live births, 1873-2023)
 
 Usage:

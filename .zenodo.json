@@ -1,6 +1,6 @@
 {
     "title": "Japanese Given Names: Data, Analysis, and Interactive Resources",
-    "description": "This repository provides curated datasets, analysis code, and visualization tools for the empirical study of contemporary Japanese given names. It includes frequency data harvested from public web sources, cleaned and normalized datasets, diversity and distribution metrics, and code for interactive exploration and visualization. Developed in support of the book 'Gender in Japanese Names Today', the  resource is intended as a general platform for computational and quantitative research on Japanese given names.",
+    "description": "This repository provides curated datasets, analysis code, documentation, and visualization tools for the empirical study of contemporary Japanese given names. It includes frequency data harvested from public web sources, cleaned and normalized datasets, diversity and distribution metrics, validation scripts, and code for interactive exploration and visualization. The resource was originally developed in support of the book <em>Gender in Japanese Names Today</em> and is maintained as a citable research platform for computational, quantitative, sociolinguistic, and onomastic research on Japanese given names. Original source materials remain copyright of their respective rights holders; rights and reuse conditions are documented in the accompanying RIGHTS.md file.",
     "creators": [
 	{
       "name": "Bond, Francis",
@@ -15,13 +15,15 @@
   ],
   "keywords": [
     "Japanese",
-      "onomastics",
-      "names",
-      "gender",
-      "linguistics",
-      "diversity"
+    "onomastics",
+    "names",
+    "gender",
+    "linguistics",
+    "diversity",
+    "language resource",
+    "computational linguistics"
   ],
-  "license": "MIT",
+  "license": "other-open",
   "access_right": "open",
   "upload_type": "dataset",
   "doi": "10.5281/zenodo.18591986",
@@ -34,5 +36,5 @@
   ],
   "version": "0.9.0",
   "language": "eng",
-  "notes": "Some of the datasets included here contain material originally compiled by other authors and remain under their respective copyrights. These are included for research and educational purposes. Please check the source attribution files in the `data/` directory for detailed credits and license terms."
+  "notes": "This resource has mixed rights. The code, documentation, and derived analysis outputs are released under the MIT licence. The underlying source datasets (Baby Calendar, Meiji Yasuda, Heisei Namae Jiten, IPSS birth data) remain copyright of their respective rights holders and are included for research and educational purposes only. Full rights and reuse conditions are documented in RIGHTS.md and ATTRIBUTIONS.md."
 }

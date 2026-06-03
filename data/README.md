@@ -49,7 +49,7 @@ with lines of the form `rank\tname\tfrequency`.  Downloaded from
 
 ---
 
-## Meiji Yasuda Life Insurance (meiji) — 1912-2024
+## Meiji Yasuda Life Insurance (meiji) — 1912-2025
 
 **Raw files:**
 - `meiji_yasuda_data/processed/combined_rankings.csv` — from the
@@ -63,8 +63,8 @@ Downloaded from <https://www.meijiyasuda.co.jp/enjoy/ranking/>.
 **Coverage:**
 
 - **1912-2003:** Top 10 written forms only, no frequencies.
-- **2004-2024 orthography:** Top 100 written forms with frequencies.
-- **2004-2024 pronunciation:** Top 50 pronunciations with frequencies.
+- **2004-2025 orthography:** Top 100 written forms with frequencies.
+- **2004-2025 pronunciation:** Top 50 pronunciations with frequencies.
 
 **Cleaning applied:**
 
@@ -83,6 +83,10 @@ Downloaded from <https://www.meijiyasuda.co.jp/enjoy/ranking/>.
   See also Ogihara (2025), Baby names in Japan, 2019-2024,
   DOI [10.17605/OSF.IO/BQUJN](https://doi.org/10.17605/OSF.IO/BQUJN)
   (does not include survey sizes).
+
+- The 2025 survey total in `meiji_total_year.tsv` is taken from the
+  official press-release PDF (`press_releases/meiji_names_2025.pdf`,
+  published 2025/12/10): male 6,312, female 6,193, total 12,505.
 
 ---
 
