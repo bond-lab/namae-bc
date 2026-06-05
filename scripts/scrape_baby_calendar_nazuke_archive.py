@@ -55,10 +55,9 @@ LIVE_IDS = set(range(1512, 1611))
 #   1512-1610:   2020-2023 live (skipped)
 KNOWN_YEAR_BLOCKS: dict[int, dict[str, range]] = {
     2017: {"M": range(1030, 1040), "F": range(1040, 1050)},
-    # Fill in as confirmed:
-    # 2016: {"M": range(???, ???), "F": range(???, ???)},
-    # 2015: {"M": range(???, ???), "F": range(???, ???)},
-    # etc. back to 2008
+    2018: {"M": range(1286, 1296), "F": range(1296, 1306)},
+    2019: {"M": range(1457, 1467), "F": range(1467, 1477)},
+    # 2016 and earlier: no archive evidence found
 }
 
 
@@ -176,8 +175,16 @@ def parse_episodes(soup: BeautifulSoup, year: int, gender: str, sound_row: str,
 
 
 def main():
+    # Load already-recovered entries so we don't re-fetch them
     all_rows = []
     seen_urls = set()
+    if OUT.exists():
+        with open(OUT, encoding="utf-8") as f:
+            reader = csv.DictReader(f, delimiter="\t")
+            for row in reader:
+                all_rows.append(row)
+                seen_urls.add(row.get("archive_url", ""))
+        print(f"Loaded {len(all_rows)} existing entries (will skip their URLs)")
 
     # ── Step 1: CDX search for /knowledge/common/* episode pages ────────────
     # BC launched in 2008; search from 2008 to capture all historical episodes.
@@ -299,14 +306,16 @@ def main():
     # Covers the full pre-2017 range to catch 2008-2016 episodes.
     print("\nStep 5: Probing known unfetched candidate IDs ...")
     UNFETCHED_IDS = [
-        # From previous CDX run — failed due to connection errors
-        373, 374, 375, 376,
-        485, 501, 502, 503, 504, 505,
-        549,
-        749, 750, 751, 753, 776, 790, 800,
-        865, 890, 891, 892, 893, 894, 895, 898, 899,
-        1165, 1286, 1287, 1288, 1289, 1290, 1291, 1292, 1293, 1294,
-        1296, 1297, 1298, 1299, 1300, 1301, 1302, 1303, 1304, 1305,
+        # 2017 — all 20 pages (overwritten in previous run)
+        *range(1030, 1050),
+        # 2018 — missing 10 pages (others fetched in current file)
+        1286, 1288, 1291, 1292, 1293, 1294, 1295,  # males: あ-さ-は-ま-や-ら-わ行
+        1300, 1301, 1304,                            # females: な-は-ら行
+        # 2019 — missing 17 pages (1460, 1465, 1475 already in file)
+        *range(1457, 1460),  # あ-か-さ行 M
+        1461, 1462, 1463, 1464, 1466,               # な-は-ま-や-わ行 M
+        *range(1467, 1475),  # あ-か-さ-た-な-は-ま-や行 F
+        1476,                                        # わ行 F
     ]
     AVAIL_URL = "https://archive.org/wayback/available"
     for id_ in UNFETCHED_IDS:
@@ -351,8 +360,8 @@ def main():
     print(f"\nTotal recovered: {len(all_rows)} episode entries")
     by_year = {}
     for r in all_rows:
-        by_year.setdefault(r["year"], 0)
-        by_year[r["year"]] += 1
+        by_year.setdefault(str(r["year"]), 0)
+        by_year[str(r["year"])] += 1
     for y in sorted(by_year):
         print(f"  {y}: {by_year[y]}")
 
