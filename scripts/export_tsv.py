@@ -1,11 +1,13 @@
 """Export cleaned ranked name data from the database as TSV files.
 
 Produces one TSV per data source in data/download/:
-  - baby_calendar_names.tsv        (Baby Calendar, orth-only & pron-only, 2008-2022)
+  - baby_calendar_names.tsv        (Baby Calendar, orth-only & pron-only, 2008-2025)
   - baby_calendar_names_both.tsv   (Baby Calendar, orth+pron pairs, 2008-2022)
   - heisei_names.tsv               (Heisei Namae Jiten, 1989-2009)
   - meiji_yasuda_names.tsv         (Meiji Yasuda, 1912-2025)
   - meiji_yasuda_totals.tsv        (Meiji Yasuda survey totals, 2004-2025)
+  - benesse_names.tsv              (Benesse/Tamahiyo, 2018-2025)
+  - akachan_names.tsv              (Akachan Honpo, 2018-2025)
   - live_births.tsv                (Annual live births, 1873-2023)
 
 Usage:
@@ -61,6 +63,18 @@ def export(db_path, output_dir):
             "SELECT year, gender, count "
             "FROM name_year_cache WHERE src='totals' ORDER BY year, gender",
             ["year", "gender", "count"],
+        ),
+        (
+            "benesse_names.tsv",
+            "SELECT year, orth, pron, rank, gender, freq "
+            "FROM nrank WHERE src='benesse' ORDER BY year, gender, rank",
+            ["year", "orth", "pron", "rank", "gender", "freq"],
+        ),
+        (
+            "akachan_names.tsv",
+            "SELECT year, orth, pron, rank, gender "
+            "FROM nrank WHERE src='akachan' ORDER BY year, gender, rank",
+            ["year", "orth", "pron", "rank", "gender"],
         ),
         (
             "live_births.tsv",
