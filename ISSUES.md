@@ -17,6 +17,26 @@
 ### Incomplete book reference
 - `ATTRIBUTIONS.md` line 68: marked as FIXME, needs full citation
 
+### Baby Calendar nazuke episode coverage gap (2008-2016)
+
+The structured sound-row episode pages (`/knowledge/common/ID`) only go back
+to **2017** — confirmed by the Wayback Machine CDX, which found 70 archived
+pages for that URL pattern, all from 2017. The CDX found zero archived pages
+for `/knowledge/pregnancy/*` or `/special/name/*` going back to 2008.
+
+The hand-collected bc data (2008–2022) includes an `explanation` column with
+per-name naming stories. It is unknown from which URL pattern these were
+collected and whether those older pages are archived anywhere.
+
+To investigate:
+- When Wayback Machine is stable, retry fetching the low IDs found in CDX
+  (373-376, 485, 501-505, 549, 749-753, 776, 790, 800, 865, 890-899) —
+  these may be 2015/2016 episode pages.
+- Check CDX for any other baby-calendar.jp URL patterns containing
+  "エピソード" going back to 2008.
+- The pre-2017 episode script (`scrape_baby_calendar_nazuke_archive.py`)
+  is ready to run when the archive is stable.
+
 ### Meiji survey totals — verify against archived PDFs
 
 - `meiji_total_year.tsv` contains survey totals for 2004-2025.
