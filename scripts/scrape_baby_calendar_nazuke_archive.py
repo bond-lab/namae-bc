@@ -40,13 +40,25 @@ SOUND_ROWS = ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま�
 # IDs confirmed live (2020-2023) — skip these
 LIVE_IDS = set(range(1512, 1611))
 
-# Known year blocks discovered from CDX results and confirmed via archive fetches
+# Known year blocks discovered from CDX results and confirmed via archive fetches.
 # Format: year -> {gender -> range of IDs}
-# Add to this as new years are discovered.
+# Update this as more years are confirmed.
+#
+# ID sequence observed so far:
+#   ~373-376:    unknown year (found in CDX, not yet fetched)
+#   ~485-505:    unknown year (found in CDX, not yet fetched)
+#   ~549:        unknown year (found in CDX, not yet fetched)
+#   ~749-800:    unknown year (found in CDX, not yet fetched)
+#   ~865-899:    unknown year (found in CDX, not yet fetched)
+#   1030-1049:   2017 confirmed (boys 1030-1039, girls 1040-1049)
+#   1050-1511:   2018/2019 — TBD
+#   1512-1610:   2020-2023 live (skipped)
 KNOWN_YEAR_BLOCKS: dict[int, dict[str, range]] = {
     2017: {"M": range(1030, 1040), "F": range(1040, 1050)},
-    # 2018: TBD — IDs likely in 1050-1200 range
-    # 2019: TBD — IDs likely in 1200-1511 range
+    # Fill in as confirmed:
+    # 2016: {"M": range(???, ???), "F": range(???, ???)},
+    # 2015: {"M": range(???, ???), "F": range(???, ???)},
+    # etc. back to 2008
 }
 
 
@@ -168,10 +180,11 @@ def main():
     seen_urls = set()
 
     # ── Step 1: CDX search for /knowledge/common/* episode pages ────────────
+    # BC launched in 2008; search from 2008 to capture all historical episodes.
     print("Step 1: CDX search for /knowledge/common/* ...")
     time.sleep(DELAY_CDX)
     candidates = cdx_search("baby-calendar.jp/knowledge/common/*",
-                             from_year="2015", to_year="2020")
+                             from_year="2008", to_year="2020")
     print(f"  {len(candidates)} CDX hits")
 
     # Filter to plausible episode IDs (not confirmed live, not too low)
@@ -213,7 +226,7 @@ def main():
     print("\nStep 2: CDX search for /knowledge/pregnancy/* ...")
     time.sleep(DELAY_CDX)
     preg_candidates = cdx_search("baby-calendar.jp/knowledge/pregnancy/*",
-                                  from_year="2015", to_year="2020")
+                                  from_year="2008", to_year="2020")
     print(f"  {len(preg_candidates)} CDX hits")
     for c in preg_candidates:
         url = c["url"]
@@ -243,7 +256,19 @@ def main():
     print("\nStep 3: CDX search for /special/name/* ...")
     time.sleep(DELAY_CDX)
     special_candidates = cdx_search("baby-calendar.jp/special/name/*",
-                                     from_year="2014", to_year="2020")
+                                     from_year="2008", to_year="2020")
+
+    # ── Step 4: CDX search for older URL patterns ─────────────────────────
+    # Early BC content used /name/ or /nazuke/ paths before /knowledge/common/
+    print("\nStep 4: CDX search for /name/* and /nazuke/* ...")
+    time.sleep(DELAY_CDX)
+    name_candidates  = cdx_search("baby-calendar.jp/name/*",
+                                    from_year="2008", to_year="2018")
+    time.sleep(DELAY_CDX)
+    nazuke_candidates = cdx_search("baby-calendar.jp/nazuke/*",
+                                    from_year="2008", to_year="2020")
+    # Merge into special_candidates list
+    special_candidates = special_candidates + name_candidates + nazuke_candidates
     print(f"  {len(special_candidates)} CDX hits")
     for c in special_candidates:
         url = c["url"]
@@ -267,6 +292,59 @@ def main():
         rows = parse_episodes(soup, year, gender, sound_row, c["timestamp"], wb_url)
         if rows:
             print(f"  {url} ({c['timestamp'][:8]}): {len(rows)} entries ({year} {sound_row} {gender})")
+            all_rows.extend(rows)
+
+    # ── Step 5: Retry known CDX-found IDs that previously timed out ─────────
+    # IDs found in CDX but not fetched due to archive downtime.
+    # Covers the full pre-2017 range to catch 2008-2016 episodes.
+    print("\nStep 5: Probing known unfetched candidate IDs ...")
+    UNFETCHED_IDS = [
+        # From previous CDX run — failed due to connection errors
+        373, 374, 375, 376,
+        485, 501, 502, 503, 504, 505,
+        549,
+        749, 750, 751, 753, 776, 790, 800,
+        865, 890, 891, 892, 893, 894, 895, 898, 899,
+        1165, 1286, 1287, 1288, 1289, 1290, 1291, 1292, 1293, 1294,
+        1296, 1297, 1298, 1299, 1300, 1301, 1302, 1303, 1304, 1305,
+    ]
+    AVAIL_URL = "https://archive.org/wayback/available"
+    for id_ in UNFETCHED_IDS:
+        url = f"https://baby-calendar.jp/knowledge/common/{id_}"
+        if url in seen_urls:
+            continue
+        seen_urls.add(url)
+        # Find best snapshot via availability API
+        try:
+            r = requests.get(AVAIL_URL, params={"url": url}, headers=HEADERS, timeout=20)
+            time.sleep(0.8)
+            if r.status_code != 200:
+                continue
+            snap = r.json().get("archived_snapshots", {}).get("closest", {})
+            if not snap.get("available"):
+                continue
+            wb_url = snap["url"]
+        except Exception as e:
+            print(f"  Avail error ID {id_}: {e}", file=sys.stderr)
+            continue
+        soup = fetch_wayback(wb_url)
+        if not soup:
+            continue
+        title = soup.title.string if soup.title else ""
+        year, sound_row, gender = infer_meta(title)
+        if not year:
+            year, sound_row, gender = infer_meta_from_id(id_)
+        if not year:
+            # Try to detect year from page content
+            m_yr = re.search(r'20(0[89]|1\d)年.*(?:名づけ|エピソード)', title + soup.get_text()[:500])
+            if m_yr:
+                year = int("20" + m_yr.group(1))
+        if not year:
+            print(f"  ID {id_}: no year detected (title: {title[:60]})", file=sys.stderr)
+            continue
+        rows = parse_episodes(soup, year, gender, sound_row, snap["timestamp"], wb_url)
+        if rows:
+            print(f"  ID {id_} ({snap['timestamp'][:8]}): {len(rows)} entries ({year} {sound_row} {gender})")
             all_rows.extend(rows)
 
     # ── Summary ──────────────────────────────────────────────────────────────
