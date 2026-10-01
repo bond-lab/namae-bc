@@ -28,12 +28,43 @@ BASE = "https://baby-calendar.jp"
 HEADERS = {"User-Agent": "Mozilla/5.0 (research scraper; namae-bc project; contact: bond@ieee.org)"}
 DELAY = 1.2
 
+CACHE_DIR = Path(__file__).parent.parent / "data" / "raw" / "page_cache"
 OUT = Path(__file__).parent.parent / "data" / "raw" / "baby_calendar_nazuke_episodes.tsv"
-FIELDNAMES = ["year", "gender", "sound_row", "orth", "pron", "episode", "page_type", "url", "src"]
+FIELDNAMES = ["year", "gender", "sound_row", "orth", "pron", "episode", "script", "page_type", "url", "src"]
 
 # Complete map of /knowledge/common/ episode pages
 # (year, sound_row, gender) -> ID
+# Note: 2017-2019 pages are still live as of 2026-06-08
+# Note: ID 1295 (2018 M わ行) returns 404 — that page was never published
+# Note: ID 1550 (2021 F わ行) and ID 1530 (2020 F わ行) not published
 EPISODE_PAGE_IDS = {
+    # 2017
+    (2017, "あ行", "M"): 1030, (2017, "か行", "M"): 1031, (2017, "さ行", "M"): 1032,
+    (2017, "た行", "M"): 1033, (2017, "な行", "M"): 1034, (2017, "は行", "M"): 1035,
+    (2017, "ま行", "M"): 1036, (2017, "や行", "M"): 1037, (2017, "ら行", "M"): 1038,
+    (2017, "わ行", "M"): 1039,
+    (2017, "あ行", "F"): 1040, (2017, "か行", "F"): 1041, (2017, "さ行", "F"): 1042,
+    (2017, "た行", "F"): 1043, (2017, "な行", "F"): 1044, (2017, "は行", "F"): 1045,
+    (2017, "ま行", "F"): 1046, (2017, "や行", "F"): 1047, (2017, "ら行", "F"): 1048,
+    (2017, "わ行", "F"): 1049,
+    # 2018
+    (2018, "あ行", "M"): 1286, (2018, "か行", "M"): 1287, (2018, "さ行", "M"): 1288,
+    (2018, "た行", "M"): 1289, (2018, "な行", "M"): 1290, (2018, "は行", "M"): 1291,
+    (2018, "ま行", "M"): 1292, (2018, "や行", "M"): 1293, (2018, "ら行", "M"): 1294,
+    # 1295 (2018 M わ行) → 404, page was never published
+    (2018, "あ行", "F"): 1296, (2018, "か行", "F"): 1297, (2018, "さ行", "F"): 1298,
+    (2018, "た行", "F"): 1299, (2018, "な行", "F"): 1300, (2018, "は行", "F"): 1301,
+    (2018, "ま行", "F"): 1302, (2018, "や行", "F"): 1303, (2018, "ら行", "F"): 1304,
+    (2018, "わ行", "F"): 1305,
+    # 2019
+    (2019, "あ行", "M"): 1457, (2019, "か行", "M"): 1458, (2019, "さ行", "M"): 1459,
+    (2019, "た行", "M"): 1460, (2019, "な行", "M"): 1461, (2019, "は行", "M"): 1462,
+    (2019, "ま行", "M"): 1463, (2019, "や行", "M"): 1464, (2019, "ら行", "M"): 1465,
+    (2019, "わ行", "M"): 1466,
+    (2019, "あ行", "F"): 1467, (2019, "か行", "F"): 1468, (2019, "さ行", "F"): 1469,
+    (2019, "た行", "F"): 1470, (2019, "な行", "F"): 1471, (2019, "は行", "F"): 1472,
+    (2019, "ま行", "F"): 1473, (2019, "や行", "F"): 1474, (2019, "ら行", "F"): 1475,
+    (2019, "わ行", "F"): 1476,
     # 2020
     (2020, "あ行", "M"): 1512, (2020, "か行", "M"): 1513, (2020, "さ行", "M"): 1514,
     (2020, "た行", "M"): 1515, (2020, "な行", "M"): 1516, (2020, "は行", "M"): 1517,
@@ -71,53 +102,102 @@ EPISODE_PAGE_IDS = {
 
 
 
-def get_soup(url: str) -> BeautifulSoup | None:
+def get_soup(url: str, page_id: int | None = None) -> BeautifulSoup | None:
+    """Fetch URL, using local HTML cache when available (data/raw/page_cache/)."""
+    if page_id is not None:
+        cache_file = CACHE_DIR / f"bc_episode_{page_id}.html"
+        if cache_file.exists():
+            html = cache_file.read_text(encoding="utf-8")
+            if not html:
+                return None  # cached 404
+            return BeautifulSoup(html, "html.parser")
+
     resp = requests.get(url, headers=HEADERS, timeout=20)
     if resp.status_code == 404:
+        if page_id is not None:
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            (CACHE_DIR / f"bc_episode_{page_id}.html").write_bytes(b"")
         return None
     resp.raise_for_status()
     resp.encoding = "utf-8"
+    if page_id is not None:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        (CACHE_DIR / f"bc_episode_{page_id}.html").write_text(resp.text, encoding="utf-8")
     time.sleep(DELAY)
     return BeautifulSoup(resp.text, "html.parser")
 
 
+_SENT_FRAG  = re.compile(
+    r'している|いられる|ように|のと|つけた|名前が|名前は|に生まれ|生まれた|甥っ子|元嫁|そんな|["\"""]'
+)
+_LEAD_JUNK  = re.compile(r'^[・』「」『\'"→\s]+')
+_PART_KANJI = re.compile(r'^[のにをはが](?=[一-鿿])')  # lone particle before kanji
+_VERB_END   = re.compile(r'^[たてでにしはがをものぞれ]+')
+_NAME_CHARS = re.compile(r'[ぁ-ゟ゠-ヿ一-鿿㐀-䶿々〆a-zA-Zａ-ｚＡ-Ｚ]+')
+
+
+def _script(orth: str) -> str:
+    """Classify dominant script of a name orth."""
+    has_kanji = bool(re.search(r'[一-鿿㐀-䶿々〆]', orth))
+    has_hira  = bool(re.search(r'[ぁ-ゟ]', orth))
+    has_kata  = bool(re.search(r'[ァ-ヶー]', orth))
+    has_latin = bool(re.search(r'[a-zA-Zａ-ｚＡ-Ｚ]', orth))
+    if has_latin:
+        return 'mixlatin' if (has_kanji or has_hira or has_kata) else 'latin'
+    if has_kanji:
+        if has_hira: return 'mixhira'
+        if has_kata: return 'mixkata'
+        return 'kanji'
+    if has_hira: return 'mixhira' if has_kata else 'hira'
+    if has_kata: return 'kata'
+    return 'unknown'
+
+
+def clean_orth(raw: str) -> str | None:
+    """Strip parse-noise from a matched orth; return None if unrecoverable."""
+    raw = _LEAD_JUNK.sub('', raw).strip()
+    raw = _PART_KANJI.sub('', raw).strip()  # strip lone particle before kanji
+    if _SENT_FRAG.search(raw):
+        last = list(_SENT_FRAG.finditer(raw))[-1]
+        tail = _VERB_END.sub('', raw[last.end():]).strip()
+        if 0 < len(tail) <= 12 and _NAME_CHARS.search(tail):
+            raw = tail
+        else:
+            parts = _NAME_CHARS.findall(raw)
+            raw = parts[-1] if parts else ''
+    raw = raw.strip()
+    if not raw or len(raw) > 12 or not _NAME_CHARS.search(raw):
+        return None
+    return raw
+
+
 def parse_episode_page(soup: BeautifulSoup, year: int, gender: str,
                        sound_row: str, url: str, page_type: str) -> list[dict]:
-    """
-    Parse a /knowledge/common/{ID} episode page.
-    Entries follow the pattern: kanji（reading）くん/ちゃん followed by story text.
-    """
+    """Parse a /knowledge/common/{ID} episode page."""
     text = soup.get_text("\n", strip=True)
     rows = []
 
-    # Pattern: Name（reading）くん or ちゃん then episode text until next entry
-    # Also handles: Name（reading）\nくん/ちゃん
-    # Build a list of (orth, pron, gender_marker, story) tuples
-    # Split text at name entries
-    # Name pattern: non-whitespace kanji/kana string followed by （hiragana）
     entry_pat = re.compile(
-        r'([^\s（）「」。、\n]{1,15})\s*（([ぁ-ゟァ-ヶー]{1,12})）\s*(?:くん|ちゃん)',
+        r'([^\s（）()「」。、\n]{1,15})\s*[（(]([ぁ-ゟァ-ヶー]{1,12})[）)]\s*(?:くん|ちゃん)',
         re.MULTILINE
     )
 
     matches = list(entry_pat.finditer(text))
     for i, m in enumerate(matches):
-        orth = m.group(1).strip()
+        orth = clean_orth(m.group(1))
+        if not orth:
+            continue
         pron = m.group(2).strip()
 
-        # Extract story: text between this match end and next match start
         start = m.end()
         end = matches[i + 1].start() if i + 1 < len(matches) else min(start + 1000, len(text))
         story = text[start:end].strip()
-        # Clean up story: remove leading/trailing noise
         story = re.sub(r'^[\s→「」。、\n]+', '', story)
         story = re.sub(r'[\s\n]+', ' ', story).strip()
-        # Remove author attribution at end (e.g., "（田中さん）")
         story = re.sub(r'（[^\)]{2,10}さん）\s*$', '', story).strip()
-        # Truncate at next section heading
         story = re.split(r'「[^」]{1,5}」ではじまる|→\s*「', story)[0].strip()
 
-        if not orth or not pron or len(story) < 5:
+        if not pron or len(story) < 5:
             continue
 
         rows.append({
@@ -127,6 +207,7 @@ def parse_episode_page(soup: BeautifulSoup, year: int, gender: str,
             "orth": orth,
             "pron": pron,
             "episode": story[:1000],
+            "script": _script(orth),
             "page_type": page_type,
             "url": url,
             "src": "bc",
@@ -143,7 +224,7 @@ def scrape_all_episodes() -> list[dict]:
     print("Scraping sound-row episode pages...")
     for (year, sound_row, gender), page_id in sorted(EPISODE_PAGE_IDS.items()):
         url = f"{BASE}/knowledge/common/{page_id}"
-        soup = get_soup(url)
+        soup = get_soup(url, page_id=page_id)
         if soup is None:
             print(f"  {year} {sound_row} {gender}: 404")
             continue
