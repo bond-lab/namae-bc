@@ -1,0 +1,42 @@
+[project]
+name = "namae-bc"
+version = "0.9.0"
+description = "Japanese Name Database: data and tools for analyzing trends in Japanese given names"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Francis Bond" },
+    { name = "Ivona Barešová" },
+]
+dependencies = [
+    "beautifulsoup4",
+    "flask",
+    "jaconv",
+    "jamdict",
+    "jamdict-data",
+    "jinja2",
+    "kanaconv",
+    "markdown",
+    "markupsafe",
+    "matplotlib",
+    "numpy",
+    "openpyxl",
+    "pandas",
+    "python-docx",
+    "pyyaml",
+    "regex",
+    "requests",
+    "scikit-learn",
+    "scipy",
+    "tabulate",
+    "toml",
+]
+
+[project.optional-dependencies]
+build = [
+    "playwright",
+]
+
+[tool.uv]
+package = false

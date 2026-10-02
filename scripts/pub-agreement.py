@@ -405,17 +405,17 @@ def main(db_path=_default_db_path, plot_dir=_default_plot_dir, formats=('png',))
                     f'{year} {gender}'
                 )
 
+        data_summary = {
+            'caption': f"Ranking Agreement between Meiji Yasuda and {src}",
+            'headers': ['Year', 'Gender', 'Overlap', 'JS divergence',
+                        'EM distance', 'Correlation', 'Difference', 'P-value'],
+            'rows': [],
+        }
         for gender in results:
-            data_summary = {
-                'caption': f"Ranking Agreement between Meiji Yasuda and {src}",
-                'headers': ['Year', 'Overlap', 'JS divergence', 'EM distance',
-                            'Correlation', 'Difference', 'P-value'],
-                'rows': [],
-            }
             for year in results[gender]:
                 r = results[gender][year]
                 data_summary['rows'].append([
-                    year, r['common_names_count'], r['js_divergence'],
+                    year, gender, r['common_names_count'], r['js_divergence'],
                     r['earth_movers_distance'], r['correlation'],
                     r['chi_square']['cramers_v'], r['chi_square']['p_value']
                 ])
